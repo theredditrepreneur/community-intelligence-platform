@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
 import { navigation } from '@/lib/config/navigation';
 import { platform } from '@/lib/config/platform';
 
@@ -30,6 +31,16 @@ export function Sidebar() {
         })}
       </nav>
       <div />
+      <div className="sidebar-account">
+        <SignedOut>
+          <SignInButton mode="modal">
+            <button className="account-button" type="button">Sign in</button>
+          </SignInButton>
+        </SignedOut>
+        <SignedIn>
+          <UserButton afterSignOutUrl="/pricing" />
+        </SignedIn>
+      </div>
       <div className="side-copy">
         <strong>{platform.tagline}</strong>
         {platform.sidebarBody}

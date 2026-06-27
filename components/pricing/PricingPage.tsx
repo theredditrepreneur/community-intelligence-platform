@@ -1,4 +1,6 @@
 import Image from 'next/image';
+import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs';
+import { Button } from '@/components/ui/Button';
 import { pricingPlans, pricingValueStatements } from '@/lib/config/pricing';
 import { platform } from '@/lib/config/platform';
 import { PricingCard } from './PricingCard';
@@ -13,6 +15,20 @@ export function PricingPage() {
             <strong>{platform.brandName}</strong>
             <span>{platform.shortName}</span>
           </div>
+        </div>
+        <div className="public-auth">
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button className="auth-link" type="button">Sign in</button>
+            </SignInButton>
+            <SignUpButton mode="modal">
+              <button className="auth-cta" type="button">Create account</button>
+            </SignUpButton>
+          </SignedOut>
+          <SignedIn>
+            <Button href="/app/analyse" variant="secondary">Open app</Button>
+            <UserButton afterSignOutUrl="/pricing" />
+          </SignedIn>
         </div>
         <div className="pricing-header">
           <div className="eyebrow">Plans</div>

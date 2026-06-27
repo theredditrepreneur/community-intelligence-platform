@@ -34,8 +34,15 @@ button, input, textarea, select { font: inherit; }
 .nav-desc { font-size: 12px; color: var(--ink); line-height: 1.35; }
 .side-copy { border-top: 1px solid var(--soft); padding-top: 22px; color: var(--ink); font-size: 15px; line-height: 1.52; }
 .side-copy strong { display: block; color: var(--ink); font-size: 16px; line-height: 1.38; margin-bottom: 12px; }
+.sidebar-account { display: flex; align-items: center; min-height: 40px; }
+.account-button, .auth-link, .auth-cta { appearance: none; border: 0; cursor: pointer; font: inherit; }
+.account-button { width: 100%; min-height: 42px; border-radius: 10px; background: #f5f8fb; color: var(--ink); font-weight: 850; }
 .main { padding: 62px clamp(28px, 4vw, 68px) 104px; }
 .public-main { min-height: 100vh; padding: 64px clamp(24px, 5vw, 88px); }
+.auth-page { min-height: 100vh; display: grid; place-items: center; padding: 40px 20px; background: var(--bg); }
+.public-auth { position: absolute; top: 44px; right: clamp(24px, 5vw, 88px); display: flex; align-items: center; gap: 14px; }
+.auth-link { min-height: 42px; padding: 0 16px; background: transparent; color: var(--ink); font-weight: 850; }
+.auth-cta { min-height: 44px; padding: 0 18px; border-radius: 10px; background: var(--ink); color: #fff; font-weight: 850; }
 .eyebrow { color: var(--orange); font-size: 14px; font-weight: 950; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
 .question { color: var(--ink); font-size: 17px; font-weight: 760; margin-bottom: 12px; }
 .hero { max-width: 1120px; margin-bottom: 58px; }
@@ -113,5 +120,5 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
 .brief-preview p, .brief-preview li { color: rgba(255,255,255,.86); }
 .brief-preview h3 { color: #fff; }
 .brief-preview .finding { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.12); box-shadow: none; }
-@media (max-width:1080px) { .app-grid { grid-template-columns: 1fr; padding-left: 0; } .sidebar { position: static; min-height: auto; grid-template-rows: auto auto auto; } .side-copy { display: none; } .main, .public-main { padding: 34px 22px 70px; } .source-row, .field-grid, .monitoring, .signal-grid, .launch-grid, .pricing-grid { grid-template-columns: 1fr; } .full { grid-column: auto; } }
+@media (max-width:1080px) { .app-grid { grid-template-columns: 1fr; padding-left: 0; } .sidebar { position: static; min-height: auto; grid-template-rows: auto auto auto; } .side-copy { display: none; } .public-auth { position: static; margin-bottom: 28px; } .main, .public-main { padding: 34px 22px 70px; } .source-row, .field-grid, .monitoring, .signal-grid, .launch-grid, .pricing-grid { grid-template-columns: 1fr; } .full { grid-column: auto; } }
 @media (max-width:640px) { .hero h1 { font-size: 34px; } .btn-primary { width: 100%; } .panel, .step-card, .setup-card, .status-panel, .launch-card { padding: 26px; } }
