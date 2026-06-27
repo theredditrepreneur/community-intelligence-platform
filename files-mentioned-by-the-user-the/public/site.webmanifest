@@ -1,0 +1,21 @@
+{
+  "name": "The Redditrepreneur Community Intelligence Platform",
+  "short_name": "Redditrepreneur",
+  "icons": [
+    {
+      "src": "./redditrepreneur-logo.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./redditrepreneur-logo.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "theme_color": "#061a2d",
+  "background_color": "#061a2d",
+  "display": "standalone"
+}
