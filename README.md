@@ -156,3 +156,7 @@ Keep `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET` secret. Do not expose them 
 ### Deploy
 
 After adding environment variables in Vercel, push the code to GitHub. Vercel will install dependencies and build the app. If environment variables are missing, checkout and billing portal routes will fail at runtime, but the build should still complete.
+
+### Pending checkout recovery
+
+Pricing buttons use `/checkout/start?plan=analyse` and `/checkout/start?plan=discover`. This stores the intended plan in a short-lived HTTP-only cookie before Clerk sign-up. If Clerk redirects a new user into the app after sign-up, the app resumes the pending checkout and sends them to Stripe.

@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { paidPlans, type PaidPlan } from '@/lib/config/subscriptions';
 import { getAppUrl, getStripe } from '@/lib/stripe';
 import { getPriceIdForPlan } from '@/lib/stripe-subscriptions';
-import type { SubscriptionMetadata } from '@/lib/subscription';
+import { pendingCheckoutCookie, type SubscriptionMetadata } from '@/lib/subscription';
 
 function isPaidPlan(value: string | null): value is PaidPlan {
   return value === 'analyse' || value === 'discover';
@@ -62,5 +62,7 @@ export async function GET(request: Request) {
     throw new Error('Unable to create ' + paidPlans[plan].label + ' checkout session.');
   }
 
-  return NextResponse.redirect(session.url, { status: 303 });
+  const response = NextResponse.redirect(session.url, { status: 303 });
+  response.cookies.delete(pendingCheckoutCookie);
+  return response;
 }
