@@ -1,7 +1,11 @@
+'use client';
+
+import { SignedIn, SignedOut } from '@clerk/nextjs';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 
 type PricingPlan = {
+  id?: string;
   headline: string;
   price: string;
   cadence?: string;
@@ -14,6 +18,11 @@ type PricingPlan = {
   status: string;
 };
 
+function getSignedOutHref(plan: PricingPlan) {
+  if (plan.status === 'coming-soon') return plan.href;
+  return '/sign-up?redirect_url=' + encodeURIComponent(plan.href);
+}
+
 export function PricingCard({ plan }: { plan: PricingPlan }) {
   return (
     <article className={['price-card', plan.recommended ? 'recommended' : '', plan.status === 'coming-soon' ? 'soon' : ''].join(' ')}>
@@ -24,7 +33,18 @@ export function PricingCard({ plan }: { plan: PricingPlan }) {
       <ul>
         {plan.features.map((feature) => <li key={feature}>{feature}</li>)}
       </ul>
-      <Button href={plan.href} variant={plan.status === 'coming-soon' ? 'secondary' : 'orange'}>{plan.cta}</Button>
+      {plan.status === 'coming-soon' ? (
+        <Button href={plan.href} variant="secondary">{plan.cta}</Button>
+      ) : (
+        <>
+          <SignedIn>
+            <Button href={plan.href} variant="orange">{plan.cta}</Button>
+          </SignedIn>
+          <SignedOut>
+            <Button href={getSignedOutHref(plan)} variant="orange">{plan.cta}</Button>
+          </SignedOut>
+        </>
+      )}
     </article>
   );
 }

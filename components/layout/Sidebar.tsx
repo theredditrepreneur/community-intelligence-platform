@@ -3,11 +3,42 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
+import { SignedIn, SignedOut, SignInButton, SignOutButton, useUser } from '@clerk/nextjs';
 import { navigation } from '@/lib/config/navigation';
 import { platform } from '@/lib/config/platform';
 
-export function Sidebar() {
+type SidebarProps = {
+  subscriptionLabel: 'Free' | 'Analyse' | 'Discover';
+};
+
+function AccountMenu({ subscriptionLabel }: SidebarProps) {
+  const { user } = useUser();
+  const displayName = user?.fullName || user?.primaryEmailAddress?.emailAddress || 'Account';
+  const email = user?.primaryEmailAddress?.emailAddress || 'Signed in';
+
+  return (
+    <div className="account-menu">
+      <Link href="/app/account" className="account-identity">
+        <span className="account-avatar">{displayName.charAt(0).toUpperCase()}</span>
+        <span>
+          <strong>{displayName}</strong>
+          <small>{email}</small>
+        </span>
+      </Link>
+      <span className={['subscription-badge', subscriptionLabel.toLowerCase()].join(' ')}>{subscriptionLabel}</span>
+      <div className="account-links">
+        <Link href="/app/profile">Profile</Link>
+        <Link href="/app/billing">Billing</Link>
+        <a href="/api/stripe/portal">Manage Billing</a>
+        <SignOutButton redirectUrl="/pricing">
+          <button type="button">Sign out</button>
+        </SignOutButton>
+      </div>
+    </div>
+  );
+}
+
+export function Sidebar({ subscriptionLabel }: SidebarProps) {
   const pathname = usePathname();
   return (
     <aside className="sidebar">
@@ -38,7 +69,7 @@ export function Sidebar() {
           </SignInButton>
         </SignedOut>
         <SignedIn>
-          <UserButton afterSignOutUrl="/pricing" />
+          <AccountMenu subscriptionLabel={subscriptionLabel} />
         </SignedIn>
       </div>
       <div className="side-copy">

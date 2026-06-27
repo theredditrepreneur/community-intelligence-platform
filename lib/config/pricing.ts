@@ -17,7 +17,7 @@ export const pricingPlans = [
       'Generate Community Intelligence Brief',
     ],
     cta: 'Launch Analyse',
-    href: '/app/analyse',
+    href: '/checkout/analyse',
     status: 'active',
   },
   {
@@ -40,7 +40,7 @@ export const pricingPlans = [
       'Executive Community Intelligence Brief',
     ],
     cta: 'Launch Discover',
-    href: '/app/discover',
+    href: '/checkout/discover',
     status: 'active',
   },
   {

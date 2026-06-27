@@ -35,11 +35,27 @@ button, input, textarea, select { font: inherit; }
 .side-copy { border-top: 1px solid var(--soft); padding-top: 22px; color: var(--ink); font-size: 15px; line-height: 1.52; }
 .side-copy strong { display: block; color: var(--ink); font-size: 16px; line-height: 1.38; margin-bottom: 12px; }
 .sidebar-account { display: flex; align-items: center; min-height: 40px; }
+.account-menu { width: 100%; display: grid; gap: 10px; }
+.account-identity { display: grid; grid-template-columns: 34px 1fr; gap: 10px; align-items: center; padding: 10px; border: 1px solid var(--soft); border-radius: 10px; background: #fff; text-decoration: none; }
+.account-avatar { width: 34px; height: 34px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; background: var(--ink); color: #fff; font-size: 14px; font-weight: 900; }
+.account-avatar.large { width: 58px; height: 58px; font-size: 22px; }
+.account-identity strong { display: block; font-size: 13px; line-height: 1.2; font-weight: 900; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.account-identity small { display: block; margin-top: 3px; color: var(--ink); font-size: 11px; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.subscription-badge { display: inline-flex; width: fit-content; min-height: 28px; align-items: center; border-radius: 999px; padding: 0 10px; font-size: 12px; font-weight: 900; border: 1px solid var(--soft); background: #f6f8fb; color: var(--ink); }
+.subscription-badge.analyse { background: rgba(0, 111, 182, 0.08); border-color: rgba(0, 111, 182, 0.16); color: var(--blue); }
+.subscription-badge.discover { background: rgba(255, 75, 11, 0.1); border-color: rgba(255, 75, 11, 0.18); color: var(--orange); }
+.account-links { display: grid; gap: 4px; }
+.account-links a, .account-links button { min-height: 34px; padding: 0 10px; border: 0; border-radius: 8px; background: transparent; color: var(--ink); text-align: left; text-decoration: none; font-size: 13px; font-weight: 800; cursor: pointer; }
+.account-links a:hover, .account-links button:hover { background: #f3f7fb; }
 .account-button, .auth-link, .auth-cta { appearance: none; border: 0; cursor: pointer; font: inherit; }
 .account-button { width: 100%; min-height: 42px; border-radius: 10px; background: #f5f8fb; color: var(--ink); font-weight: 850; }
 .main { padding: 62px clamp(28px, 4vw, 68px) 104px; }
 .public-main { min-height: 100vh; padding: 64px clamp(24px, 5vw, 88px); }
 .auth-page { min-height: 100vh; display: grid; place-items: center; padding: 40px 20px; background: var(--bg); }
+.checkout-page { display: grid; place-items: center; }
+.checkout-panel { max-width: 760px; }
+.checkout-panel h1 { margin: 0 0 18px; font-size: clamp(34px, 4vw, 48px); line-height: 1.08; }
+.checkout-panel p { margin: 0 0 26px; color: var(--ink); font-size: 18px; line-height: 1.6; }
 .public-auth { position: absolute; top: 44px; right: clamp(24px, 5vw, 88px); display: flex; align-items: center; gap: 14px; }
 .auth-link { min-height: 42px; padding: 0 16px; background: transparent; color: var(--ink); font-weight: 850; }
 .auth-cta { min-height: 44px; padding: 0 18px; border-radius: 10px; background: var(--ink); color: #fff; font-weight: 850; }
@@ -48,6 +64,14 @@ button, input, textarea, select { font: inherit; }
 .hero { max-width: 1120px; margin-bottom: 58px; }
 .hero h1 { margin: 0; font-size: clamp(38px, 4.7vw, 58px); line-height: 1.04; font-weight: 900; }
 .hero p { margin: 20px 0 0; color: var(--ink); max-width: 920px; font-size: clamp(18px, 1.8vw, 23px); line-height: 1.5; }
+.account-hero { margin-bottom: 34px; }
+.account-panel { display: grid; gap: 26px; }
+.account-panel h2 { margin: 0; font-size: 28px; line-height: 1.15; }
+.account-summary { display: flex; align-items: center; gap: 18px; }
+.account-summary h2 { margin: 0 0 6px; }
+.account-summary p { margin: 0; color: var(--ink); font-size: 16px; }
+.account-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+.profile-shell { max-width: 1180px; }
 .card, .panel, .step-card, .finding, .status-panel, .launch-card, .setup-card, .price-card { background: #fff; border: 1px solid var(--soft); border-radius: 12px; box-shadow: var(--shadow); }
 .panel, .step-card, .setup-card, .launch-card { max-width: 1180px; padding: clamp(34px, 4.4vw, 54px); }
 label { display: grid; gap: 15px; color: var(--ink); font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.045em; }
