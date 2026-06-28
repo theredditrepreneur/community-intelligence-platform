@@ -30,7 +30,7 @@ export async function middleware(request: NextRequest) {
 
   if (isProtectedRoute && !user) {
     const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = '/sign-in';
+    redirectUrl.pathname = '/login';
     redirectUrl.searchParams.set('redirectedFrom', request.nextUrl.pathname);
     return NextResponse.redirect(redirectUrl);
   }

@@ -55,8 +55,8 @@ export function getSubscriptionAppPath(subscription: SubscriptionMetadata) {
     return '/pricing';
   }
 
-  if (subscription.subscriptionPlan === 'discover') return '/app/discover';
-  if (subscription.subscriptionPlan === 'analyse') return '/app/analyse';
+  if (subscription.subscriptionPlan === 'discover') return '/app/dashboard';
+  if (subscription.subscriptionPlan === 'analyse') return '/app/dashboard';
 
   return '/pricing';
 }

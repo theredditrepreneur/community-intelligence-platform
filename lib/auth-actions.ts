@@ -29,7 +29,7 @@ export async function signIn(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    authRedirect('/sign-in', getAuthErrorMessage(error.message));
+    authRedirect('/login', getAuthErrorMessage(error.message));
   }
 
   const pendingPlan = cookies().get(pendingCheckoutCookie)?.value;
@@ -62,7 +62,7 @@ export async function signUp(formData: FormData) {
   }
 
   if (!data.session) {
-    redirect('/sign-in?message=' + encodeURIComponent('Check your email to confirm your account, then sign in.'));
+    redirect('/auth/confirm-signup');
   }
 
   const pendingPlan = cookies().get(pendingCheckoutCookie)?.value;

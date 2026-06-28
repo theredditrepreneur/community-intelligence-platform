@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (error) {
-      return NextResponse.redirect(new URL('/sign-in?error=' + encodeURIComponent(error.message), origin));
+      return NextResponse.redirect(new URL('/login?error=' + encodeURIComponent(error.message), origin));
     }
   }
 
@@ -23,5 +23,5 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL('/checkout/resume', origin));
   }
 
-  return NextResponse.redirect(new URL('/sign-in?confirmed=1', origin));
+  return NextResponse.redirect(new URL('/login?confirmed=1', origin));
 }

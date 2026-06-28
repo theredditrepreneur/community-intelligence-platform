@@ -58,7 +58,7 @@ export function Sidebar({ subscriptionLabel, user }: SidebarProps) {
           const active = pathname === item.href;
           return (
             <Link key={item.id} href={item.href} className={['nav-item', item.accent, active ? 'active' : ''].join(' ')}>
-              <span className="nav-title">{item.icon} {item.label}</span>
+              <span className="nav-title">{item.icon ? <span className="nav-icon">{item.icon}</span> : null}{item.label}</span>
               <span className="nav-desc">{item.description}</span>
             </Link>
           );
