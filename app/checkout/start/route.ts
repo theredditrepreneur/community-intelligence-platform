@@ -11,7 +11,7 @@ export async function GET(request: Request) {
   }
 
   const { userId } = await auth();
-  const redirectPath = userId ? '/checkout/' + plan : '/sign-up';
+  const redirectPath = userId ? '/checkout/' + plan : '/sign-up?redirect_url=' + encodeURIComponent('/checkout/' + plan);
   const response = NextResponse.redirect(new URL(redirectPath, requestUrl.origin), { status: 303 });
 
   response.cookies.set(pendingCheckoutCookie, plan, {

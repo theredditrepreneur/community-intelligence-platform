@@ -1,8 +1,9 @@
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { CheckoutButton } from './CheckoutButton';
 
 type PricingPlan = {
-  id?: string;
+  id?: 'analyse' | 'discover' | 'alerts';
   headline: string;
   price: string;
   cadence?: string;
@@ -16,6 +17,8 @@ type PricingPlan = {
 };
 
 export function PricingCard({ plan }: { plan: PricingPlan }) {
+  const isPaidPlan = plan.id === 'analyse' || plan.id === 'discover';
+
   return (
     <article className={['price-card', plan.recommended ? 'recommended' : '', plan.status === 'coming-soon' ? 'soon' : ''].join(' ')}>
       {plan.badge ? <Badge tone={plan.recommended ? 'orange' : 'green'}>{plan.badge}</Badge> : null}
@@ -25,7 +28,11 @@ export function PricingCard({ plan }: { plan: PricingPlan }) {
       <ul>
         {plan.features.map((feature) => <li key={feature}>{feature}</li>)}
       </ul>
-      <Button href={plan.href} variant={plan.status === 'coming-soon' ? 'secondary' : 'orange'}>{plan.cta}</Button>
+      {isPaidPlan ? (
+        <CheckoutButton plan={plan.id}>{plan.cta}</CheckoutButton>
+      ) : (
+        <Button href={plan.href} variant="secondary">{plan.cta}</Button>
+      )}
     </article>
   );
 }

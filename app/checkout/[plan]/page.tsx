@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+import { ResumeCheckout } from '@/components/checkout/ResumeCheckout';
 import type { PaidPlan } from '@/lib/config/subscriptions';
 
 function isPaidPlan(value: string): value is PaidPlan {
@@ -10,5 +11,5 @@ export default function CheckoutPlanPage({ params }: { params: { plan: string } 
     redirect('/pricing');
   }
 
-  redirect('/api/stripe/checkout?plan=' + params.plan);
+  return <ResumeCheckout plan={params.plan} />;
 }

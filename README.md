@@ -160,3 +160,7 @@ After adding environment variables in Vercel, push the code to GitHub. Vercel wi
 ### Pending checkout recovery
 
 Pricing buttons use `/checkout/start?plan=analyse` and `/checkout/start?plan=discover`. This stores the intended plan in a short-lived HTTP-only cookie before Clerk sign-up. If Clerk redirects a new user into the app after sign-up, the app resumes the pending checkout and sends them to Stripe.
+
+### Checkout flow
+
+Pricing cards call `POST /api/stripe/checkout` with `{ "plan": "analyse" }` or `{ "plan": "discover" }`. The API route creates the Stripe Checkout Session server-side and returns `session.url`, then the browser redirects to Stripe. Signed-out users are sent through Clerk sign-up and resume checkout at `/checkout/analyse` or `/checkout/discover`.

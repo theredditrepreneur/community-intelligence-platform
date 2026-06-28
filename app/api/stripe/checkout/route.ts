@@ -5,24 +5,37 @@ import { getAppUrl, getStripe } from '@/lib/stripe';
 import { getPriceIdForPlan } from '@/lib/stripe-subscriptions';
 import { pendingCheckoutCookie, type SubscriptionMetadata } from '@/lib/subscription';
 
-function isPaidPlan(value: string | null): value is PaidPlan {
+function isPaidPlan(value: unknown): value is PaidPlan {
   return value === 'analyse' || value === 'discover';
 }
 
-export async function GET(request: Request) {
+function pendingCheckoutResponse(requestUrl: URL, plan: PaidPlan) {
+  const response = NextResponse.json({ url: '/sign-up?redirect_url=' + encodeURIComponent('/checkout/' + plan) }, { status: 401 });
+
+  response.cookies.set(pendingCheckoutCookie, plan, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: requestUrl.protocol === 'https:',
+    path: '/',
+    maxAge: 60 * 30,
+  });
+
+  return response;
+}
+
+export async function POST(request: Request) {
   const requestUrl = new URL(request.url);
-  const plan = requestUrl.searchParams.get('plan');
+  const body = (await request.json().catch(() => null)) as { plan?: unknown } | null;
+  const plan = body?.plan;
 
   if (!isPaidPlan(plan)) {
-    return NextResponse.redirect(new URL('/pricing', requestUrl.origin));
+    return NextResponse.json({ error: 'Invalid checkout plan.' }, { status: 400 });
   }
 
   const { userId } = await auth();
 
   if (!userId) {
-    const signInUrl = new URL('/sign-in', requestUrl.origin);
-    signInUrl.searchParams.set('redirect_url', '/checkout/' + plan);
-    return NextResponse.redirect(signInUrl);
+    return pendingCheckoutResponse(requestUrl, plan);
   }
 
   const user = await currentUser();
@@ -59,10 +72,14 @@ export async function GET(request: Request) {
   });
 
   if (!session.url) {
-    throw new Error('Unable to create ' + paidPlans[plan].label + ' checkout session.');
+    return NextResponse.json({ error: 'Unable to create ' + paidPlans[plan].label + ' checkout session.' }, { status: 500 });
   }
 
-  const response = NextResponse.redirect(session.url, { status: 303 });
+  const response = NextResponse.json({ url: session.url });
   response.cookies.delete(pendingCheckoutCookie);
   return response;
+}
+
+export async function GET() {
+  return NextResponse.json({ error: 'Use POST /api/stripe/checkout.' }, { status: 405 });
 }
