@@ -22,6 +22,17 @@ export type DiscoverInput = {
   timeframe: string;
 };
 
+export type BriefInput = {
+  briefType: string;
+  topic: string;
+  audience: string;
+  objective: string;
+  sourceContext: string;
+  keyInsights: string;
+  tone: string;
+  desiredOutputLength: string;
+};
+
 export type AnalyseBrief = {
   executiveSummary: string;
   communityIntelligenceScore: number;
@@ -51,6 +62,17 @@ export type DiscoverBrief = {
   priorityActions: string[];
   recommendedSearches: string[];
   confidenceScore: number;
+};
+
+export type ActionBrief = {
+  briefTitle: string;
+  executiveSummary: string;
+  keyFindings: string[];
+  strategicContext: string;
+  recommendedActions: string[];
+  suggestedContentAssets: string[];
+  risksOrWatchouts: string[];
+  nextSteps: string[];
 };
 
 function getOpenAIClient() {
@@ -158,6 +180,37 @@ contentRoadmap array of strings,
 priorityActions array of strings,
 recommendedSearches array of strings,
 confidenceScore number from 0 to 100.
+
+Input:
+${JSON.stringify(input, null, 2)}`
+  );
+}
+
+export async function generateActionBrief(input: BriefInput) {
+  return generateJson<ActionBrief>(
+    [
+      'You are a senior Community Intelligence strategist for The Redditrepreneur.',
+      'Create action-ready documents for marketing, product, leadership and content teams.',
+      'Use The Redditrepreneur Framework: turn observed community signals into commercial meaning and clear next actions.',
+      'Do not write filler. Every section must be specific to the topic, audience, objective and supplied context.',
+      'Return only valid JSON. Do not wrap the JSON in markdown.',
+    ].join('\n'),
+    `Create a ${input.briefType} from the supplied context.
+
+Return JSON with exactly these keys:
+briefTitle string,
+executiveSummary string,
+keyFindings array of strings,
+strategicContext string,
+recommendedActions array of strings,
+suggestedContentAssets array of strings,
+risksOrWatchouts array of strings,
+nextSteps array of strings.
+
+Each recommendation should make clear:
+- what was found,
+- why it matters commercially,
+- what the business should do next.
 
 Input:
 ${JSON.stringify(input, null, 2)}`

@@ -80,6 +80,11 @@ export default async function DashboardPage() {
             )}
           </article>
           <article className="dashboard-card quick-action-card">
+            <h3>Briefs</h3>
+            <p>Turn Community Intelligence into action-ready documents.</p>
+            <Button href="/app/briefs" variant="secondary">Open Briefs</Button>
+          </article>
+          <article className="dashboard-card quick-action-card">
             <div className="card-title-row">
               <h3>Alerts</h3>
               <Badge>Coming Soon</Badge>
