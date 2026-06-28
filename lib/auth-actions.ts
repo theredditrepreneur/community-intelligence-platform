@@ -2,11 +2,19 @@
 
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
-import { isPaidPlan, pendingCheckoutCookie } from '@/lib/subscription';
+import { getCurrentSubscription, getSubscriptionAppPath, isPaidPlan, pendingCheckoutCookie } from '@/lib/subscription';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 function authRedirect(path: string, message: string) {
   redirect(path + '?error=' + encodeURIComponent(message));
+}
+
+function getAuthErrorMessage(message: string) {
+  if (message.toLowerCase().includes('email rate limit exceeded')) {
+    return 'Supabase has temporarily rate-limited confirmation emails. Please wait a few minutes, then try again.';
+  }
+
+  return message;
 }
 
 function getAppUrl() {
@@ -21,7 +29,7 @@ export async function signIn(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    authRedirect('/sign-in', error.message);
+    authRedirect('/sign-in', getAuthErrorMessage(error.message));
   }
 
   const pendingPlan = cookies().get(pendingCheckoutCookie)?.value;
@@ -30,7 +38,8 @@ export async function signIn(formData: FormData) {
     redirect('/checkout/resume');
   }
 
-  redirect('/app/analyse');
+  const subscription = await getCurrentSubscription();
+  redirect(getSubscriptionAppPath(subscription));
 }
 
 export async function signUp(formData: FormData) {
@@ -49,7 +58,7 @@ export async function signUp(formData: FormData) {
   });
 
   if (error) {
-    authRedirect('/sign-up', error.message);
+    authRedirect('/sign-up', getAuthErrorMessage(error.message));
   }
 
   if (!data.session) {
@@ -61,7 +70,8 @@ export async function signUp(formData: FormData) {
     redirect('/checkout/resume');
   }
 
-  redirect('/app/analyse');
+  const subscription = await getCurrentSubscription();
+  redirect(getSubscriptionAppPath(subscription));
 }
 
 export async function signOut() {

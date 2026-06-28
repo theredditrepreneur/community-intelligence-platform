@@ -50,6 +50,17 @@ export async function getSubscriptionLabel(): Promise<SubscriptionLabel> {
   return 'Free';
 }
 
+export function getSubscriptionAppPath(subscription: SubscriptionMetadata) {
+  if (!activeSubscriptionStatuses.includes(subscription.subscriptionStatus || 'none')) {
+    return '/pricing';
+  }
+
+  if (subscription.subscriptionPlan === 'discover') return '/app/discover';
+  if (subscription.subscriptionPlan === 'analyse') return '/app/analyse';
+
+  return '/pricing';
+}
+
 export async function requirePlan(requiredPlan: PaidPlan) {
   const subscription = await getCurrentSubscription();
 

@@ -4,10 +4,13 @@ import { pricingPlans, pricingValueStatements } from '@/lib/config/pricing';
 import { platform } from '@/lib/config/platform';
 import { getCurrentUser } from '@/lib/supabase/server';
 import { signOut } from '@/lib/auth-actions';
+import { getCurrentSubscription, getSubscriptionAppPath } from '@/lib/subscription';
 import { PricingCard } from './PricingCard';
 
 export async function PricingPage() {
   const user = await getCurrentUser();
+  const subscription = user ? await getCurrentSubscription() : {};
+  const appPath = getSubscriptionAppPath(subscription);
 
   return (
     <main className="public-main">
@@ -22,7 +25,7 @@ export async function PricingPage() {
         <div className="public-auth">
           {user ? (
             <>
-              <Button href="/app/analyse" variant="secondary">Open app</Button>
+              <Button href={appPath} variant="secondary">Open app</Button>
               <form action={signOut}>
                 <button className="auth-link" type="submit">Sign out</button>
               </form>
