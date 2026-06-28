@@ -1,54 +1,38 @@
-import { currentUser } from '@clerk/nextjs/server';
-import { cookies } from 'next/headers';
+import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
-import { activeSubscriptionStatuses, type PaidPlan, type SubscriptionStatus } from '@/lib/config/subscriptions';
+import { clerkBillingPlans, type ClerkBillingPlan, type SubscriptionLabel } from '@/lib/config/clerk-billing';
 
-export const pendingCheckoutCookie = 'redditrepreneur_pending_checkout_plan';
-
-export type SubscriptionMetadata = {
-  stripeCustomerId?: string;
-  stripeSubscriptionId?: string;
-  stripePriceId?: string;
-  subscriptionPlan?: PaidPlan;
-  subscriptionStatus?: SubscriptionStatus;
-  subscriptionCurrentPeriodEnd?: number;
-};
-
-export function isPaidPlan(value?: string): value is PaidPlan {
-  return value === 'analyse' || value === 'discover';
+async function getPlanChecker() {
+  const { has } = await auth();
+  return has;
 }
 
-export function hasPlanAccess(subscription: SubscriptionMetadata, requiredPlan: PaidPlan) {
-  const status = subscription.subscriptionStatus || 'none';
+export async function hasClerkPlan(plan: ClerkBillingPlan) {
+  const has = await getPlanChecker();
+  const clerkPlan = clerkBillingPlans[plan];
 
-  if (!activeSubscriptionStatuses.includes(status)) {
-    return false;
-  }
+  return has({ plan: clerkPlan.id }) || has({ plan: clerkPlan.slug });
+}
+
+export async function hasPlanAccess(requiredPlan: ClerkBillingPlan) {
+  const hasAnalyse = await hasClerkPlan('analyse');
+  const hasDiscover = await hasClerkPlan('discover');
 
   if (requiredPlan === 'analyse') {
-    return subscription.subscriptionPlan === 'analyse' || subscription.subscriptionPlan === 'discover';
+    return hasAnalyse || hasDiscover;
   }
 
-  return subscription.subscriptionPlan === 'discover';
+  return hasDiscover;
 }
 
-export async function getCurrentSubscription() {
-  const user = await currentUser();
-  return (user?.privateMetadata || {}) as SubscriptionMetadata;
+export async function getSubscriptionLabel(): Promise<SubscriptionLabel> {
+  if (await hasClerkPlan('discover')) return 'Discover';
+  if (await hasClerkPlan('analyse')) return 'Analyse';
+  return 'Free';
 }
 
-export async function requirePlan(requiredPlan: PaidPlan) {
-  const pendingCheckoutPlan = cookies().get(pendingCheckoutCookie)?.value;
-
-  if (isPaidPlan(pendingCheckoutPlan)) {
-    redirect('/checkout/' + pendingCheckoutPlan);
-  }
-
-  const subscription = await getCurrentSubscription();
-
-  if (!hasPlanAccess(subscription, requiredPlan)) {
+export async function requirePlan(requiredPlan: ClerkBillingPlan) {
+  if (!(await hasPlanAccess(requiredPlan))) {
     redirect('/pricing?upgrade=' + requiredPlan);
   }
-
-  return subscription;
 }

@@ -1,6 +1,6 @@
 export const pricingPlans = [
   {
-    id: 'analyse',
+    id: 'analyse' as const,
     headline: 'Analyse',
     price: '£29',
     cadence: '/month',
@@ -17,11 +17,11 @@ export const pricingPlans = [
       'Generate Community Intelligence Brief',
     ],
     cta: 'Launch Analyse',
-    href: '/checkout/start?plan=analyse',
+    href: '#clerk-billing',
     status: 'active',
   },
   {
-    id: 'discover',
+    id: 'discover' as const,
     headline: 'Discover',
     price: '£99',
     cadence: '/month',
@@ -40,11 +40,11 @@ export const pricingPlans = [
       'Executive Community Intelligence Brief',
     ],
     cta: 'Launch Discover',
-    href: '/checkout/start?plan=discover',
+    href: '#clerk-billing',
     status: 'active',
   },
   {
-    id: 'alerts',
+    id: 'alerts' as const,
     headline: 'Alerts',
     price: 'Waitlist',
     badge: 'Coming Soon',

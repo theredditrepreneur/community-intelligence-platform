@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs';
+import { PricingTable, SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs';
 import { Button } from '@/components/ui/Button';
 import { pricingPlans, pricingValueStatements } from '@/lib/config/pricing';
 import { platform } from '@/lib/config/platform';
@@ -41,6 +41,14 @@ export function PricingPage() {
         <div className="pricing-grid">
           {pricingPlans.map((plan) => <PricingCard key={plan.id} plan={plan} />)}
         </div>
+        <section className="clerk-billing-panel" id="clerk-billing" aria-label="Subscribe with Clerk Billing">
+          <div>
+            <div className="eyebrow">Secure Checkout</div>
+            <h2>Subscribe with Clerk Billing</h2>
+            <p>Choose Analyse or Discover below. Clerk handles account creation, payment and subscription access in one flow.</p>
+          </div>
+          <PricingTable />
+        </section>
       </section>
     </main>
   );
