@@ -152,6 +152,8 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
 .brief-output-head h2 { margin: 0; font-size: clamp(30px, 4vw, 44px); line-height: 1.08; }
 .brief-output-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: flex-end; }
 .brief-output-actions .btn { min-width: 150px; }
+.brief-upgrade-card { border-top: 4px solid var(--orange); display: grid; gap: 16px; }
+.brief-upgrade-card .btn { width: fit-content; }
 .pricing-section { max-width: 1180px; margin: 0 auto; display: grid; gap: 26px; }
 .pricing-header { max-width: 880px; }
 .pricing-header h1, .pricing-header h2 { margin: 0 0 16px; font-size: clamp(38px, 4.7vw, 58px); line-height: 1.12; }

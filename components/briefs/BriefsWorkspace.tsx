@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import type { ActionBrief, BriefInput } from '@/lib/ai/community-intelligence';
+import type { SubscriptionLabel } from '@/lib/subscription';
 
 const briefTypes = ['Executive Brief', 'Marketing Brief', 'Content Brief', 'Product Brief', 'Community Brief', 'Research Brief', 'Reddit Brief'];
 const tones = ['Executive and concise', 'Strategic and commercially focused', 'Clear and practical', 'Bold and persuasive', 'Analytical and evidence-led'];
@@ -37,6 +38,10 @@ function FieldList({ items }: { items: string[] }) {
   return <ul>{items.map((item) => <li key={item}>{item}</li>)}</ul>;
 }
 
+type BriefsWorkspaceProps = {
+  subscriptionLabel: SubscriptionLabel;
+};
+
 function formatBrief(brief: ActionBrief) {
   return [
     brief.briefTitle,
@@ -64,7 +69,39 @@ function formatBrief(brief: ActionBrief) {
   ].join('\n');
 }
 
-export function BriefsWorkspace() {
+function UpgradeCta({ subscriptionLabel }: BriefsWorkspaceProps) {
+  if (subscriptionLabel === 'Discover') {
+    return (
+      <article className="finding brief-upgrade-card">
+        <h3>You&apos;re on the highest active tier.</h3>
+        <p>Alerts will become the next upgrade path when continuous Community Intelligence monitoring is ready.</p>
+      </article>
+    );
+  }
+
+  if (subscriptionLabel === 'Analyse') {
+    return (
+      <article className="finding brief-upgrade-card">
+        <h3>Ready to find the conversations behind this brief?</h3>
+        <p>Upgrade to Discover to move from bring-your-own conversations to supported source discovery when live retrieval is connected.</p>
+        <Button href="/pricing?upgrade=discover" variant="orange">Upgrade to Discover</Button>
+      </article>
+    );
+  }
+
+  return (
+    <article className="finding brief-upgrade-card">
+      <h3>Turn this free brief into deeper Community Intelligence.</h3>
+      <p>Choose Analyse to bring your own conversations for AI-powered intelligence, or Discover for the supported source discovery tier.</p>
+      <div className="button-row">
+        <Button href="/pricing?upgrade=analyse" variant="orange">Choose Analyse</Button>
+        <Button href="/pricing?upgrade=discover" variant="secondary">Compare Discover</Button>
+      </div>
+    </article>
+  );
+}
+
+export function BriefsWorkspace({ subscriptionLabel }: BriefsWorkspaceProps) {
   const [form, setForm] = useState<BriefInput>(initialForm);
   const [brief, setBrief] = useState<ActionBrief | null>(null);
   const [loading, setLoading] = useState(false);
@@ -195,6 +232,7 @@ export function BriefsWorkspace() {
           <article className="finding"><h3>Suggested Content / Assets</h3><FieldList items={brief.suggestedContentAssets} /></article>
           <article className="finding"><h3>Risks or Watchouts</h3><FieldList items={brief.risksOrWatchouts} /></article>
           <article className="finding"><h3>Next Steps</h3><FieldList items={brief.nextSteps} /></article>
+          <UpgradeCta subscriptionLabel={subscriptionLabel} />
         </section>
       ) : null}
     </>

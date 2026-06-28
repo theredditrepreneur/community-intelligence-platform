@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { generateActionBrief, type BriefInput } from '@/lib/ai/community-intelligence';
-import { requirePlan } from '@/lib/subscription';
+import { getCurrentUser } from '@/lib/supabase/server';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -10,7 +10,11 @@ function isValidPayload(payload: Partial<BriefInput>) {
 }
 
 export async function POST(request: Request) {
-  await requirePlan('analyse');
+  const user = await getCurrentUser();
+
+  if (!user) {
+    return NextResponse.json({ error: 'Please sign in to generate a brief.' }, { status: 401 });
+  }
 
   const payload = (await request.json().catch(() => ({}))) as Partial<BriefInput>;
 
