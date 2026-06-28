@@ -1,38 +1,56 @@
-import { auth } from '@clerk/nextjs/server';
+import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
-import { clerkBillingPlans, type ClerkBillingPlan, type SubscriptionLabel } from '@/lib/config/clerk-billing';
+import { activeSubscriptionStatuses, type PaidPlan, type SubscriptionStatus } from '@/lib/config/subscriptions';
 
-async function getPlanChecker() {
-  const { has } = await auth();
-  return has;
-}
+export type SubscriptionLabel = 'Free' | 'Analyse' | 'Discover';
 
-export async function hasClerkPlan(plan: ClerkBillingPlan) {
-  const has = await getPlanChecker();
-  const clerkPlan = clerkBillingPlans[plan];
+export type SubscriptionMetadata = {
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
+  stripePriceId?: string;
+  subscriptionPlan?: PaidPlan;
+  subscriptionStatus?: SubscriptionStatus;
+  subscriptionCurrentPeriodEnd?: number;
+};
 
-  return has({ plan: clerkPlan.id }) || has({ plan: clerkPlan.slug });
-}
+export function hasPlanAccess(subscription: SubscriptionMetadata, requiredPlan: PaidPlan) {
+  const status = subscription.subscriptionStatus || 'none';
 
-export async function hasPlanAccess(requiredPlan: ClerkBillingPlan) {
-  const hasAnalyse = await hasClerkPlan('analyse');
-  const hasDiscover = await hasClerkPlan('discover');
-
-  if (requiredPlan === 'analyse') {
-    return hasAnalyse || hasDiscover;
+  if (!activeSubscriptionStatuses.includes(status)) {
+    return false;
   }
 
-  return hasDiscover;
+  if (requiredPlan === 'analyse') {
+    return subscription.subscriptionPlan === 'analyse' || subscription.subscriptionPlan === 'discover';
+  }
+
+  return subscription.subscriptionPlan === 'discover';
+}
+
+export async function getCurrentSubscription() {
+  const user = await currentUser();
+  return (user?.privateMetadata || {}) as SubscriptionMetadata;
 }
 
 export async function getSubscriptionLabel(): Promise<SubscriptionLabel> {
-  if (await hasClerkPlan('discover')) return 'Discover';
-  if (await hasClerkPlan('analyse')) return 'Analyse';
+  const subscription = await getCurrentSubscription();
+
+  if (!activeSubscriptionStatuses.includes(subscription.subscriptionStatus || 'none')) {
+    return 'Free';
+  }
+
+  if (subscription.subscriptionPlan === 'discover') return 'Discover';
+  if (subscription.subscriptionPlan === 'analyse') return 'Analyse';
+
   return 'Free';
 }
 
-export async function requirePlan(requiredPlan: ClerkBillingPlan) {
-  if (!(await hasPlanAccess(requiredPlan))) {
+export async function requirePlan(requiredPlan: PaidPlan) {
+  const subscription = await getCurrentSubscription();
+
+  if (!hasPlanAccess(subscription, requiredPlan)) {
     redirect('/pricing?upgrade=' + requiredPlan);
   }
+
+  return subscription;
 }

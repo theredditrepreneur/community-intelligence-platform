@@ -77,16 +77,14 @@ If Vercel shows `404: NOT_FOUND`, check these settings:
 
 If you deploy only the static `outputs` folder instead of the Next.js app, use `outputs/index.html` as the landing file. The Next.js routes will not exist in that static-only deployment.
 
-## Clerk Billing
+## Stripe Subscriptions
 
-Analyse and Discover now use Clerk Billing instead of custom Stripe Checkout routes.
+Analyse and Discover use Stripe Checkout subscriptions. Clerk is used for authentication only.
 
-Plan IDs:
+Stripe Price IDs:
 
-- Analyse: `cplan_3Fk4IrOj7iuX7UmUb7xq4G4Y4hd`
-- Discover: `cplan_3Fk4cNt8B4mcoYPxl0BiWMY08Al`
-
-The public pricing page renders the existing launch positioning cards and a Clerk `<PricingTable />` section. Clerk handles signup, checkout, subscription state and account billing.
+- Analyse: `price_1Tn7IjKEEIC0xE464vV7wRrN`
+- Discover: `price_1Tn7JNKEEIC0xE46YYhQob2c`
 
 ### Vercel environment variables
 
@@ -99,16 +97,36 @@ NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
 NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
 NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/app/analyse
 NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/app/analyse
+STRIPE_SECRET_KEY
+STRIPE_WEBHOOK_SECRET
+NEXT_PUBLIC_STRIPE_ANALYSE_PRICE_ID=price_1Tn7IjKEEIC0xE464vV7wRrN
+NEXT_PUBLIC_STRIPE_DISCOVER_PRICE_ID=price_1Tn7JNKEEIC0xE46YYhQob2c
+NEXT_PUBLIC_APP_URL=https://your-production-domain
 ```
 
-No Stripe secret keys are required in the app when using Clerk Billing. Stripe is connected inside the Clerk Dashboard.
+### Webhook
 
-### Access control
+Create a Stripe webhook endpoint at:
 
-The app uses Clerk Billing plan checks with `auth().has({ plan })`.
+```text
+https://your-production-domain/api/stripe/webhook
+```
+
+Listen for:
+
+```text
+checkout.session.completed
+customer.subscription.created
+customer.subscription.updated
+customer.subscription.deleted
+```
+
+Copy the webhook signing secret into `STRIPE_WEBHOOK_SECRET`.
+
+### Checkout flow
+
+Pricing cards call `POST /api/stripe/checkout` with `analyse` or `discover`. The API creates the Stripe Checkout Session server-side and returns `session.url`.
 
 - Analyse subscribers can access `/app/analyse`.
 - Discover subscribers can access `/app/analyse` and `/app/discover`.
 - Alerts remains visible but unavailable.
-
-If access does not unlock, confirm the Clerk plan slug is `analyse` for Analyse and `discover` for Discover, or update `lib/config/clerk-billing.ts` with the correct slugs.

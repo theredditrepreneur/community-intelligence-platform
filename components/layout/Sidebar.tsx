@@ -29,7 +29,7 @@ function AccountMenu({ subscriptionLabel }: SidebarProps) {
       <div className="account-links">
         <Link href="/app/profile">Profile</Link>
         <Link href="/app/billing">Billing</Link>
-        <Link href="/app/profile/billing">Manage Billing</Link>
+        <a href="/api/stripe/portal">Manage Billing</a>
         <SignOutButton redirectUrl="/pricing">
           <button type="button">Sign out</button>
         </SignOutButton>

@@ -23,9 +23,7 @@ export function getPriceIdForPlan(plan: PaidPlan) {
 }
 
 function cleanSubscriptionMetadata(subscription: SubscriptionMetadata) {
-  return Object.fromEntries(
-    Object.entries(subscription).filter(([, value]) => value !== undefined),
-  );
+  return Object.fromEntries(Object.entries(subscription).filter(([, value]) => value !== undefined));
 }
 
 export async function updateClerkSubscription(userId: string, subscription: SubscriptionMetadata) {
@@ -39,9 +37,7 @@ export async function updateClerkSubscription(userId: string, subscription: Subs
 export async function updateClerkFromStripeSubscription(subscription: Stripe.Subscription) {
   const userId = subscription.metadata.clerkUserId;
 
-  if (!userId) {
-    return;
-  }
+  if (!userId) return;
 
   const firstItem = subscription.items.data[0];
   const priceId = firstItem?.price.id;

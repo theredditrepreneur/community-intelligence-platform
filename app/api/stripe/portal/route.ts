@@ -8,9 +8,7 @@ export async function GET(request: Request) {
   const { userId } = await auth();
 
   if (!userId) {
-    const signInUrl = new URL('/sign-in', requestUrl.origin);
-    signInUrl.searchParams.set('redirect_url', '/app/billing');
-    return NextResponse.redirect(signInUrl);
+    return NextResponse.redirect(new URL('/sign-in', requestUrl.origin));
   }
 
   const user = await currentUser();

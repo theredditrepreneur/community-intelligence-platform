@@ -106,9 +106,6 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
 .value-row { display: flex; flex-wrap: wrap; gap: 12px; }
 .value-pill { display: inline-flex; align-items: center; min-height: 42px; padding: 0 15px; border-radius: 999px; background: #fff; border: 1px solid var(--soft); box-shadow: 0 8px 24px rgba(7, 31, 61, 0.04); color: var(--ink); font-size: 15px; font-weight: 780; }
 .pricing-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; align-items: stretch; }
-.clerk-billing-panel { margin-top: 34px; display: grid; gap: 22px; background: #fff; border: 1px solid var(--soft); border-radius: 12px; box-shadow: var(--shadow); padding: clamp(30px, 4vw, 48px); }
-.clerk-billing-panel h2 { margin: 0 0 10px; font-size: clamp(30px, 3.6vw, 44px); line-height: 1.08; }
-.clerk-billing-panel p { margin: 0; color: var(--ink); font-size: 17px; line-height: 1.55; }
 .price-card { position: relative; padding: 32px; display: grid; gap: 18px; align-content: start; min-width: 0; overflow: hidden; }
 .price-card.recommended { border-color: rgba(255, 75, 11, 0.32); box-shadow: 0 28px 90px rgba(255, 75, 11, 0.11); }
 .price-card.soon { background: linear-gradient(145deg, #fff, #f7fbff); border-color: rgba(32, 164, 100, 0.22); }

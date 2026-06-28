@@ -1,5 +1,4 @@
 export type PaidPlan = 'analyse' | 'discover';
-export type SubscriptionPlan = PaidPlan | 'alerts';
 export type SubscriptionStatus =
   | 'active'
   | 'trialing'

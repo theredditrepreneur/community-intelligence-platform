@@ -3,3 +3,6 @@ node_modules
 .env*
 out
 .vercel
+
+# clerk configuration (can include secrets)
+/.clerk/
