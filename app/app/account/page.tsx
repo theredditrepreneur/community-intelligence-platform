@@ -1,10 +1,11 @@
-import { currentUser } from '@clerk/nextjs/server';
 import { Button } from '@/components/ui/Button';
+import { getCurrentUser } from '@/lib/supabase/server';
 
 export default async function AccountPage() {
-  const user = await currentUser();
-  const name = user?.fullName || user?.primaryEmailAddress?.emailAddress || 'Your account';
-  const email = user?.primaryEmailAddress?.emailAddress || 'No primary email added yet';
+  const user = await getCurrentUser();
+  const fullName = typeof user?.user_metadata?.full_name === 'string' ? user.user_metadata.full_name : undefined;
+  const name = fullName || user?.email || 'Your account';
+  const email = user?.email || 'No primary email added yet';
 
   return (
     <>

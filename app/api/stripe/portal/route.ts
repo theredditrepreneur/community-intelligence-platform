@@ -1,18 +1,17 @@
-import { auth, currentUser } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { getAppUrl, getStripe } from '@/lib/stripe';
-import type { SubscriptionMetadata } from '@/lib/subscription';
+import { getCurrentSubscription } from '@/lib/subscription';
+import { getCurrentUser } from '@/lib/supabase/server';
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
-  const { userId } = await auth();
+  const user = await getCurrentUser();
 
-  if (!userId) {
+  if (!user) {
     return NextResponse.redirect(new URL('/sign-in', requestUrl.origin));
   }
 
-  const user = await currentUser();
-  const subscription = (user?.privateMetadata || {}) as SubscriptionMetadata;
+  const subscription = await getCurrentSubscription();
 
   if (!subscription.stripeCustomerId) {
     return NextResponse.redirect(new URL('/pricing', requestUrl.origin));

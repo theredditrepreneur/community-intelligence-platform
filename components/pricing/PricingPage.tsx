@@ -1,11 +1,14 @@
 import Image from 'next/image';
-import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs';
 import { Button } from '@/components/ui/Button';
 import { pricingPlans, pricingValueStatements } from '@/lib/config/pricing';
 import { platform } from '@/lib/config/platform';
+import { getCurrentUser } from '@/lib/supabase/server';
+import { signOut } from '@/lib/auth-actions';
 import { PricingCard } from './PricingCard';
 
-export function PricingPage() {
+export async function PricingPage() {
+  const user = await getCurrentUser();
+
   return (
     <main className="public-main">
       <section className="pricing-section" id="pricing">
@@ -17,18 +20,19 @@ export function PricingPage() {
           </div>
         </div>
         <div className="public-auth">
-          <SignedOut>
-            <SignInButton mode="modal">
-              <button className="auth-link" type="button">Sign in</button>
-            </SignInButton>
-            <SignUpButton mode="modal">
-              <button className="auth-cta" type="button">Create account</button>
-            </SignUpButton>
-          </SignedOut>
-          <SignedIn>
-            <Button href="/app/analyse" variant="secondary">Open app</Button>
-            <UserButton afterSignOutUrl="/pricing" />
-          </SignedIn>
+          {user ? (
+            <>
+              <Button href="/app/analyse" variant="secondary">Open app</Button>
+              <form action={signOut}>
+                <button className="auth-link" type="submit">Sign out</button>
+              </form>
+            </>
+          ) : (
+            <>
+              <Button href="/sign-in" variant="secondary">Sign in</Button>
+              <Button href="/sign-up">Create account</Button>
+            </>
+          )}
         </div>
         <div className="pricing-header">
           <div className="eyebrow">Plans</div>

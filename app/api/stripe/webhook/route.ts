@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type Stripe from 'stripe';
 import { getStripe } from '@/lib/stripe';
-import { planFromPriceId, updateClerkFromStripeSubscription, updateClerkSubscription } from '@/lib/stripe-subscriptions';
+import { planFromPriceId, updateSupabaseFromStripeSubscription, updateSupabaseSubscription } from '@/lib/stripe-subscriptions';
 import type { SubscriptionStatus } from '@/lib/config/subscriptions';
 
 export const runtime = 'nodejs';
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
   switch (event.type) {
     case 'checkout.session.completed': {
       const session = event.data.object as Stripe.Checkout.Session;
-      const userId = session.metadata?.clerkUserId || session.client_reference_id;
+      const userId = session.metadata?.supabaseUserId || session.client_reference_id;
 
       if (userId && session.subscription) {
         const subscriptionId = typeof session.subscription === 'string' ? session.subscription : session.subscription.id;
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
         const customerId = typeof session.customer === 'string' ? session.customer : session.customer?.id;
         const currentPeriodEnd = (subscription as Stripe.Subscription & { current_period_end?: number }).current_period_end;
 
-        await updateClerkSubscription(userId, {
+        await updateSupabaseSubscription(userId, {
           stripeCustomerId: customerId,
           stripeSubscriptionId: subscription.id,
           stripePriceId: priceId,
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     case 'customer.subscription.updated':
     case 'customer.subscription.deleted': {
       const subscription = event.data.object as Stripe.Subscription;
-      await updateClerkFromStripeSubscription(subscription);
+      await updateSupabaseFromStripeSubscription(subscription);
       break;
     }
     default:

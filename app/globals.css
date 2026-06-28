@@ -52,6 +52,12 @@ button, input, textarea, select { font: inherit; }
 .main { padding: 62px clamp(28px, 4vw, 68px) 104px; }
 .public-main { min-height: 100vh; padding: 64px clamp(24px, 5vw, 88px); }
 .auth-page { min-height: 100vh; display: grid; place-items: center; padding: 40px 20px; background: var(--bg); }
+.auth-card { width: min(100%, 460px); display: grid; gap: 22px; padding: 34px; background: #fff; border: 1px solid var(--soft); border-radius: 12px; box-shadow: var(--shadow); }
+.auth-card h1 { margin: 0 0 10px; font-size: 38px; line-height: 1.08; }
+.auth-card p { margin: 0; color: var(--ink); font-size: 16px; line-height: 1.5; }
+.auth-card .btn { width: 100%; }
+.auth-link-text { color: var(--ink); font-size: 14px; font-weight: 850; text-align: center; }
+.profile-form { display: grid; gap: 24px; }
 .checkout-page { display: grid; place-items: center; }
 .checkout-panel { max-width: 760px; }
 .checkout-panel h1 { margin: 0 0 18px; font-size: clamp(34px, 4vw, 48px); line-height: 1.08; }

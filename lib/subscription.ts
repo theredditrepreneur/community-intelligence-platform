@@ -1,6 +1,6 @@
-import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { activeSubscriptionStatuses, type PaidPlan, type SubscriptionStatus } from '@/lib/config/subscriptions';
+import { getCurrentProfileSubscription } from '@/lib/profiles';
 
 export const pendingCheckoutCookie = 'redditrepreneur_pending_checkout_plan';
 
@@ -34,8 +34,7 @@ export function hasPlanAccess(subscription: SubscriptionMetadata, requiredPlan: 
 }
 
 export async function getCurrentSubscription() {
-  const user = await currentUser();
-  return (user?.privateMetadata || {}) as SubscriptionMetadata;
+  return getCurrentProfileSubscription();
 }
 
 export async function getSubscriptionLabel(): Promise<SubscriptionLabel> {

@@ -35,34 +35,22 @@ npm run build
 5. Install command: `npm install`.
 6. Output directory: leave blank for Next.js.
 
-## Clerk Authentication
+## Supabase Authentication
 
-The public pricing page is available at `/pricing`. The product workspaces under `/app` are protected by Clerk.
+The public pricing page is available at `/pricing`. The product workspaces under `/app` are protected by Supabase Auth.
 
 Add these environment variables locally and in Vercel:
 
 ```bash
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
-CLERK_SECRET_KEY=
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/app/analyse
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/app/analyse
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-This project is intended to link to Clerk application `app_3Fjk6KeOj8K8GCm2em3Ket5aza4`.
+Apply `supabase/schema.sql` in Supabase SQL Editor to create the `profiles` table used by Stripe subscription access checks.
 
-Recommended local Clerk CLI setup:
-
-```bash
-command -v clerk && clerk --version
-clerk update --yes
-clerk auth login
-clerk init --app app_3Fjk6KeOj8K8GCm2em3Ket5aza4
-clerk doctor
-```
-
-Stripe subscriptions are now wired for Analyse and Discover. Alerts remains waitlist only. No database or real monitoring has been added yet.
+Stripe subscriptions are wired for Analyse and Discover. Alerts remains waitlist only. No real monitoring has been added yet.
 
 ## Fixing Vercel 404
 
@@ -79,7 +67,7 @@ If you deploy only the static `outputs` folder instead of the Next.js app, use `
 
 ## Stripe Subscriptions
 
-Analyse and Discover use Stripe Checkout subscriptions. Clerk is used for authentication only.
+Analyse and Discover use Stripe Checkout subscriptions. Supabase Auth is used for authentication, and Stripe subscription state is stored in the Supabase `profiles` table.
 
 Stripe Price IDs:
 
@@ -91,12 +79,9 @@ Stripe Price IDs:
 Add these in Vercel Project Settings under Environment Variables:
 
 ```text
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-CLERK_SECRET_KEY
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/app/analyse
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/app/analyse
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY
 STRIPE_SECRET_KEY
 STRIPE_WEBHOOK_SECRET
 NEXT_PUBLIC_STRIPE_ANALYSE_PRICE_ID=price_1Tn7IjKEEIC0xE464vV7wRrN

@@ -1,55 +1,64 @@
-import { auth, currentUser } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import { paidPlans, type PaidPlan } from '@/lib/config/subscriptions';
 import { getAppUrl, getStripe } from '@/lib/stripe';
 import { getPriceIdForPlan } from '@/lib/stripe-subscriptions';
-import type { SubscriptionMetadata } from '@/lib/subscription';
+import { pendingCheckoutCookie } from '@/lib/subscription';
+import { getCurrentUser } from '@/lib/supabase/server';
 
 function isPaidPlan(value: unknown): value is PaidPlan {
   return value === 'analyse' || value === 'discover';
 }
 
 export async function POST(request: Request) {
-  const body = (await request.json().catch(() => null)) as { plan?: unknown } | null;
-  const plan = body?.plan;
+  const body = (await request.json().catch(() => ({}))) as { plan?: unknown };
+  const plan = body.plan;
+  const requestUrl = new URL(request.url);
 
   if (!isPaidPlan(plan)) {
-    return NextResponse.json({ error: 'Invalid checkout plan.' }, { status: 400 });
+    return NextResponse.json({ error: 'Choose a valid paid plan.' }, { status: 400 });
   }
 
-  const { userId } = await auth();
+  const user = await getCurrentUser();
 
-  if (!userId) {
-    return NextResponse.json({ url: '/sign-up?redirect_url=' + encodeURIComponent('/pricing') }, { status: 401 });
+  if (!user) {
+    cookies().set(pendingCheckoutCookie, plan, {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 60 * 30,
+    });
+
+    return NextResponse.json({ error: 'Please sign in before checkout.' }, { status: 401 });
   }
 
-  const user = await currentUser();
-  const subscription = (user?.privateMetadata || {}) as SubscriptionMetadata;
-  const stripe = getStripe();
+  cookies().delete(pendingCheckoutCookie);
+
   const appUrl = getAppUrl(request.url);
-  const priceId = getPriceIdForPlan(plan);
-  const customerEmail = user?.primaryEmailAddress?.emailAddress;
-
-  const session = await stripe.checkout.sessions.create({
+  const stripe = getStripe();
+  const checkoutSession = await stripe.checkout.sessions.create({
     mode: 'subscription',
-    customer: subscription.stripeCustomerId,
-    customer_email: subscription.stripeCustomerId ? undefined : customerEmail,
-    client_reference_id: userId,
-    metadata: { clerkUserId: userId, plan },
-    subscription_data: { metadata: { clerkUserId: userId, plan } },
-    line_items: [{ price: priceId, quantity: 1 }],
-    allow_promotion_codes: true,
-    success_url: appUrl + '/checkout/success?plan=' + plan + '&session_id={CHECKOUT_SESSION_ID}',
-    cancel_url: appUrl + '/pricing?checkout=cancelled',
+    customer_email: user.email || undefined,
+    client_reference_id: user.id,
+    line_items: [
+      {
+        price: getPriceIdForPlan(plan),
+        quantity: 1,
+      },
+    ],
+    metadata: {
+      supabaseUserId: user.id,
+      plan,
+    },
+    subscription_data: {
+      metadata: {
+        supabaseUserId: user.id,
+        plan,
+      },
+    },
+    success_url: appUrl + '/checkout/success?plan=' + plan,
+    cancel_url: requestUrl.origin + '/checkout/cancel?plan=' + plan,
   });
 
-  if (!session.url) {
-    return NextResponse.json({ error: 'Unable to create ' + paidPlans[plan].label + ' checkout session.' }, { status: 500 });
-  }
-
-  return NextResponse.json({ url: session.url });
-}
-
-export async function GET() {
-  return NextResponse.json({ error: 'Use POST /api/stripe/checkout.' }, { status: 405 });
+  return NextResponse.json({ url: checkoutSession.url || paidPlans[plan].appPath });
 }

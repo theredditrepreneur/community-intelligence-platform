@@ -1,7 +1,7 @@
-import { clerkClient } from '@clerk/nextjs/server';
 import type Stripe from 'stripe';
 import { paidPlans, type PaidPlan, type SubscriptionStatus } from '@/lib/config/subscriptions';
 import type { SubscriptionMetadata } from '@/lib/subscription';
+import { updateProfileSubscription } from '@/lib/profiles';
 
 export function planFromPriceId(priceId?: string | null): PaidPlan | undefined {
   if (!priceId) return undefined;
@@ -22,20 +22,12 @@ export function getPriceIdForPlan(plan: PaidPlan) {
   return priceId;
 }
 
-function cleanSubscriptionMetadata(subscription: SubscriptionMetadata) {
-  return Object.fromEntries(Object.entries(subscription).filter(([, value]) => value !== undefined));
+export async function updateSupabaseSubscription(userId: string, subscription: SubscriptionMetadata) {
+  await updateProfileSubscription(userId, subscription);
 }
 
-export async function updateClerkSubscription(userId: string, subscription: SubscriptionMetadata) {
-  const client = await clerkClient();
-
-  await client.users.updateUserMetadata(userId, {
-    privateMetadata: cleanSubscriptionMetadata(subscription),
-  });
-}
-
-export async function updateClerkFromStripeSubscription(subscription: Stripe.Subscription) {
-  const userId = subscription.metadata.clerkUserId;
+export async function updateSupabaseFromStripeSubscription(subscription: Stripe.Subscription) {
+  const userId = subscription.metadata.supabaseUserId;
 
   if (!userId) return;
 
@@ -45,7 +37,7 @@ export async function updateClerkFromStripeSubscription(subscription: Stripe.Sub
   const customerId = typeof subscription.customer === 'string' ? subscription.customer : subscription.customer.id;
   const currentPeriodEnd = (subscription as Stripe.Subscription & { current_period_end?: number }).current_period_end;
 
-  await updateClerkSubscription(userId, {
+  await updateSupabaseSubscription(userId, {
     stripeCustomerId: customerId,
     stripeSubscriptionId: subscription.id,
     stripePriceId: priceId,

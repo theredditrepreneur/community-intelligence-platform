@@ -17,7 +17,7 @@ type PricingPlan = {
 };
 
 export function PricingCard({ plan }: { plan: PricingPlan }) {
-  const isPaidTier = plan.id === 'analyse' || plan.id === 'discover';
+  const paidPlan = plan.id === 'analyse' || plan.id === 'discover' ? plan.id : undefined;
 
   return (
     <article className={['price-card', plan.recommended ? 'recommended' : '', plan.status === 'coming-soon' ? 'soon' : ''].join(' ')}>
@@ -28,7 +28,7 @@ export function PricingCard({ plan }: { plan: PricingPlan }) {
       <ul>
         {plan.features.map((feature) => <li key={feature}>{feature}</li>)}
       </ul>
-      {isPaidTier ? <CheckoutButton plan={plan.id}>{plan.cta}</CheckoutButton> : <Button href={plan.href} variant="secondary">{plan.cta}</Button>}
+      {paidPlan ? <CheckoutButton plan={paidPlan}>{plan.cta}</CheckoutButton> : <Button href={plan.href} variant="secondary">{plan.cta}</Button>}
     </article>
   );
 }

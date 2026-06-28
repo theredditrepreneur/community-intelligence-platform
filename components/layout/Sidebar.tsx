@@ -3,18 +3,21 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { SignedIn, SignedOut, SignInButton, SignOutButton, useUser } from '@clerk/nextjs';
 import { navigation } from '@/lib/config/navigation';
 import { platform } from '@/lib/config/platform';
+import { signOut } from '@/lib/auth-actions';
 
 type SidebarProps = {
   subscriptionLabel: 'Free' | 'Analyse' | 'Discover';
+  user: {
+    email?: string;
+    name?: string;
+  };
 };
 
-function AccountMenu({ subscriptionLabel }: SidebarProps) {
-  const { user } = useUser();
-  const displayName = user?.fullName || user?.primaryEmailAddress?.emailAddress || 'Account';
-  const email = user?.primaryEmailAddress?.emailAddress || 'Signed in';
+function AccountMenu({ subscriptionLabel, user }: SidebarProps) {
+  const displayName = user.name || user.email || 'Account';
+  const email = user.email || 'Signed in';
 
   return (
     <div className="account-menu">
@@ -30,15 +33,15 @@ function AccountMenu({ subscriptionLabel }: SidebarProps) {
         <Link href="/app/profile">Profile</Link>
         <Link href="/app/billing">Billing</Link>
         <a href="/api/stripe/portal">Manage Billing</a>
-        <SignOutButton redirectUrl="/pricing">
-          <button type="button">Sign out</button>
-        </SignOutButton>
+        <form action={signOut}>
+          <button type="submit">Sign out</button>
+        </form>
       </div>
     </div>
   );
 }
 
-export function Sidebar({ subscriptionLabel }: SidebarProps) {
+export function Sidebar({ subscriptionLabel, user }: SidebarProps) {
   const pathname = usePathname();
   return (
     <aside className="sidebar">
@@ -63,14 +66,7 @@ export function Sidebar({ subscriptionLabel }: SidebarProps) {
       </nav>
       <div />
       <div className="sidebar-account">
-        <SignedOut>
-          <SignInButton mode="modal">
-            <button className="account-button" type="button">Sign in</button>
-          </SignInButton>
-        </SignedOut>
-        <SignedIn>
-          <AccountMenu subscriptionLabel={subscriptionLabel} />
-        </SignedIn>
+        <AccountMenu subscriptionLabel={subscriptionLabel} user={user} />
       </div>
       <div className="side-copy">
         <strong>{platform.tagline}</strong>

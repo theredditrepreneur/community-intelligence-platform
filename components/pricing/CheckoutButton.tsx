@@ -24,6 +24,11 @@ export function CheckoutButton({ plan, children }: CheckoutButtonProps) {
 
       const data = (await response.json()) as { url?: string; error?: string };
 
+      if (response.status === 401) {
+        window.location.assign('/sign-in');
+        return;
+      }
+
       if (!response.ok || !data.url) {
         throw new Error(data.error || 'Unable to start checkout.');
       }
