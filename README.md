@@ -26,6 +26,17 @@ Open `http://localhost:3000`.
 npm run build
 ```
 
+## OpenAI Intelligence
+
+Analyse and Discover use server-side OpenAI routes for Community Intelligence output. Add these environment variables locally and in Vercel:
+
+```bash
+OPENAI_API_KEY=
+OPENAI_MODEL=gpt-4.1-mini
+```
+
+Do not expose `OPENAI_API_KEY` in client-side code or `NEXT_PUBLIC_` variables.
+
 ## Vercel Deployment
 
 1. Push this project to GitHub.
@@ -82,6 +93,8 @@ Add these in Vercel Project Settings under Environment Variables:
 NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY
+OPENAI_API_KEY
+OPENAI_MODEL=gpt-4.1-mini
 STRIPE_SECRET_KEY
 STRIPE_WEBHOOK_SECRET
 NEXT_PUBLIC_STRIPE_ANALYSE_PRICE_ID=price_1Tn7IjKEEIC0xE464vV7wRrN
