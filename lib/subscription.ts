@@ -2,6 +2,12 @@ import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { activeSubscriptionStatuses, type PaidPlan, type SubscriptionStatus } from '@/lib/config/subscriptions';
 
+export const pendingCheckoutCookie = 'redditrepreneur_pending_checkout_plan';
+
+export function isPaidPlan(value: unknown): value is PaidPlan {
+  return value === 'analyse' || value === 'discover';
+}
+
 export type SubscriptionLabel = 'Free' | 'Analyse' | 'Discover';
 
 export type SubscriptionMetadata = {
