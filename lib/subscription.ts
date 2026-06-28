@@ -1,3 +1,4 @@
+// Subscription helpers for Clerk and Stripe
 import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { activeSubscriptionStatuses, type PaidPlan, type SubscriptionStatus } from '@/lib/config/subscriptions';
