@@ -7,14 +7,27 @@ import type { ActionBrief, BriefInput } from '@/lib/ai/community-intelligence';
 const briefTypes = ['Executive Brief', 'Marketing Brief', 'Content Brief', 'Product Brief', 'Community Brief', 'Research Brief', 'Reddit Brief'];
 const tones = ['Executive and concise', 'Strategic and commercially focused', 'Clear and practical', 'Bold and persuasive', 'Analytical and evidence-led'];
 const lengths = ['Short', 'Medium', 'Detailed'];
+const researchGoals = [
+  'Understand community sentiment',
+  'Find customer pain points',
+  'Analyse competitors',
+  'Identify content opportunities',
+  'Find high-intent communities',
+  'Improve positioning',
+  'Discover objections',
+  'Build authority',
+];
 
 const initialForm: BriefInput = {
   briefType: 'Executive Brief',
   topic: '',
+  industry: '',
   audience: '',
   objective: '',
+  platformsToPrioritise: '',
   sourceContext: '',
   keyInsights: '',
+  researchGoals: [],
   tone: 'Strategic and commercially focused',
   desiredOutputLength: 'Medium',
 };
@@ -94,6 +107,15 @@ export function BriefsWorkspace() {
     setNotice(label + ' is coming soon.');
   }
 
+  function toggleGoal(goal: string) {
+    setForm((value) => ({
+      ...value,
+      researchGoals: value.researchGoals.includes(goal)
+        ? value.researchGoals.filter((item) => item !== goal)
+        : [...value.researchGoals, goal],
+    }));
+  }
+
   return (
     <>
       <section className="hero">
@@ -109,12 +131,24 @@ export function BriefsWorkspace() {
             <div className="field-grid">
               <label>Brief Type<select value={form.briefType} onChange={(event) => setForm({ ...form, briefType: event.target.value })}>{briefTypes.map((type) => <option key={type}>{type}</option>)}</select></label>
               <label>Topic<input value={form.topic} onChange={(event) => setForm({ ...form, topic: event.target.value })} placeholder="What should the brief be about?" /></label>
+              <label>Industry / Category<input value={form.industry} onChange={(event) => setForm({ ...form, industry: event.target.value })} placeholder="SaaS, ecommerce, fintech, creator, B2B..." /></label>
               <label>Audience<input value={form.audience} onChange={(event) => setForm({ ...form, audience: event.target.value })} placeholder="Leadership, marketing, product, content..." /></label>
               <label>Objective<input value={form.objective} onChange={(event) => setForm({ ...form, objective: event.target.value })} placeholder="What should this brief help achieve?" /></label>
+              <label>Platforms To Prioritise<input value={form.platformsToPrioritise} onChange={(event) => setForm({ ...form, platformsToPrioritise: event.target.value })} placeholder="Reddit, YouTube, reviews, forums, LinkedIn..." /></label>
               <label>Tone<select value={form.tone} onChange={(event) => setForm({ ...form, tone: event.target.value })}>{tones.map((tone) => <option key={tone}>{tone}</option>)}</select></label>
               <label>Desired Output Length<select value={form.desiredOutputLength} onChange={(event) => setForm({ ...form, desiredOutputLength: event.target.value })}>{lengths.map((length) => <option key={length}>{length}</option>)}</select></label>
               <label className="full">Source Context<textarea value={form.sourceContext} onChange={(event) => setForm({ ...form, sourceContext: event.target.value })} placeholder="Paste conversation extracts, research notes, Analyse output, Discover output or raw context." /></label>
               <label className="full">Key Insights<textarea value={form.keyInsights} onChange={(event) => setForm({ ...form, keyInsights: event.target.value })} placeholder="Add the strongest signals, findings or points that must be included." /></label>
+            </div>
+            <div className="brief-goals">
+              <span className="dashboard-kicker">Research goals</span>
+              <div className="goal-grid">
+                {researchGoals.map((goal) => (
+                  <button type="button" key={goal} className={form.researchGoals.includes(goal) ? 'goal-chip selected' : 'goal-chip'} onClick={() => toggleGoal(goal)}>
+                    {goal}
+                  </button>
+                ))}
+              </div>
             </div>
             {error ? <p className="checkout-error">{error}</p> : null}
             {notice ? <p className="auth-success">{notice}</p> : null}

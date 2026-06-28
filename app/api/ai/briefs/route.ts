@@ -22,10 +22,13 @@ export async function POST(request: Request) {
     const brief = await generateActionBrief({
       briefType: payload.briefType || 'Executive Brief',
       topic: payload.topic || '',
+      industry: payload.industry || '',
       audience: payload.audience || '',
       objective: payload.objective || '',
+      platformsToPrioritise: payload.platformsToPrioritise || '',
       sourceContext: payload.sourceContext || '',
       keyInsights: payload.keyInsights || '',
+      researchGoals: Array.isArray(payload.researchGoals) ? payload.researchGoals : [],
       tone: payload.tone || 'Clear, strategic and commercially focused',
       desiredOutputLength: payload.desiredOutputLength || 'Medium',
     });

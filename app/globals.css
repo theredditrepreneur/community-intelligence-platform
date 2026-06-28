@@ -144,6 +144,10 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
 .briefs-form-panel { max-width: none; }
 .briefs-guidance { position: sticky; top: 28px; border-top: 4px solid var(--green); }
 .briefs-guidance h2 { margin: 0; font-size: 26px; line-height: 1.12; }
+.brief-goals { display: grid; gap: 12px; }
+.goal-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.goal-chip { min-height: 54px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); padding: 0 16px; text-align: left; font-weight: 850; cursor: pointer; }
+.goal-chip.selected { border-color: var(--orange); background: rgba(255,75,11,.1); color: var(--orange); }
 .brief-output-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 22px; }
 .brief-output-head h2 { margin: 0; font-size: clamp(30px, 4vw, 44px); line-height: 1.08; }
 .brief-output-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: flex-end; }
@@ -224,4 +228,4 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
 .snapshot-grid strong { font-size: 36px; line-height: 1; }
 .snapshot-grid span { color: var(--ink); font-size: 14px; font-weight: 800; line-height: 1.3; }
 @media (max-width:1080px) { .app-grid { grid-template-columns: 1fr; padding-left: 0; } .sidebar { position: static; min-height: auto; grid-template-rows: auto auto auto; } .side-copy { display: none; } .public-auth { position: static; margin-bottom: 28px; } .main, .public-main { padding: 34px 22px 70px; } .source-row, .field-grid, .monitoring, .signal-grid, .launch-grid, .pricing-grid, .dashboard-grid, .quick-action-grid, .two-column-dashboard, .score-grid, .discover-explainer, .discovery-meta-grid, .briefs-layout { grid-template-columns: 1fr; } .full { grid-column: auto; } .briefs-guidance { position: static; } }
-@media (max-width:640px) { .hero h1 { font-size: 34px; } .btn-primary { width: 100%; } .panel, .step-card, .setup-card, .status-panel, .launch-card { padding: 26px; } .subscription-card { align-items: stretch; flex-direction: column; } .snapshot-grid, .source-grid { grid-template-columns: 1fr; } .brief-output-head { display: grid; } .brief-output-actions { justify-content: stretch; } .brief-output-actions .btn { width: 100%; } }
+@media (max-width:640px) { .hero h1 { font-size: 34px; } .btn-primary { width: 100%; } .panel, .step-card, .setup-card, .status-panel, .launch-card { padding: 26px; } .subscription-card { align-items: stretch; flex-direction: column; } .snapshot-grid, .source-grid, .goal-grid { grid-template-columns: 1fr; } .brief-output-head { display: grid; } .brief-output-actions { justify-content: stretch; } .brief-output-actions .btn { width: 100%; } }

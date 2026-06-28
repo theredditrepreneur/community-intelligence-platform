@@ -25,10 +25,13 @@ export type DiscoverInput = {
 export type BriefInput = {
   briefType: string;
   topic: string;
+  industry: string;
   audience: string;
   objective: string;
+  platformsToPrioritise: string;
   sourceContext: string;
   keyInsights: string;
+  researchGoals: string[];
   tone: string;
   desiredOutputLength: string;
 };
@@ -211,6 +214,14 @@ Each recommendation should make clear:
 - what was found,
 - why it matters commercially,
 - what the business should do next.
+
+Use these source-generator principles when shaping the brief:
+- identify the most important research questions,
+- name the community signals worth tracking,
+- suggest relevant communities or platforms to investigate when useful,
+- include competitor intelligence scope where relevant,
+- define success metrics for the brief's objective,
+- position the next step as deeper Community Intelligence work, not as a generic marketing task.
 
 Input:
 ${JSON.stringify(input, null, 2)}`
