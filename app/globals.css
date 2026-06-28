@@ -158,8 +158,6 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
 .pricing-header { max-width: 880px; }
 .pricing-header h1, .pricing-header h2 { margin: 0 0 16px; font-size: clamp(38px, 4.7vw, 58px); line-height: 1.12; }
 .pricing-header p { margin: 0; color: var(--ink); font-size: 19px; line-height: 1.6; }
-.value-row { display: flex; flex-wrap: wrap; gap: 12px; }
-.value-pill { display: inline-flex; align-items: center; min-height: 42px; padding: 0 15px; border-radius: 999px; background: #fff; border: 1px solid var(--soft); box-shadow: 0 8px 24px rgba(7, 31, 61, 0.04); color: var(--ink); font-size: 15px; font-weight: 780; }
 .pricing-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; align-items: stretch; }
 .price-card { position: relative; padding: 32px; display: grid; gap: 18px; align-content: start; min-width: 0; overflow: hidden; }
 .price-card.recommended { border-color: rgba(255, 75, 11, 0.32); box-shadow: 0 28px 90px rgba(255, 75, 11, 0.11); }

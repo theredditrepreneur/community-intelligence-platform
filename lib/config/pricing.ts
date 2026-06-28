@@ -64,9 +64,3 @@ export const pricingPlans = [
     status: 'coming-soon',
   },
 ];
-
-export const pricingValueStatements = [
-  'Executive ready Community Intelligence Briefs',
-  'AI powered analysis using The Redditrepreneur Framework',
-  'Replace hours of manual research in minutes',
-];

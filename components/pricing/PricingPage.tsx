@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
-import { pricingPlans, pricingValueStatements } from '@/lib/config/pricing';
+import { pricingPlans } from '@/lib/config/pricing';
+import { activeSubscriptionStatuses } from '@/lib/config/subscriptions';
 import { platform } from '@/lib/config/platform';
 import { getCurrentUser } from '@/lib/supabase/server';
 import { signOut } from '@/lib/auth-actions';
@@ -10,7 +11,8 @@ import { PricingCard } from './PricingCard';
 export async function PricingPage() {
   const user = await getCurrentUser();
   const subscription = user ? await getCurrentSubscription() : {};
-  const appPath = getSubscriptionAppPath(subscription);
+  const hasActiveSubscription = activeSubscriptionStatuses.includes(subscription.subscriptionStatus || 'none');
+  const appPath = user ? (hasActiveSubscription ? getSubscriptionAppPath(subscription) : '/app/briefs') : '/sign-in';
 
   return (
     <main className="public-main">
@@ -41,9 +43,6 @@ export async function PricingPage() {
           <div className="eyebrow">Plans</div>
           <h1>Choose how you want to understand your market.</h1>
           <p>{platform.productName} turns online community conversations into executive ready intelligence for marketing, product and strategic decisions.</p>
-        </div>
-        <div className="value-row">
-          {pricingValueStatements.map((statement) => <span className="value-pill" key={statement}>{statement}</span>)}
         </div>
         <div className="pricing-grid">
           {pricingPlans.map((plan) => <PricingCard key={plan.id} plan={plan} />)}

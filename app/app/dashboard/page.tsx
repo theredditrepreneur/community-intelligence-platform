@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { activeSubscriptionStatuses } from '@/lib/config/subscriptions';
 import { getCurrentSubscription, hasPlanAccess } from '@/lib/subscription';
 import { getCurrentUser } from '@/lib/supabase/server';
 
@@ -21,17 +20,14 @@ export default async function DashboardPage() {
   }
 
   const subscription = await getCurrentSubscription();
-  const isPaid = activeSubscriptionStatuses.includes(subscription.subscriptionStatus || 'none');
-
-  if (!isPaid) {
-    redirect('/pricing');
-  }
-
   const planLabel = getPlanLabel(subscription.subscriptionPlan);
+  const canAnalyse = hasPlanAccess(subscription, 'analyse');
   const canDiscover = hasPlanAccess(subscription, 'discover');
   const nextStep = canDiscover
     ? 'Start by entering your brand, competitors and keywords into Discover.'
-    : 'Start by pasting a Reddit thread, YouTube comments, review set or forum conversation into Analyse.';
+    : canAnalyse
+      ? 'Start by pasting a Reddit thread, YouTube comments, review set or forum conversation into Analyse.'
+      : 'Start with a free brief, then upgrade when you want Analyse or Discover intelligence.';
 
   return (
     <>
@@ -48,9 +44,13 @@ export default async function DashboardPage() {
           <div>
             <span className="dashboard-kicker">Subscription Status</span>
             <h2>Current plan: {planLabel}</h2>
-            <p>Access level: {canDiscover ? 'Analyse and Discover workspaces' : 'Analyse workspace'}</p>
+            <p>Access level: {canDiscover ? 'Analyse, Discover and Briefs workspaces' : canAnalyse ? 'Analyse and Briefs workspaces' : 'Briefs workspace'}</p>
           </div>
-          <a className="btn btn-primary" href="/api/stripe/portal">Manage billing</a>
+          {planLabel === 'Free' ? (
+            <a className="btn btn-primary" href="/pricing">View plans</a>
+          ) : (
+            <a className="btn btn-primary" href="/api/stripe/portal">Manage billing</a>
+          )}
         </article>
 
         <article className="dashboard-card next-step-card">
@@ -68,7 +68,11 @@ export default async function DashboardPage() {
           <article className="dashboard-card quick-action-card">
             <h3>Analyse conversations</h3>
             <p>Understand conversations you already have.</p>
-            <Button href="/app/analyse">Open Analyse</Button>
+            {canAnalyse ? (
+              <Button href="/app/analyse">Open Analyse</Button>
+            ) : (
+              <Button href="/pricing?upgrade=analyse" variant="secondary">Upgrade to Analyse</Button>
+            )}
           </article>
           <article className="dashboard-card quick-action-card">
             <h3>Discover opportunities</h3>

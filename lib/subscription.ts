@@ -52,13 +52,13 @@ export async function getSubscriptionLabel(): Promise<SubscriptionLabel> {
 
 export function getSubscriptionAppPath(subscription: SubscriptionMetadata) {
   if (!activeSubscriptionStatuses.includes(subscription.subscriptionStatus || 'none')) {
-    return '/pricing';
+    return '/app/dashboard';
   }
 
   if (subscription.subscriptionPlan === 'discover') return '/app/dashboard';
   if (subscription.subscriptionPlan === 'analyse') return '/app/dashboard';
 
-  return '/pricing';
+  return '/app/dashboard';
 }
 
 export async function requirePlan(requiredPlan: PaidPlan) {
