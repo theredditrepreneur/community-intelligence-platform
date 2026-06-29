@@ -2,7 +2,7 @@ export const pricingPlans = [
   {
     id: 'analyse' as const,
     headline: 'Analyse',
-    price: '£29',
+    price: '\u00a329',
     cadence: '/month',
     description: 'Turn Reddit threads, YouTube comments, reviews and forum conversations into executive ready Community Intelligence Briefs in minutes.',
     features: [
@@ -23,7 +23,7 @@ export const pricingPlans = [
   {
     id: 'discover' as const,
     headline: 'Discover',
-    price: 'Â£99',
+    price: '\u00a399',
     cadence: '/month',
     badge: 'Reddit-first discovery',
     recommended: true,
