@@ -140,6 +140,10 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
 .timeframe-note { margin-top: 18px; }
 .discovery-meta-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px; }
 .discovery-meta-grid .finding strong { display: block; color: var(--ink); font-size: 42px; line-height: 1; }
+.source-references a { color: var(--blue); font-weight: 900; }
+.source-references span { display: block; margin: 6px 0; color: var(--muted); font-size: 13px; font-weight: 900; text-transform: uppercase; letter-spacing: .04em; }
+.source-references li + li { margin-top: 18px; }
+.source-references li p { margin-top: 8px; }
 .briefs-layout { max-width: 1180px; display: grid; grid-template-columns: 1fr 340px; gap: 22px; align-items: start; }
 .briefs-form-panel { max-width: none; }
 .briefs-guidance { position: sticky; top: 28px; border-top: 4px solid var(--green); }

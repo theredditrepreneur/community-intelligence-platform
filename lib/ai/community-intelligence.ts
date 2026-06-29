@@ -20,6 +20,15 @@ export type DiscoverInput = {
   platformsToSearch: string[];
   searchDepth: string;
   timeframe: string;
+  retrievedSources?: Array<{
+    title: string;
+    subreddit: string;
+    url: string;
+    excerpt: string;
+    score: number;
+    comments: number;
+    createdAt: string;
+  }>;
 };
 
 export type BriefInput = {
@@ -99,7 +108,7 @@ function frameworkInstruction(mode: 'analyse' | 'discover') {
     'Do not write generic marketing advice.',
     'Every recommendation must answer: what did we find, why does it matter commercially, and what should the business do next.',
     mode === 'discover'
-      ? 'Important: do not claim you scraped, searched or accessed live platforms. Produce a realistic research brief based only on the supplied brand inputs, competitors, keywords, platforms, search depth and timeframe.'
+      ? 'Important: Discover currently uses supported public Reddit search results only. Do not claim YouTube, LinkedIn, TikTok, X, reviews, forums or the whole web were searched. Ground the brief in supplied retrievedSources when available, and be explicit when source coverage is limited.'
       : 'Ground the brief in the pasted conversation text. Use evidence only from the supplied text and be clear when confidence is limited.',
     'Return only valid JSON. Do not wrap the JSON in markdown.',
   ].join('\n');

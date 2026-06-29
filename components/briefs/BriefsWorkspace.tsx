@@ -83,7 +83,7 @@ function UpgradeCta({ subscriptionLabel }: BriefsWorkspaceProps) {
     return (
       <article className="finding brief-upgrade-card">
         <h3>Ready to find the conversations behind this brief?</h3>
-        <p>Upgrade to Discover to move from bring-your-own conversations to supported source discovery when live retrieval is connected.</p>
+        <p>Upgrade to Discover to move from bring-your-own conversations to Reddit-first supported source discovery.</p>
         <Button href="/pricing?upgrade=discover" variant="orange">Upgrade to Discover</Button>
       </article>
     );
@@ -92,7 +92,7 @@ function UpgradeCta({ subscriptionLabel }: BriefsWorkspaceProps) {
   return (
     <article className="finding brief-upgrade-card">
       <h3>Turn this free brief into deeper Community Intelligence.</h3>
-      <p>Choose Analyse to bring your own conversations for AI-powered intelligence, or Discover for the supported source discovery tier.</p>
+      <p>Choose Analyse to bring your own conversations for AI-powered intelligence, or Discover for Reddit-first supported source discovery.</p>
       <div className="button-row">
         <Button href="/pricing?upgrade=analyse" variant="orange">Choose Analyse</Button>
         <Button href="/pricing?upgrade=discover" variant="secondary">Compare Discover</Button>
@@ -221,8 +221,8 @@ export function BriefsWorkspace({ subscriptionLabel }: BriefsWorkspaceProps) {
             </div>
             <div className="brief-output-actions">
               <Button variant="secondary" onClick={copyBrief}>Copy Brief</Button>
-              <Button variant="secondary" onClick={() => comingSoon('Save Brief')}>Save Brief placeholder</Button>
-              <Button variant="secondary" onClick={() => comingSoon('Export')}>Export placeholder</Button>
+              <Button variant="secondary" onClick={() => comingSoon('Save Brief')}>Save Brief</Button>
+              <Button variant="secondary" onClick={() => comingSoon('Export')}>Export</Button>
             </div>
           </div>
           <article className="finding featured-finding"><h3>Executive Summary</h3><p>{brief.executiveSummary}</p></article>

@@ -17,7 +17,7 @@ type PricingPlan = {
 };
 
 export function PricingCard({ plan }: { plan: PricingPlan }) {
-  const paidPlan = plan.id === 'analyse' || plan.id === 'discover' ? plan.id : undefined;
+  const paidPlan = plan.status === 'active' && (plan.id === 'analyse' || plan.id === 'discover') ? plan.id : undefined;
 
   return (
     <article className={['price-card', plan.recommended ? 'recommended' : '', plan.status === 'coming-soon' ? 'soon' : ''].join(' ')}>
@@ -28,7 +28,13 @@ export function PricingCard({ plan }: { plan: PricingPlan }) {
       <ul>
         {plan.features.map((feature) => <li key={feature}>{feature}</li>)}
       </ul>
-      {paidPlan ? <CheckoutButton plan={paidPlan}>{plan.cta}</CheckoutButton> : <Button href={plan.href} variant="secondary">{plan.cta}</Button>}
+      {paidPlan ? (
+        <CheckoutButton plan={paidPlan}>{plan.cta}</CheckoutButton>
+      ) : plan.href === '#' ? (
+        <button className="btn btn-secondary" type="button" disabled>{plan.cta}</button>
+      ) : (
+        <Button href={plan.href} variant="secondary">{plan.cta}</Button>
+      )}
     </article>
   );
 }

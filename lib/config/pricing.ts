@@ -23,11 +23,11 @@ export const pricingPlans = [
   {
     id: 'discover' as const,
     headline: 'Discover',
-    price: '£99',
+    price: 'Â£99',
     cadence: '/month',
-    badge: 'Best for growing teams',
+    badge: 'Reddit-first discovery',
     recommended: true,
-    description: 'Discover high value community conversations about your brand, competitors and category before your competitors do.',
+    description: 'Search supported Reddit public results for conversations about your brand, competitors and category, then turn them into a Community Intelligence Brief.',
     features: [
       'Everything in Analyse',
       'Brand and competitor discovery',
