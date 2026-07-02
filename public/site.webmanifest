@@ -1,21 +1,53 @@
 {
+  "id": "/app",
   "name": "The Redditrepreneur Community Intelligence Platform",
   "short_name": "Redditrepreneur",
+  "description": "Community Intelligence for analysing and discovering market conversations.",
+  "start_url": "/app/dashboard?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "portrait-primary",
+  "theme_color": "#ff4b0b",
+  "background_color": "#071f3d",
+  "categories": ["business", "productivity"],
   "icons": [
+    { "src": "/pwa-icon-72.png", "sizes": "72x72", "type": "image/png" },
+    { "src": "/pwa-icon-96.png", "sizes": "96x96", "type": "image/png" },
+    { "src": "/pwa-icon-128.png", "sizes": "128x128", "type": "image/png" },
+    { "src": "/pwa-icon-144.png", "sizes": "144x144", "type": "image/png" },
+    { "src": "/pwa-icon-152.png", "sizes": "152x152", "type": "image/png" },
+    { "src": "/pwa-icon-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/pwa-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/pwa-icon-384.png", "sizes": "384x384", "type": "image/png" },
+    { "src": "/pwa-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/pwa-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/pwa-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
     {
-      "src": "./redditrepreneur-logo.png",
-      "sizes": "1024x1024",
-      "type": "image/png",
-      "purpose": "any"
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "url": "/app/dashboard",
+      "icons": [{ "src": "/pwa-icon-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
-      "src": "./redditrepreneur-logo.png",
-      "sizes": "1024x1024",
-      "type": "image/png",
-      "purpose": "maskable"
+      "name": "Analyse",
+      "short_name": "Analyse",
+      "url": "/app/analyse",
+      "icons": [{ "src": "/pwa-icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Discover",
+      "short_name": "Discover",
+      "url": "/app/discover",
+      "icons": [{ "src": "/pwa-icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Briefs",
+      "short_name": "Briefs",
+      "url": "/app/briefs",
+      "icons": [{ "src": "/pwa-icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
-  ],
-  "theme_color": "#061a2d",
-  "background_color": "#061a2d",
-  "display": "standalone"
+  ]
 }
