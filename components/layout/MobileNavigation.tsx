@@ -37,7 +37,7 @@ export function MobileBottomNav() {
         const active = pathname === item.href;
 
         return (
-          <Link key={item.id} href={item.href} className={active ? 'active' : ''}>
+          <Link key={item.id} href={item.href} className={active ? 'active' : ''} aria-current={active ? 'page' : undefined}>
             <span>{item.label}</span>
           </Link>
         );
