@@ -221,6 +221,7 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
 .dashboard-section { max-width: 1180px; margin-top: 28px; }
 .dashboard-section-head { margin-bottom: 18px; }
 .dashboard-section-head h2 { margin: 0; font-size: 30px; line-height: 1.15; }
+.dashboard-section-head p { margin: 10px 0 0; color: var(--ink); font-size: 17px; line-height: 1.5; max-width: 760px; }
 .quick-action-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
 .quick-action-card { display: grid; gap: 18px; align-content: start; min-height: 270px; }
 .quick-action-card p { margin: 0; }
@@ -232,6 +233,41 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
 .snapshot-grid div { min-height: 112px; display: grid; align-content: center; gap: 8px; padding: 18px; border: 1px solid var(--soft); border-radius: 10px; background: #f8fafc; }
 .snapshot-grid strong { font-size: 36px; line-height: 1; }
 .snapshot-grid span { color: var(--ink); font-size: 14px; font-weight: 800; line-height: 1.3; }
+.decision-feed-section { display: grid; gap: 22px; }
+.decision-feed-head { margin-bottom: 0; }
+.decision-overview-grid { display: grid; grid-template-columns: .72fr 1.28fr; gap: 22px; }
+.intelligence-score-card, .opportunity-score-card, .ask-intelligence-card { border-top: 4px solid var(--orange); }
+.score-row { display: flex; align-items: baseline; gap: 6px; margin: 6px 0 12px; }
+.score-row strong { color: var(--ink); font-size: 64px; line-height: .95; letter-spacing: 0; }
+.score-row span { color: var(--muted); font-size: 22px; font-weight: 900; }
+.status-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 14px; }
+.movement { display: inline-flex; min-height: 32px; align-items: center; border-radius: 999px; padding: 0 11px; font-size: 13px; font-weight: 900; border: 1px solid var(--soft); }
+.movement.up { color: var(--green); background: rgba(32,164,100,.09); }
+.movement.down { color: #b42318; background: rgba(180,35,24,.08); }
+.movement.stable { color: var(--blue); background: rgba(0,111,182,.08); }
+.opportunity-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.opportunity-grid div { min-height: 118px; display: grid; align-content: center; gap: 9px; padding: 18px; border: 1px solid var(--soft); border-radius: 10px; background: #f8fafc; }
+.opportunity-grid strong { color: var(--ink); font-size: 28px; line-height: 1.05; }
+.opportunity-grid span { color: var(--ink); font-size: 13px; font-weight: 850; line-height: 1.35; }
+.decision-feed-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.decision-card { display: grid; gap: 18px; align-content: start; border-top: 4px solid rgba(7,31,61,.14); }
+.decision-card-head, .decision-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+.priority-pill, .confidence-pill { display: inline-flex; min-height: 32px; align-items: center; border-radius: 999px; padding: 0 11px; font-size: 12px; font-weight: 950; text-transform: uppercase; letter-spacing: .05em; }
+.priority-pill.high { color: var(--orange); background: rgba(255,75,11,.1); }
+.priority-pill.medium { color: var(--blue); background: rgba(0,111,182,.08); }
+.priority-pill.low { color: var(--green); background: rgba(32,164,100,.09); }
+.confidence-pill { color: var(--ink); background: #f3f7fb; border: 1px solid var(--soft); }
+.decision-detail-list { display: grid; gap: 14px; margin: 0; }
+.decision-detail-list div { display: grid; gap: 6px; padding-top: 14px; border-top: 1px solid var(--soft); }
+.decision-detail-list dt { color: var(--muted); font-size: 12px; font-weight: 950; text-transform: uppercase; letter-spacing: .06em; }
+.decision-detail-list dd { margin: 0; color: var(--ink); font-size: 16px; line-height: 1.58; }
+.decision-card-foot { padding-top: 2px; }
+.decision-card-foot > span { color: var(--ink); font-size: 14px; font-weight: 850; }
+.decision-card-foot .btn { min-width: 170px; }
+.ask-intelligence-card { display: grid; grid-template-columns: .82fr 1fr; gap: 22px; align-items: start; }
+.ask-intelligence-card h3 { margin: 0; font-size: 28px; line-height: 1.12; }
+.ask-intelligence-card textarea { min-height: 150px; background: #f8fafc; color: var(--muted); }
+.coming-soon-panel { grid-column: 1 / -1; min-height: 54px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,75,11,.18); border-radius: 10px; background: rgba(255,75,11,.08); color: var(--orange); font-size: 15px; font-weight: 950; }
 @media (max-width:1080px) {
   body { background: #f3f6fa; }
   .app-grid { display: block; min-height: 100dvh; padding-left: 0; padding-top: calc(70px + env(safe-area-inset-top)); padding-bottom: calc(92px + env(safe-area-inset-bottom)); }
@@ -247,11 +283,11 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
   .mobile-bottom-nav a.active::before { content: ""; position: absolute; top: 5px; width: 18px; height: 3px; border-radius: 99px; background: var(--orange); }
   .public-auth { position: static; margin-bottom: 28px; }
   .main, .public-main { padding: 28px 22px 86px; }
-  .source-row, .field-grid, .monitoring, .signal-grid, .launch-grid, .pricing-grid, .dashboard-grid, .quick-action-grid, .two-column-dashboard, .score-grid, .discover-explainer, .discovery-meta-grid, .briefs-layout { grid-template-columns: 1fr; }
+  .source-row, .field-grid, .monitoring, .signal-grid, .launch-grid, .pricing-grid, .dashboard-grid, .quick-action-grid, .two-column-dashboard, .score-grid, .discover-explainer, .discovery-meta-grid, .briefs-layout, .decision-overview-grid, .decision-feed-grid, .ask-intelligence-card { grid-template-columns: 1fr; }
   .full { grid-column: auto; }
   .briefs-guidance { position: static; }
   .card, .panel, .step-card, .finding, .status-panel, .launch-card, .setup-card, .price-card, .dashboard-card { box-shadow: 0 12px 32px rgba(7,31,61,.06); }
-  .dashboard-grid, .quick-action-grid, .two-column-dashboard, .findings, .scroll-stack, .briefs-layout { gap: 16px; }
+  .dashboard-grid, .quick-action-grid, .two-column-dashboard, .findings, .scroll-stack, .briefs-layout, .decision-overview-grid, .decision-feed-grid { gap: 16px; }
   .quick-action-card, .briefs-card { min-height: auto; }
   .dashboard-section { margin-top: 22px; }
   .account-links a, .account-links button, .remove-source, .goal-chip, .chip, .source-chip, .option, .auth-link, .auth-cta, .account-button { min-height: 44px; }
@@ -276,6 +312,7 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
   .dashboard-card h2 { font-size: 24px; }
   .dashboard-card h3, .finding h3 { font-size: 21px; }
   .dashboard-card p, .finding p, .finding li { font-size: 16px; line-height: 1.62; }
+  .dashboard-section-head p { font-size: 16px; }
   .finding { padding: 22px; }
   .finding ul { padding-left: 18px; }
   .findings { margin-top: 24px; gap: 16px; }
@@ -283,6 +320,15 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
   .subscription-card { align-items: stretch; flex-direction: column; }
   .snapshot-grid, .source-grid, .goal-grid { grid-template-columns: 1fr; }
   .snapshot-grid div { min-height: 92px; }
+  .opportunity-grid { grid-template-columns: 1fr; }
+  .opportunity-grid div { min-height: 92px; }
+  .score-row strong { font-size: 54px; }
+  .decision-card { gap: 16px; }
+  .decision-card-head, .decision-card-foot { align-items: stretch; }
+  .confidence-pill, .priority-pill { width: fit-content; }
+  .decision-card-foot .btn { width: 100%; min-width: 0; }
+  .ask-intelligence-card h3 { font-size: 24px; }
+  .coming-soon-panel { min-height: 50px; padding: 12px; text-align: center; }
   .brief-output-head { display: grid; }
   .brief-output-actions { justify-content: stretch; }
   .brief-output-actions .btn { width: 100%; }

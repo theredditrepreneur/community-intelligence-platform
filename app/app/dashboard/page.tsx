@@ -12,6 +12,70 @@ function getPlanLabel(plan?: string) {
   return 'Free';
 }
 
+const decisionPriorities = [
+  {
+    priority: 'High',
+    title: 'Update your pricing comparison page',
+    why: 'Community conversations show repeated confusion around competitor pricing, setup complexity and what buyers actually get at each tier.',
+    evidence: '42 pricing-related mentions across Reddit, reviews and comparison conversations.',
+    impact: 'High - improves buyer confidence and supports AI search visibility.',
+    confidence: 91,
+    owner: 'Marketing',
+    cta: 'View Brief',
+    href: '/app/briefs',
+  },
+  {
+    priority: 'High',
+    title: 'Create a competitor objection brief',
+    why: 'Prospects are naming alternatives before they understand your category position, which means the buying narrative needs clearer proof.',
+    evidence: 'Competitor mentions cluster around onboarding effort, hidden costs and support responsiveness.',
+    impact: 'High - helps sales, landing pages and AI summaries answer objections earlier.',
+    confidence: 88,
+    owner: 'Sales',
+    cta: 'Turn Into Content',
+    href: '/app/briefs',
+  },
+  {
+    priority: 'Medium',
+    title: 'Prioritise onboarding friction in the product roadmap',
+    why: 'Setup questions are appearing before feature questions, suggesting adoption risk is more urgent than adding more capability.',
+    evidence: 'Recurring phrases include setup time, learning curve, migration and team handover.',
+    impact: 'Medium - reduces activation friction and improves trial-to-paid conversion.',
+    confidence: 82,
+    owner: 'Product',
+    cta: 'Add to Roadmap',
+    href: '/app/discover',
+  },
+  {
+    priority: 'Medium',
+    title: 'Publish a plain-English category guide',
+    why: 'Communities are asking basic category questions that your product can credibly answer before competitors shape the conversation.',
+    evidence: 'Discovery-style searches show repeated questions about use cases, ROI and who should own the workflow.',
+    impact: 'Medium - increases trust, captures educational demand and improves AI search coverage.',
+    confidence: 79,
+    owner: 'Leadership',
+    cta: 'Turn Into Content',
+    href: '/app/briefs',
+  },
+  {
+    priority: 'Low',
+    title: 'Review support language for setup questions',
+    why: 'Support and community language can be tightened so buyers hear the same reassurance before and after sign-up.',
+    evidence: 'Setup and handover concerns appear in lower-volume but repeated community questions.',
+    impact: 'Low - improves consistency and reduces avoidable support friction.',
+    confidence: 73,
+    owner: 'Support',
+    cta: 'Mark as Done',
+    href: '/app/dashboard',
+  },
+];
+
+function priorityTone(priority: string) {
+  if (priority === 'High') return 'high';
+  if (priority === 'Medium') return 'medium';
+  return 'low';
+}
+
 export default async function DashboardPage() {
   const user = await getCurrentUser();
 
@@ -56,6 +120,84 @@ export default async function DashboardPage() {
         <article className="dashboard-card next-step-card">
           <span className="dashboard-kicker">Recommended Next Step</span>
           <p>{nextStep}</p>
+        </article>
+      </section>
+
+      <section className="dashboard-section decision-feed-section">
+        <div className="dashboard-section-head decision-feed-head">
+          <div>
+            <span className="dashboard-kicker">Decision Feed</span>
+            <h2>Today&apos;s Community Intelligence Priorities</h2>
+            <p>Recommended actions based on your latest briefs, reports and discovered opportunities.</p>
+          </div>
+        </div>
+
+        <div className="decision-overview-grid">
+          <article className="dashboard-card intelligence-score-card">
+            <span className="dashboard-kicker">Community Health Score</span>
+            <div className="score-row">
+              <strong>84</strong>
+              <span>/100</span>
+            </div>
+            <div className="status-row">
+              <Badge tone="green">Strong</Badge>
+              <span className="movement up">Up</span>
+            </div>
+            <p>Community sentiment is strong, but pricing clarity and onboarding proof are the highest leverage improvements.</p>
+          </article>
+
+          <article className="dashboard-card opportunity-score-card">
+            <span className="dashboard-kicker">Opportunity Score</span>
+            <div className="opportunity-grid">
+              <div><strong>17</strong><span>Total opportunities found</span></div>
+              <div><strong>Pricing</strong><span>Highest opportunity area</span></div>
+              <div><strong>6</strong><span>AI Search opportunities</span></div>
+              <div><strong>High</strong><span>Buying intent level</span></div>
+            </div>
+          </article>
+        </div>
+
+        <div className="decision-feed-grid">
+          {decisionPriorities.map((item) => (
+            <article className="dashboard-card decision-card" key={item.title}>
+              <div className="decision-card-head">
+                <span className={['priority-pill', priorityTone(item.priority)].join(' ')}>{item.priority} Priority</span>
+                <span className="confidence-pill">{item.confidence}% confidence</span>
+              </div>
+              <h3>{item.title}</h3>
+              <dl className="decision-detail-list">
+                <div>
+                  <dt>Why this matters</dt>
+                  <dd>{item.why}</dd>
+                </div>
+                <div>
+                  <dt>Evidence</dt>
+                  <dd>{item.evidence}</dd>
+                </div>
+                <div>
+                  <dt>Expected business impact</dt>
+                  <dd>{item.impact}</dd>
+                </div>
+              </dl>
+              <div className="decision-card-foot">
+                <span>Owner: <strong>{item.owner}</strong></span>
+                <Button href={item.href} variant={item.priority === 'High' ? 'orange' : 'secondary'}>{item.cta}</Button>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <article className="dashboard-card ask-intelligence-card">
+          <div>
+            <span className="dashboard-kicker">Ask your Community Intelligence</span>
+            <h3>Ask your Community Intelligence</h3>
+            <p>Ask things like: What should I tell my CEO? What content should we create next? Which competitor is most vulnerable?</p>
+          </div>
+          <label>
+            Intelligence question
+            <textarea disabled placeholder={'Ask things like:\n"What should I tell my CEO?"\n"What content should we create next?"\n"Which competitor is most vulnerable?"'} />
+          </label>
+          <div className="coming-soon-panel">Interactive report chat coming soon.</div>
         </article>
       </section>
 
