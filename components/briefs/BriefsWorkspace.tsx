@@ -106,6 +106,26 @@ const initialForm: BriefInput = {
   desiredOutputLength: 'Medium',
 };
 
+type BriefCompanyContext = {
+  companyName: string;
+  website: string;
+  industry: string;
+  companyDescription: string;
+  idealCustomers: string;
+  competitors: string;
+  keywords: string;
+};
+
+const emptyBriefCompany: BriefCompanyContext = {
+  companyName: '',
+  website: '',
+  industry: '',
+  companyDescription: '',
+  idealCustomers: '',
+  competitors: '',
+  keywords: '',
+};
+
 function FieldList({ items }: { items: string[] }) {
   if (!items.length) return <p>No items generated for this section yet.</p>;
   return <ul>{items.map((item) => <li key={item}>{item}</li>)}</ul>;
@@ -203,6 +223,32 @@ function buildInitialForm(brand?: BrandProfile | null): BriefInput {
   };
 }
 
+function contextFromBrand(brand?: BrandProfile | null) {
+  if (!brand) return emptyBriefCompany;
+
+  return {
+    companyName: brand.companyName,
+    website: brand.website,
+    industry: brand.industry,
+    companyDescription: brand.companyDescription,
+    idealCustomers: brand.idealCustomers,
+    competitors: brand.competitors,
+    keywords: brand.keywords,
+  };
+}
+
+function buildCompanyContextText(company: BriefCompanyContext) {
+  return [
+    company.companyName ? `Brief company: ${company.companyName}` : '',
+    company.website ? `Website: ${company.website}` : '',
+    company.industry ? `Industry: ${company.industry}` : '',
+    company.companyDescription ? `Company description: ${company.companyDescription}` : '',
+    company.idealCustomers ? `Ideal customers: ${company.idealCustomers}` : '',
+    company.competitors ? `Competitors: ${company.competitors}` : '',
+    company.keywords ? `Keywords: ${company.keywords}` : '',
+  ].filter(Boolean).join('\n');
+}
+
 function BrandContextCard({ brand }: { brand?: BrandProfile | null }) {
   if (!brand) return null;
 
@@ -218,6 +264,8 @@ function BrandContextCard({ brand }: { brand?: BrandProfile | null }) {
 
 export function BriefsWorkspace({ subscriptionLabel, brand }: BriefsWorkspaceProps & { brand?: BrandProfile | null }) {
   const [form, setForm] = useState<BriefInput>(() => buildInitialForm(brand));
+  const [useSavedBrand, setUseSavedBrand] = useState(true);
+  const [briefCompany, setBriefCompany] = useState<BriefCompanyContext>(() => contextFromBrand(brand));
   const [brief, setBrief] = useState<ActionBrief | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -229,11 +277,19 @@ export function BriefsWorkspace({ subscriptionLabel, brand }: BriefsWorkspacePro
     setNotice('');
     setBrief(null);
 
+    const companyContext = buildCompanyContextText(useSavedBrand ? contextFromBrand(brand) : briefCompany);
+    const payload: BriefInput = {
+      ...form,
+      industry: (useSavedBrand ? brand?.industry : briefCompany.industry) || form.industry,
+      audience: (useSavedBrand ? brand?.idealCustomers : briefCompany.idealCustomers) || form.audience,
+      sourceContext: [companyContext, form.sourceContext].filter(Boolean).join('\n\n'),
+    };
+
     try {
       const response = await fetch('/api/ai/briefs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
       const data = (await response.json()) as ActionBrief | { error?: string };
 
@@ -280,6 +336,15 @@ export function BriefsWorkspace({ subscriptionLabel, brand }: BriefsWorkspacePro
     }));
   }
 
+  function resetBrief() {
+    setUseSavedBrand(true);
+    setBriefCompany(contextFromBrand(brand));
+    setForm(buildInitialForm(brand));
+    setBrief(null);
+    setNotice('');
+    setError('');
+  }
+
   return (
     <>
       <section className="hero">
@@ -307,6 +372,31 @@ export function BriefsWorkspace({ subscriptionLabel, brand }: BriefsWorkspacePro
                   </button>
                 ))}
               </div>
+            </section>
+
+            <section className="brief-company-section">
+              <span className="dashboard-kicker">Brief company</span>
+              <div className="brief-company-toggle">
+                <button type="button" className={useSavedBrand ? 'active' : ''} onClick={() => setUseSavedBrand(true)}>Use saved Brand Profile</button>
+                <button type="button" className={!useSavedBrand ? 'active' : ''} onClick={() => setUseSavedBrand(false)}>Use another company</button>
+              </div>
+              {useSavedBrand ? (
+                <div className="brief-company-summary">
+                  <strong>{brand?.companyName || 'Saved Brand Profile'}</strong>
+                  <span>{brand?.companyDescription || 'Your saved brand context will be used for this brief.'}</span>
+                </div>
+              ) : (
+                <div className="field-grid">
+                  <label>Company Name<input value={briefCompany.companyName} onChange={(event) => setBriefCompany({ ...briefCompany, companyName: event.target.value })} placeholder="Company this brief is about" /></label>
+                  <label>Website<input value={briefCompany.website} onChange={(event) => setBriefCompany({ ...briefCompany, website: event.target.value })} placeholder="https://company.com" /></label>
+                  <label>Industry<input value={briefCompany.industry} onChange={(event) => setBriefCompany({ ...briefCompany, industry: event.target.value })} placeholder="SaaS, ecommerce, fintech" /></label>
+                  <label>Ideal Customers<input value={briefCompany.idealCustomers} onChange={(event) => setBriefCompany({ ...briefCompany, idealCustomers: event.target.value })} placeholder="Who this company sells to" /></label>
+                  <label className="full">What does this company do?<textarea value={briefCompany.companyDescription} onChange={(event) => setBriefCompany({ ...briefCompany, companyDescription: event.target.value })} placeholder="Add short company context for this brief only." /></label>
+                  <label className="full">Competitors<input value={briefCompany.competitors} onChange={(event) => setBriefCompany({ ...briefCompany, competitors: event.target.value })} placeholder="Relevant competitors or alternatives" /></label>
+                  <label className="full">Keywords<input value={briefCompany.keywords} onChange={(event) => setBriefCompany({ ...briefCompany, keywords: event.target.value })} placeholder="Relevant topics, products or category keywords" /></label>
+                </div>
+              )}
+              <p className="field-helper">This only affects the current brief. Your saved Brand Profile will not be changed.</p>
             </section>
 
             <div className="field-grid">
@@ -347,7 +437,7 @@ export function BriefsWorkspace({ subscriptionLabel, brand }: BriefsWorkspacePro
             {notice ? <p className="auth-success">{notice}</p> : null}
             <div className="button-row">
               <Button variant="orange" onClick={generateBrief} disabled={loading}>{loading ? 'Generating brief...' : 'Generate Brief'}</Button>
-              <Button variant="secondary" onClick={() => { setForm(buildInitialForm(brand)); setBrief(null); setNotice(''); setError(''); }}>Reset Brief</Button>
+              <Button variant="secondary" onClick={resetBrief}>Reset Brief</Button>
             </div>
           </div>
         </div>
