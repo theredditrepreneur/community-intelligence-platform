@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { CommunityScorecard } from '@/components/reports/CommunityScorecard';
+import type { BrandProfile } from '@/lib/brands';
 import type { AnalyseBrief, AnalyseInput } from '@/lib/ai/community-intelligence';
 
 type ConversationSource = {
@@ -59,15 +60,31 @@ function AnalyseResults({ brief }: { brief: AnalyseBrief }) {
   );
 }
 
-export function AnalyseWorkspace() {
+function BrandContextCard({ brand }: { brand: BrandProfile }) {
+  return (
+    <article className="dashboard-card brand-context-card">
+      <span className="dashboard-kicker">Brand Profile</span>
+      <h2>{brand.companyName}</h2>
+      <p>{brand.companyDescription || 'Your saved company context will be used in this analysis.'}</p>
+      <div className="brand-context-grid">
+        <div><strong>Customers</strong><span>{brand.idealCustomers || 'Not set yet'}</span></div>
+        <div><strong>Competitors</strong><span>{brand.competitors || 'Not set yet'}</span></div>
+        <div><strong>Keywords</strong><span>{brand.keywords || 'Not set yet'}</span></div>
+      </div>
+      <Button href="/app/onboarding" variant="secondary">Edit Brand Profile</Button>
+    </article>
+  );
+}
+
+export function AnalyseWorkspace({ brand }: { brand: BrandProfile }) {
   const [sources, setSources] = useState<ConversationSource[]>([initialSource]);
-  const [form, setForm] = useState<Omit<AnalyseInput, 'platform' | 'conversationText'>>({
-    brandName: '',
-    website: '',
-    competitors: '',
-    targetCustomer: '',
-    strategicGoal: '',
-  });
+  const form: Omit<AnalyseInput, 'platform' | 'conversationText'> = {
+    brandName: brand.companyName,
+    website: brand.website,
+    competitors: brand.competitors,
+    targetCustomer: brand.idealCustomers,
+    strategicGoal: brand.goals.join(', '),
+  };
   const [brief, setBrief] = useState<AnalyseBrief | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -120,17 +137,11 @@ export function AnalyseWorkspace() {
         <div className="eyebrow">Community Intelligence Platform</div>
         <div className="question">What does this conversation mean?</div>
         <h1>Analyse Community Conversations</h1>
-        <p>Paste conversations from Reddit, YouTube, TikTok, LinkedIn, X, reviews or forums. We&apos;ll turn them into executive ready Community Intelligence.</p>
+        <p>Paste conversations from Reddit, YouTube, TikTok, LinkedIn, X, reviews or forums. We&apos;ll use your Brand Profile to turn them into executive ready Community Intelligence.</p>
       </section>
+      <BrandContextCard brand={brand} />
       <section className="panel">
         <div className="stack">
-          <div className="field-grid">
-            <label>Brand Name<input value={form.brandName} onChange={(event) => setForm({ ...form, brandName: event.target.value })} placeholder="Brand, product or market" /></label>
-            <label>Website<input value={form.website} onChange={(event) => setForm({ ...form, website: event.target.value })} placeholder="https://example.com" /></label>
-            <label>Competitors<input value={form.competitors} onChange={(event) => setForm({ ...form, competitors: event.target.value })} placeholder="Competitors mentioned or relevant" /></label>
-            <label>Target Customer<input value={form.targetCustomer} onChange={(event) => setForm({ ...form, targetCustomer: event.target.value })} placeholder="Who you sell to" /></label>
-            <label className="full">Strategic Goal<textarea value={form.strategicGoal} onChange={(event) => setForm({ ...form, strategicGoal: event.target.value })} placeholder="What decision should this brief support?" /></label>
-          </div>
           <div className="stack">
             {sources.map((source, index) => (
               <div className="conversation-source" key={source.id}>

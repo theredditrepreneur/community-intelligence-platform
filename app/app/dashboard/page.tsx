@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { getCurrentBrandProfile } from '@/lib/brands';
 import { getCurrentSubscription, hasAdminAccess, hasPlanAccess } from '@/lib/subscription';
 import { getCurrentUser } from '@/lib/supabase/server';
 
@@ -18,7 +19,7 @@ const decisionPriorities = [
     title: 'Update your pricing comparison page',
     why: 'Community conversations show repeated confusion around competitor pricing, setup complexity and what buyers actually get at each tier.',
     evidence: '42 pricing-related mentions across Reddit, reviews and comparison conversations.',
-    impact: 'High - improves buyer confidence and supports AI search visibility.',
+    impact: 'High impact. Improves buyer confidence and supports AI search visibility.',
     confidence: 91,
     owner: 'Marketing',
     cta: 'View Brief',
@@ -29,7 +30,7 @@ const decisionPriorities = [
     title: 'Create a competitor objection brief',
     why: 'Prospects are naming alternatives before they understand your category position, which means the buying narrative needs clearer proof.',
     evidence: 'Competitor mentions cluster around onboarding effort, hidden costs and support responsiveness.',
-    impact: 'High - helps sales, landing pages and AI summaries answer objections earlier.',
+    impact: 'High impact. Helps sales, landing pages and AI summaries answer objections earlier.',
     confidence: 88,
     owner: 'Sales',
     cta: 'Turn Into Content',
@@ -40,7 +41,7 @@ const decisionPriorities = [
     title: 'Prioritise onboarding friction in the product roadmap',
     why: 'Setup questions are appearing before feature questions, suggesting adoption risk is more urgent than adding more capability.',
     evidence: 'Recurring phrases include setup time, learning curve, migration and team handover.',
-    impact: 'Medium - reduces activation friction and improves trial-to-paid conversion.',
+    impact: 'Medium impact. Reduces activation friction and improves trial to paid conversion.',
     confidence: 82,
     owner: 'Product',
     cta: 'Add to Roadmap',
@@ -48,10 +49,10 @@ const decisionPriorities = [
   },
   {
     priority: 'Medium',
-    title: 'Publish a plain-English category guide',
+    title: 'Publish a plain English category guide',
     why: 'Communities are asking basic category questions that your product can credibly answer before competitors shape the conversation.',
-    evidence: 'Discovery-style searches show repeated questions about use cases, ROI and who should own the workflow.',
-    impact: 'Medium - increases trust, captures educational demand and improves AI search coverage.',
+    evidence: 'Discovery style searches show repeated questions about use cases, ROI and who should own the workflow.',
+    impact: 'Medium impact. Increases trust, captures educational demand and improves AI search coverage.',
     confidence: 79,
     owner: 'Leadership',
     cta: 'Turn Into Content',
@@ -60,9 +61,9 @@ const decisionPriorities = [
   {
     priority: 'Low',
     title: 'Review support language for setup questions',
-    why: 'Support and community language can be tightened so buyers hear the same reassurance before and after sign-up.',
-    evidence: 'Setup and handover concerns appear in lower-volume but repeated community questions.',
-    impact: 'Low - improves consistency and reduces avoidable support friction.',
+    why: 'Support and community language can be tightened so buyers hear the same reassurance before and after sign up.',
+    evidence: 'Setup and handover concerns appear in lower volume but repeated community questions.',
+    impact: 'Low impact. Improves consistency and reduces avoidable support friction.',
     confidence: 73,
     owner: 'Support',
     cta: 'Mark as Done',
@@ -88,8 +89,14 @@ export default async function DashboardPage() {
   const planLabel = isAdmin ? 'Admin' : getPlanLabel(subscription.subscriptionPlan);
   const canAnalyse = hasPlanAccess(subscription, 'analyse');
   const canDiscover = hasPlanAccess(subscription, 'discover');
+  const brand = await getCurrentBrandProfile();
+
+  if ((canAnalyse || canDiscover || isAdmin) && !brand) {
+    redirect('/app/onboarding');
+  }
+
   const nextStep = canDiscover
-    ? 'Start by entering your brand, competitors and keywords into Discover.'
+    ? 'Start by discovering the community conversations that matter most.'
     : canAnalyse
       ? 'Start by pasting a Reddit thread, YouTube comments, review set or forum conversation into Analyse.'
       : 'Start with a free brief, then upgrade when you want Analyse or Discover intelligence.';
@@ -100,11 +107,18 @@ export default async function DashboardPage() {
         <div>
           <div className="eyebrow">Dashboard</div>
           <h1>Good morning.</h1>
-          <p>Here&apos;s your Community Intelligence workspace.</p>
+          <p>{brand ? `${brand.companyName} is ready for Community Intelligence.` : 'Here is your Community Intelligence workspace.'}</p>
         </div>
       </section>
 
       <section className="dashboard-grid">
+        <article className="dashboard-card">
+          <span className="dashboard-kicker">Brand Profile</span>
+          <h2>{brand?.companyName || 'No Brand Profile yet'}</h2>
+          <p>{brand?.companyDescription || 'Add your company context once so Dashboard, Analyse, Discover and Action Centre can reuse it.'}</p>
+          <Button href="/app/onboarding" variant="secondary">{brand ? 'Edit Brand Profile' : 'Create Brand Profile'}</Button>
+        </article>
+
         <article className="dashboard-card subscription-card">
           <div>
             <span className="dashboard-kicker">Subscription Status</span>
@@ -213,7 +227,7 @@ export default async function DashboardPage() {
         <div className="quick-action-grid">
           <article className="dashboard-card quick-action-card">
             <h3>Analyse conversations</h3>
-            <p>Understand conversations you already have.</p>
+            <p>Understand conversations you already have using your saved Brand Profile.</p>
             {canAnalyse ? (
               <Button href="/app/analyse">Open Analyse</Button>
             ) : (
@@ -230,9 +244,14 @@ export default async function DashboardPage() {
             )}
           </article>
           <article className="dashboard-card quick-action-card">
-            <h3>Briefs</h3>
-            <p>Turn Community Intelligence into action-ready documents.</p>
-            <Button href="/app/briefs" variant="secondary">Open Briefs</Button>
+            <h3>Create Brief</h3>
+            <p>Turn Community Intelligence into action ready documents.</p>
+            <Button href="/app/briefs" variant="secondary">Open Action Centre</Button>
+          </article>
+          <article className="dashboard-card quick-action-card">
+            <h3>View Reports</h3>
+            <p>Review saved intelligence outputs as your library grows.</p>
+            <Button href="/app/reports" variant="secondary">Open Reports</Button>
           </article>
           <article className="dashboard-card quick-action-card">
             <div className="card-title-row">
@@ -249,7 +268,7 @@ export default async function DashboardPage() {
         <article className="dashboard-card briefs-card">
           <span className="dashboard-kicker">Recent Intelligence Briefs</span>
           <h2>No saved briefs yet.</h2>
-          <p>Your generated Community Intelligence Briefs will appear here.</p>
+          <p>Your generated Community Intelligence reports will appear here.</p>
         </article>
 
         <article className="dashboard-card snapshot-card">

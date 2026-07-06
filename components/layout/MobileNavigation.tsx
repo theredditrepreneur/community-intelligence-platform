@@ -7,7 +7,7 @@ import { navigation } from '@/lib/config/navigation';
 import { platform } from '@/lib/config/platform';
 
 const primaryNavigation = navigation.filter((item) =>
-  ['dashboard', 'analyse', 'discover', 'briefs', 'alerts'].includes(item.id)
+  ['dashboard', 'analyse', 'discover', 'action-centre', 'alerts'].includes(item.id)
 );
 
 type MobileNavigationProps = {

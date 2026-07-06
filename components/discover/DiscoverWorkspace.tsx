@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { CommunityScorecard } from '@/components/reports/CommunityScorecard';
+import type { BrandProfile } from '@/lib/brands';
 import type { DiscoverBrief } from '@/lib/ai/community-intelligence';
 
 type DiscoverForm = {
@@ -125,7 +126,7 @@ function DiscoveryResults({ result }: { result: DiscoverResult }) {
       <ListFinding title="AI Search Opportunities" items={result.aiSearchOpportunities} />
       <ListFinding title="Content Roadmap" items={result.contentRoadmap} />
       <ListFinding title="Priority Actions" items={result.priorityActions} />
-      <ListFinding title="Recommended Follow-up Searches" items={result.recommendedSearches} />
+      <ListFinding title="Recommended Follow Up Searches" items={result.recommendedSearches} />
       <article className="finding source-references">
         <h3>Reddit Source References</h3>
         {result.retrievedSources.length ? (
@@ -133,7 +134,7 @@ function DiscoveryResults({ result }: { result: DiscoverResult }) {
             {result.retrievedSources.map((source) => (
               <li key={source.url}>
                 <a href={source.url} target="_blank" rel="noreferrer">{source.title}</a>
-                <span>{source.subreddit} - {source.comments} comments - score {source.score}</span>
+                <span>{source.subreddit}, {source.comments} comments, score {source.score}</span>
                 {source.excerpt ? <p>{source.excerpt}</p> : null}
               </li>
             ))}
@@ -152,18 +153,34 @@ function DiscoveryResults({ result }: { result: DiscoverResult }) {
   );
 }
 
-export function DiscoverWorkspace() {
+function BrandContextCard({ brand }: { brand: BrandProfile }) {
+  return (
+    <article className="dashboard-card brand-context-card">
+      <span className="dashboard-kicker">Brand Profile</span>
+      <h2>{brand.companyName}</h2>
+      <p>{brand.companyDescription || 'Discover will use your saved company context for search and analysis.'}</p>
+      <div className="brand-context-grid">
+        <div><strong>Customers</strong><span>{brand.idealCustomers || 'Not set yet'}</span></div>
+        <div><strong>Competitors</strong><span>{brand.competitors || 'Not set yet'}</span></div>
+        <div><strong>Keywords</strong><span>{brand.keywords || 'Not set yet'}</span></div>
+      </div>
+      <Button href="/app/onboarding" variant="secondary">Edit Brand Profile</Button>
+    </article>
+  );
+}
+
+export function DiscoverWorkspace({ brand }: { brand: BrandProfile }) {
   const [step, setStep] = useState(1);
   const [result, setResult] = useState<DiscoverResult | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState('');
   const [form, setForm] = useState<DiscoverForm>({
-    brandName: '',
-    website: '',
-    companyDescription: '',
-    idealCustomers: '',
-    competitors: '',
-    keywords: '',
+    brandName: brand.companyName,
+    website: brand.website,
+    companyDescription: brand.companyDescription,
+    idealCustomers: brand.idealCustomers,
+    competitors: brand.competitors,
+    keywords: brand.keywords,
     searchDepth: 'Standard Search',
     timeframe: 'Past Month',
   });
@@ -202,23 +219,22 @@ export function DiscoverWorkspace() {
         <div className="eyebrow">Community Intelligence Platform</div>
         <div className="question">What conversations should I know about?</div>
         <h1>Discover Community Intelligence</h1>
-        <p>Tell us about your business and we&apos;ll search supported Reddit public results for relevant conversations, then turn the findings into a Community Intelligence Brief.</p>
+        <p>We&apos;ll use your Brand Profile to search supported Reddit public results, then turn the findings into a Community Intelligence Brief.</p>
       </section>
 
+      <BrandContextCard brand={brand} />
       <HowDiscoverWorks />
 
       {!result ? (
         <section className="step-card active">
           <div className="step-label">Step {step}</div>
-          {step === 1 && <><h2>About Your Business</h2><div className="field-grid"><label>Brand Name<input value={form.brandName} onChange={(event) => setForm({ ...form, brandName: event.target.value })} /></label><label>Website<input value={form.website} onChange={(event) => setForm({ ...form, website: event.target.value })} /></label><label className="full">What does your company do?<textarea value={form.companyDescription} onChange={(event) => setForm({ ...form, companyDescription: event.target.value })} /></label><label className="full">Who are your ideal customers?<textarea value={form.idealCustomers} onChange={(event) => setForm({ ...form, idealCustomers: event.target.value })} /></label></div></>}
-          {step === 2 && <><h2>Watchlist</h2><label>Competitors<input value={form.competitors} onChange={(event) => setForm({ ...form, competitors: event.target.value })} /></label><label>Keywords<input value={form.keywords} onChange={(event) => setForm({ ...form, keywords: event.target.value })} /></label></>}
-          {step === 3 && <><h2>Supported Sources</h2><SourceSelection /></>}
-          {step === 4 && <><h2>Search Scope</h2><div className="choice-grid">{searchDepths.map((item) => <button key={item} className={['btn btn-secondary option', form.searchDepth === item ? 'active' : ''].join(' ')} onClick={() => setForm({ ...form, searchDepth: item })}>{item}</button>)}</div></>}
-          {step === 5 && <><h2>Search Timeframe</h2><div className="choice-grid">{timeframes.map((item) => <button key={item} className={['btn btn-secondary option', form.timeframe === item ? 'active' : ''].join(' ')} onClick={() => setForm({ ...form, timeframe: item })}>{item}</button>)}</div><p className="helper timeframe-note">The selected timeframe applies to Reddit public search results. Coverage depends on what Reddit returns for the query.</p></>}
+          {step === 1 && <><h2>Supported Sources</h2><SourceSelection /></>}
+          {step === 2 && <><h2>Search Scope</h2><div className="choice-grid">{searchDepths.map((item) => <button type="button" key={item} className={['btn btn-secondary option', form.searchDepth === item ? 'active' : ''].join(' ')} onClick={() => setForm({ ...form, searchDepth: item })}>{item}</button>)}</div></>}
+          {step === 3 && <><h2>Search Timeframe</h2><div className="choice-grid">{timeframes.map((item) => <button type="button" key={item} className={['btn btn-secondary option', form.timeframe === item ? 'active' : ''].join(' ')} onClick={() => setForm({ ...form, timeframe: item })}>{item}</button>)}</div><p className="helper timeframe-note">The selected timeframe applies to Reddit public search results. Coverage depends on what Reddit returns for the query.</p></>}
           {error ? <p className="checkout-error">{error}</p> : null}
           <div className="button-row">
             {step > 1 ? <Button variant="secondary" onClick={() => setStep((value) => value - 1)}>Back</Button> : null}
-            {step < 5 ? (
+            {step < 3 ? (
               <Button onClick={() => setStep((value) => value + 1)}>Continue</Button>
             ) : (
               <Button variant="orange" onClick={generateDiscoverBrief} disabled={isGenerating}>

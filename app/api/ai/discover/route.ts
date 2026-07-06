@@ -51,7 +51,7 @@ function buildSearchQuery(payload: Partial<DiscoverInput>) {
 }
 
 function excerptFrom(post: RedditPost['data']) {
-  const text = [post?.title, post?.selftext].filter(Boolean).join(' - ').replace(/\s+/g, ' ').trim();
+  const text = [post?.title, post?.selftext].filter(Boolean).join('. ').replace(/\s+/g, ' ').trim();
   return text.slice(0, 420);
 }
 

@@ -42,3 +42,53 @@ create policy "Profiles are readable by owner"
   for select
   to authenticated
   using (auth.uid() = id);
+
+create table if not exists public.brands (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  company_name text not null,
+  website text,
+  industry text,
+  company_size text,
+  company_description text,
+  ideal_customers text,
+  competitors text,
+  keywords text,
+  goals text[] not null default '{}',
+  preferred_platforms text[] not null default '{}',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists brands_user_id_idx on public.brands(user_id);
+
+alter table public.brands enable row level security;
+
+drop policy if exists "Brands are readable by owner" on public.brands;
+create policy "Brands are readable by owner"
+  on public.brands
+  for select
+  to authenticated
+  using (auth.uid() = user_id);
+
+drop policy if exists "Brands are insertable by owner" on public.brands;
+create policy "Brands are insertable by owner"
+  on public.brands
+  for insert
+  to authenticated
+  with check (auth.uid() = user_id);
+
+drop policy if exists "Brands are updateable by owner" on public.brands;
+create policy "Brands are updateable by owner"
+  on public.brands
+  for update
+  to authenticated
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+drop policy if exists "Brands are deletable by owner" on public.brands;
+create policy "Brands are deletable by owner"
+  on public.brands
+  for delete
+  to authenticated
+  using (auth.uid() = user_id);

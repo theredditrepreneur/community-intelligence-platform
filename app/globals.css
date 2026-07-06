@@ -97,7 +97,7 @@ button, input, textarea, select { font: inherit; }
 .card, .panel, .step-card, .finding, .status-panel, .launch-card, .setup-card, .price-card { background: #fff; border: 1px solid var(--soft); border-radius: 12px; box-shadow: var(--shadow); }
 .panel, .step-card, .setup-card, .launch-card { max-width: 1180px; padding: clamp(34px, 4.4vw, 54px); }
 label { display: grid; gap: 15px; color: var(--ink); font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.045em; }
-input, textarea, select { width: 100%; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); min-height: 58px; padding: 0 18px; font-size: 18px; outline: none; box-shadow: 0 4px 16px rgba(7, 31, 61, 0.04); text-transform: none; letter-spacing: 0; font-weight: 480; }
+input, textarea, select { width: 100%; min-width: 0; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); min-height: 58px; padding: 0 16px; font-size: 16px; outline: none; box-shadow: 0 4px 16px rgba(7, 31, 61, 0.04); text-transform: none; letter-spacing: 0; font-weight: 480; text-overflow: ellipsis; }
 textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
 .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px; }
 .full { grid-column: 1 / -1; }
@@ -184,6 +184,17 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
 .goal-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .goal-chip { min-height: 54px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); padding: 0 16px; text-align: left; font-weight: 850; cursor: pointer; }
 .goal-chip.selected { border-color: var(--orange); background: rgba(255,75,11,.1); color: var(--orange); }
+.brand-profile-form { display: grid; gap: 30px; }
+.form-section { display: grid; gap: 16px; }
+.profile-chip-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.profile-choice { min-height: 54px; display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 10px; background: #fff; padding: 12px 14px; color: var(--ink); font-size: 15px; font-weight: 850; }
+.profile-choice input { width: 16px; height: 16px; min-height: 0; padding: 0; accent-color: var(--orange); box-shadow: none; flex: 0 0 auto; }
+.profile-choice span { overflow-wrap: anywhere; }
+.brand-context-card { display: grid; gap: 16px; margin-bottom: 24px; }
+.brand-context-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.brand-context-grid div { min-width: 0; border: 1px solid var(--soft); border-radius: 10px; background: #f8fafc; padding: 14px; }
+.brand-context-grid strong { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 950; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.brand-context-grid span { display: block; color: var(--ink); font-size: 14px; line-height: 1.45; overflow-wrap: anywhere; }
 .brief-output-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 22px; }
 .brief-output-head h2 { margin: 0; font-size: clamp(30px, 4vw, 44px); line-height: 1.08; }
 .brief-output-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: flex-end; }
@@ -314,7 +325,7 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
   .mobile-bottom-nav a.active::before { content: ""; position: absolute; top: 5px; width: 18px; height: 3px; border-radius: 99px; background: var(--orange); }
   .public-auth { position: static; margin-bottom: 28px; }
   .main, .public-main { padding: 28px 22px 86px; }
-  .source-row, .field-grid, .monitoring, .signal-grid, .launch-grid, .pricing-grid, .dashboard-grid, .quick-action-grid, .two-column-dashboard, .score-grid, .discover-explainer, .discovery-meta-grid, .briefs-layout, .decision-overview-grid, .decision-feed-grid, .ask-intelligence-card, .scorecard-category-grid, .scorecard-insight-grid, .alignment-grid { grid-template-columns: 1fr; }
+  .source-row, .field-grid, .monitoring, .signal-grid, .launch-grid, .pricing-grid, .dashboard-grid, .quick-action-grid, .two-column-dashboard, .score-grid, .discover-explainer, .discovery-meta-grid, .briefs-layout, .decision-overview-grid, .decision-feed-grid, .ask-intelligence-card, .scorecard-category-grid, .scorecard-insight-grid, .alignment-grid, .profile-chip-grid, .brand-context-grid { grid-template-columns: 1fr; }
   .full { grid-column: auto; }
   .briefs-guidance { position: static; }
   .card, .panel, .step-card, .finding, .status-panel, .launch-card, .setup-card, .price-card, .dashboard-card, .scorecard-category { box-shadow: 0 12px 32px rgba(7,31,61,.06); }
@@ -364,7 +375,7 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
   .brief-output-actions { justify-content: stretch; }
   .brief-output-actions .btn { width: 100%; }
   label { gap: 10px; font-size: 12px; letter-spacing: .055em; }
-  input, textarea, select { min-height: 56px; padding-left: 16px; padding-right: 16px; font-size: 16px; border-radius: 12px; }
+  input, textarea, select { min-height: 56px; padding-left: 14px; padding-right: 14px; font-size: 15px; border-radius: 12px; }
   textarea { min-height: 156px; }
   .conversation-source { padding: 18px; gap: 18px; border-radius: 12px; }
   .source-head { display: grid; grid-template-columns: 1fr auto; }

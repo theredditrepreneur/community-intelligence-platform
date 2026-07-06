@@ -25,7 +25,7 @@ export const pricingPlans = [
     headline: 'Discover',
     price: '\u00a399',
     cadence: '/month',
-    badge: 'Reddit-first discovery',
+    badge: 'Reddit first discovery',
     recommended: true,
     description: 'Search supported Reddit public results for conversations about your brand, competitors and category, then turn them into a Community Intelligence Brief.',
     features: [

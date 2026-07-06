@@ -83,7 +83,7 @@ export function CommunityScorecard({ scorecard }: { scorecard?: Scorecard }) {
             <FieldList items={scorecard.communityToAiAlignment.gaps} />
           </div>
           <div>
-            <h4>Likely AI-Influencing Narratives</h4>
+            <h4>Likely AI Influencing Narratives</h4>
             <FieldList items={scorecard.communityToAiAlignment.likelyAiInfluencingNarratives} />
           </div>
           <div>

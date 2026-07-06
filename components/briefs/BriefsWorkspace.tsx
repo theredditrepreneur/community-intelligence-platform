@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
+import type { BrandProfile } from '@/lib/brands';
 import type { ActionBrief, BriefInput } from '@/lib/ai/community-intelligence';
 import type { SubscriptionLabel } from '@/lib/subscription';
 
@@ -13,7 +14,7 @@ const researchGoals = [
   'Find customer pain points',
   'Analyse competitors',
   'Identify content opportunities',
-  'Find high-intent communities',
+  'Find high intent communities',
   'Improve positioning',
   'Discover objections',
   'Build authority',
@@ -50,22 +51,22 @@ function formatBrief(brief: ActionBrief) {
     brief.executiveSummary,
     '',
     'Key Findings',
-    ...brief.keyFindings.map((item) => '- ' + item),
+    ...brief.keyFindings.map((item) => '* ' + item),
     '',
     'Strategic Context',
     brief.strategicContext,
     '',
     'Recommended Actions',
-    ...brief.recommendedActions.map((item) => '- ' + item),
+    ...brief.recommendedActions.map((item) => '* ' + item),
     '',
     'Suggested Content / Assets',
-    ...brief.suggestedContentAssets.map((item) => '- ' + item),
+    ...brief.suggestedContentAssets.map((item) => '* ' + item),
     '',
     'Risks or Watchouts',
-    ...brief.risksOrWatchouts.map((item) => '- ' + item),
+    ...brief.risksOrWatchouts.map((item) => '* ' + item),
     '',
     'Next Steps',
-    ...brief.nextSteps.map((item) => '- ' + item),
+    ...brief.nextSteps.map((item) => '* ' + item),
   ].join('\n');
 }
 
@@ -92,7 +93,7 @@ function UpgradeCta({ subscriptionLabel }: BriefsWorkspaceProps) {
     return (
       <article className="finding brief-upgrade-card">
         <h3>Ready to find the conversations behind this brief?</h3>
-        <p>Upgrade to Discover to move from bring-your-own conversations to Reddit-first supported source discovery.</p>
+        <p>Upgrade to Discover to move from conversations you already have to Reddit first supported source discovery.</p>
         <Button href="/pricing?upgrade=discover" variant="orange">Upgrade to Discover</Button>
       </article>
     );
@@ -101,7 +102,7 @@ function UpgradeCta({ subscriptionLabel }: BriefsWorkspaceProps) {
   return (
     <article className="finding brief-upgrade-card">
       <h3>Turn this free brief into deeper Community Intelligence.</h3>
-      <p>Choose Analyse to bring your own conversations for AI-powered intelligence, or Discover for Reddit-first supported source discovery.</p>
+      <p>Choose Analyse to bring your own conversations for AI powered intelligence, or Discover for Reddit first supported source discovery.</p>
       <div className="button-row">
         <Button href="/pricing?upgrade=analyse" variant="orange">Choose Analyse</Button>
         <Button href="/pricing?upgrade=discover" variant="secondary">Compare Discover</Button>
@@ -110,8 +111,41 @@ function UpgradeCta({ subscriptionLabel }: BriefsWorkspaceProps) {
   );
 }
 
-export function BriefsWorkspace({ subscriptionLabel }: BriefsWorkspaceProps) {
-  const [form, setForm] = useState<BriefInput>(initialForm);
+function buildInitialForm(brand?: BrandProfile | null): BriefInput {
+  if (!brand) return initialForm;
+
+  return {
+    ...initialForm,
+    industry: brand.industry,
+    audience: brand.idealCustomers,
+    platformsToPrioritise: brand.preferredPlatforms.join(', '),
+    sourceContext: [
+      `Company: ${brand.companyName}`,
+      brand.website ? `Website: ${brand.website}` : '',
+      brand.companyDescription ? `Company description: ${brand.companyDescription}` : '',
+      brand.idealCustomers ? `Ideal customers: ${brand.idealCustomers}` : '',
+      brand.competitors ? `Competitors: ${brand.competitors}` : '',
+      brand.keywords ? `Keywords: ${brand.keywords}` : '',
+    ].filter(Boolean).join('\n'),
+    researchGoals: brand.goals,
+  };
+}
+
+function BrandContextCard({ brand }: { brand?: BrandProfile | null }) {
+  if (!brand) return null;
+
+  return (
+    <article className="dashboard-card brand-context-card">
+      <span className="dashboard-kicker">Brand Profile</span>
+      <h2>{brand.companyName}</h2>
+      <p>{brand.companyDescription || 'Action Centre will use your saved company context.'}</p>
+      <Button href="/app/onboarding" variant="secondary">Edit Brand Profile</Button>
+    </article>
+  );
+}
+
+export function BriefsWorkspace({ subscriptionLabel, brand }: BriefsWorkspaceProps & { brand?: BrandProfile | null }) {
+  const [form, setForm] = useState<BriefInput>(() => buildInitialForm(brand));
   const [brief, setBrief] = useState<ActionBrief | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -165,22 +199,20 @@ export function BriefsWorkspace({ subscriptionLabel }: BriefsWorkspaceProps) {
   return (
     <>
       <section className="hero">
-        <div className="eyebrow">Briefs</div>
+        <div className="eyebrow">Action Centre</div>
         <div className="question">How should this intelligence become action?</div>
-        <h1>Brief Generator</h1>
-        <p>Briefs turn Community Intelligence into action-ready documents for marketing, product, leadership and content teams.</p>
+        <h1>Action Centre</h1>
+        <p>Create action ready documents for marketing, product, leadership and content teams using your saved Brand Profile.</p>
       </section>
 
+      <BrandContextCard brand={brand} />
       <section className="briefs-layout">
         <div className="panel briefs-form-panel">
           <div className="stack">
             <div className="field-grid">
               <label>Brief Type<select value={form.briefType} onChange={(event) => setForm({ ...form, briefType: event.target.value })}>{briefTypes.map((type) => <option key={type}>{type}</option>)}</select></label>
               <label>Topic<input value={form.topic} onChange={(event) => setForm({ ...form, topic: event.target.value })} placeholder="What should the brief be about?" /></label>
-              <label>Industry / Category<input value={form.industry} onChange={(event) => setForm({ ...form, industry: event.target.value })} placeholder="SaaS, ecommerce, fintech, creator, B2B..." /></label>
-              <label>Audience<input value={form.audience} onChange={(event) => setForm({ ...form, audience: event.target.value })} placeholder="Leadership, marketing, product, content..." /></label>
               <label>Objective<input value={form.objective} onChange={(event) => setForm({ ...form, objective: event.target.value })} placeholder="What should this brief help achieve?" /></label>
-              <label>Platforms To Prioritise<input value={form.platformsToPrioritise} onChange={(event) => setForm({ ...form, platformsToPrioritise: event.target.value })} placeholder="Reddit, YouTube, reviews, forums, LinkedIn..." /></label>
               <label>Tone<select value={form.tone} onChange={(event) => setForm({ ...form, tone: event.target.value })}>{tones.map((tone) => <option key={tone}>{tone}</option>)}</select></label>
               <label>Desired Output Length<select value={form.desiredOutputLength} onChange={(event) => setForm({ ...form, desiredOutputLength: event.target.value })}>{lengths.map((length) => <option key={length}>{length}</option>)}</select></label>
               <label className="full">Source Context<textarea value={form.sourceContext} onChange={(event) => setForm({ ...form, sourceContext: event.target.value })} placeholder="Paste conversation extracts, research notes, Analyse output, Discover output or raw context." /></label>
@@ -200,7 +232,7 @@ export function BriefsWorkspace({ subscriptionLabel }: BriefsWorkspaceProps) {
             {notice ? <p className="auth-success">{notice}</p> : null}
             <div className="button-row">
               <Button variant="orange" onClick={generateBrief} disabled={loading}>{loading ? 'Generating brief...' : 'Generate Brief'}</Button>
-              <Button variant="secondary" onClick={() => { setForm(initialForm); setBrief(null); setNotice(''); setError(''); }}>Start a blank brief</Button>
+              <Button variant="secondary" onClick={() => { setForm(buildInitialForm(brand)); setBrief(null); setNotice(''); setError(''); }}>Reset Brief</Button>
             </div>
           </div>
         </div>
@@ -208,11 +240,11 @@ export function BriefsWorkspace({ subscriptionLabel }: BriefsWorkspaceProps) {
         <aside className="dashboard-card briefs-guidance">
           <span className="dashboard-kicker">Coming next</span>
           <h2>From reports to briefs</h2>
-          <p>Later, Analyse and Discover reports will be sent directly into Briefs so teams can turn intelligence into launch plans, content plans and leadership updates.</p>
+          <p>Later, Analyse and Discover reports will be sent directly into Action Centre so teams can turn intelligence into launch plans, content plans and leadership updates.</p>
         </aside>
       </section>
 
-      {loading ? <section className="loading active"><div>Reading source context...</div><div>Structuring action-ready sections...</div><div>Generating brief...</div></section> : null}
+      {loading ? <section className="loading active"><div>Reading source context...</div><div>Structuring action ready sections...</div><div>Generating brief...</div></section> : null}
 
       {!brief && !loading ? (
         <section className="empty-state panel">

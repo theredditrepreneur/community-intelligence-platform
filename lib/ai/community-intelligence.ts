@@ -288,7 +288,7 @@ export async function generateActionBrief(input: BriefInput) {
   return generateJson<ActionBrief>(
     [
       'You are a senior Community Intelligence strategist for The Redditrepreneur.',
-      'Create action-ready documents for marketing, product, leadership and content teams.',
+      'Create action ready documents for marketing, product, leadership and content teams.',
       'Use The Redditrepreneur Framework: turn observed community signals into commercial meaning and clear next actions.',
       'Do not write filler. Every section must be specific to the topic, audience, objective and supplied context.',
       'Return only valid JSON. Do not wrap the JSON in markdown.',
