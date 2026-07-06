@@ -313,7 +313,7 @@ export function BriefsWorkspace({ subscriptionLabel, brand }: BriefsWorkspacePro
               <label>Brief Type<select value={form.briefType} onChange={(event) => setForm({ ...form, briefType: event.target.value })}>{briefTypes.map((type) => <option key={type}>{type}</option>)}</select></label>
               <label>
                 What is this about?
-                <span className="field-helper">What community conversation, insight or business issue are you exploring?</span>
+                <span className="field-helper">What conversation, insight or business issue are you exploring?</span>
                 <input
                   value={form.topic}
                   onChange={(event) => setForm({ ...form, topic: event.target.value })}
