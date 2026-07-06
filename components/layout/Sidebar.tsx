@@ -31,13 +31,10 @@ function AccountMenu({ subscriptionLabel, isAdmin, user }: SidebarProps) {
       </Link>
       <div className="account-badges">
         <span className={['subscription-badge', subscriptionLabel.toLowerCase()].join(' ')}>{subscriptionLabel}</span>
-        {isAdmin ? <span className="admin-badge">Admin</span> : null}
       </div>
       {isAdmin ? <p className="admin-note">Admin access enabled.</p> : null}
       <div className="account-links">
         <Link href="/app/profile">Profile</Link>
-        <Link href="/app/billing">Billing</Link>
-        <a href="/api/stripe/portal">Manage Billing</a>
         <form action={signOut}>
           <button type="submit">Sign out</button>
         </form>
