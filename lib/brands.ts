@@ -82,13 +82,15 @@ export async function getCurrentBrandProfile() {
   if (!user) return null;
 
   const supabase = createSupabaseServerClient();
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('brands')
     .select('*')
     .eq('user_id', user.id)
     .order('updated_at', { ascending: false })
     .limit(1)
     .maybeSingle<BrandRow>();
+
+  if (error) return null;
 
   return fromBrandRow(data);
 }

@@ -6,8 +6,29 @@ import type { BrandProfile } from '@/lib/brands';
 import type { ActionBrief, BriefInput } from '@/lib/ai/community-intelligence';
 import type { SubscriptionLabel } from '@/lib/subscription';
 
-const briefTypes = ['Executive Brief', 'Marketing Brief', 'Content Brief', 'Product Brief', 'Community Brief', 'Research Brief', 'Reddit Brief'];
-const tones = ['Executive and concise', 'Strategic and commercially focused', 'Clear and practical', 'Bold and persuasive', 'Analytical and evidence-led'];
+const briefTypes = [
+  'Executive Brief',
+  'Product Brief',
+  'Marketing Brief',
+  'Content Brief',
+  'Research Brief',
+  'Community Brief',
+  'Strategy Brief',
+  'Campaign Brief',
+];
+const writingStyles = ['Executive', 'Professional', 'Strategic', 'Technical', 'Friendly', 'Persuasive', 'Clear and practical'];
+const objectives = [
+  'Make a business decision',
+  'Plan a marketing campaign',
+  'Improve our product',
+  'Understand customer feedback',
+  'Research competitors',
+  'Prepare an executive update',
+  'Create content',
+  'Improve positioning',
+  'Identify risks',
+  'Other',
+];
 const lengths = ['Short', 'Medium', 'Detailed'];
 const researchGoals = [
   'Understand community sentiment',
@@ -20,6 +41,57 @@ const researchGoals = [
   'Build authority',
 ];
 
+const smartTemplates = [
+  {
+    name: 'Product Launch',
+    briefType: 'Product Brief',
+    objective: 'Plan a marketing campaign',
+    tone: 'Strategic',
+  },
+  {
+    name: 'Competitor Analysis',
+    briefType: 'Research Brief',
+    objective: 'Research competitors',
+    tone: 'Professional',
+  },
+  {
+    name: 'Customer Feedback',
+    briefType: 'Community Brief',
+    objective: 'Understand customer feedback',
+    tone: 'Clear and practical',
+  },
+  {
+    name: 'Feature Requests',
+    briefType: 'Product Brief',
+    objective: 'Improve our product',
+    tone: 'Technical',
+  },
+  {
+    name: 'Executive Update',
+    briefType: 'Executive Brief',
+    objective: 'Prepare an executive update',
+    tone: 'Executive',
+  },
+  {
+    name: 'Content Strategy',
+    briefType: 'Content Brief',
+    objective: 'Create content',
+    tone: 'Persuasive',
+  },
+  {
+    name: 'AI Search Strategy',
+    briefType: 'Strategy Brief',
+    objective: 'Improve positioning',
+    tone: 'Strategic',
+  },
+  {
+    name: 'Marketing Campaign',
+    briefType: 'Campaign Brief',
+    objective: 'Plan a marketing campaign',
+    tone: 'Persuasive',
+  },
+];
+
 const initialForm: BriefInput = {
   briefType: 'Executive Brief',
   topic: '',
@@ -30,7 +102,7 @@ const initialForm: BriefInput = {
   sourceContext: '',
   keyInsights: '',
   researchGoals: [],
-  tone: 'Strategic and commercially focused',
+  tone: 'Strategic',
   desiredOutputLength: 'Medium',
 };
 
@@ -196,6 +268,18 @@ export function BriefsWorkspace({ subscriptionLabel, brand }: BriefsWorkspacePro
     }));
   }
 
+  function applyTemplate(templateName: string) {
+    const template = smartTemplates.find((item) => item.name === templateName);
+    if (!template) return;
+
+    setForm((value) => ({
+      ...value,
+      briefType: template.briefType,
+      objective: template.objective,
+      tone: template.tone,
+    }));
+  }
+
   return (
     <>
       <section className="hero">
@@ -209,11 +293,42 @@ export function BriefsWorkspace({ subscriptionLabel, brand }: BriefsWorkspacePro
       <section className="briefs-layout">
         <div className="panel briefs-form-panel">
           <div className="stack">
+            <article className="brief-guidance-box">
+              <h2>Briefs turn Community Intelligence into action ready documents.</h2>
+              <p>Choose what you want to create, tell us what it is about, and we&apos;ll shape the insight into a clear business ready brief.</p>
+            </article>
+
+            <section className="smart-template-section">
+              <span className="dashboard-kicker">Start with a smart template</span>
+              <div className="smart-template-grid">
+                {smartTemplates.map((template) => (
+                  <button type="button" key={template.name} className="smart-template" onClick={() => applyTemplate(template.name)}>
+                    <span>{template.name}</span>
+                  </button>
+                ))}
+              </div>
+            </section>
+
             <div className="field-grid">
               <label>Brief Type<select value={form.briefType} onChange={(event) => setForm({ ...form, briefType: event.target.value })}>{briefTypes.map((type) => <option key={type}>{type}</option>)}</select></label>
-              <label>Topic<input value={form.topic} onChange={(event) => setForm({ ...form, topic: event.target.value })} placeholder="What should the brief be about?" /></label>
-              <label>Objective<input value={form.objective} onChange={(event) => setForm({ ...form, objective: event.target.value })} placeholder="What should this brief help achieve?" /></label>
-              <label>Tone<select value={form.tone} onChange={(event) => setForm({ ...form, tone: event.target.value })}>{tones.map((tone) => <option key={tone}>{tone}</option>)}</select></label>
+              <label>
+                What is this about?
+                <span className="field-helper">What community conversation, insight or business issue are you exploring?</span>
+                <input
+                  value={form.topic}
+                  onChange={(event) => setForm({ ...form, topic: event.target.value })}
+                  placeholder="Reddit discussions about our onboarding process"
+                  list="brief-topic-examples"
+                />
+                <datalist id="brief-topic-examples">
+                  <option value="Reddit discussions about our onboarding process" />
+                  <option value="Customer complaints about pricing" />
+                  <option value="Feature requests from YouTube comments" />
+                  <option value="Competitor sentiment in online communities" />
+                </datalist>
+              </label>
+              <label>What should this brief help you achieve?<select value={form.objective} onChange={(event) => setForm({ ...form, objective: event.target.value })}><option value="">Select an outcome</option>{objectives.map((objective) => <option key={objective}>{objective}</option>)}</select></label>
+              <label>Writing Style<select value={form.tone} onChange={(event) => setForm({ ...form, tone: event.target.value })}>{writingStyles.map((style) => <option key={style}>{style}</option>)}</select></label>
               <label>Desired Output Length<select value={form.desiredOutputLength} onChange={(event) => setForm({ ...form, desiredOutputLength: event.target.value })}>{lengths.map((length) => <option key={length}>{length}</option>)}</select></label>
               <label className="full">Source Context<textarea value={form.sourceContext} onChange={(event) => setForm({ ...form, sourceContext: event.target.value })} placeholder="Paste conversation extracts, research notes, Analyse output, Discover output or raw context." /></label>
               <label className="full">Key Insights<textarea value={form.keyInsights} onChange={(event) => setForm({ ...form, keyInsights: event.target.value })} placeholder="Add the strongest signals, findings or points that must be included." /></label>
