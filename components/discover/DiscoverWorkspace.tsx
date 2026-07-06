@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
+import { CommunityScorecard } from '@/components/reports/CommunityScorecard';
+import type { DiscoverBrief } from '@/lib/ai/community-intelligence';
 
 type DiscoverForm = {
   brandName: string;
@@ -24,20 +26,7 @@ type RetrievedSource = {
   createdAt: string;
 };
 
-type DiscoverResult = {
-  executiveSummary: string;
-  communityIntelligenceScore: number;
-  marketSignals: string[];
-  likelyConversationThemes: string[];
-  biggestBusinessOpportunities: string[];
-  biggestRisks: string[];
-  buyingIntentSignals: string[];
-  competitorIntelligence: string[];
-  aiSearchOpportunities: string[];
-  contentRoadmap: string[];
-  priorityActions: string[];
-  recommendedSearches: string[];
-  confidenceScore: number;
+type DiscoverResult = DiscoverBrief & {
   sourceCoverage: {
     searchedSources: string[];
     comingLater: string[];
@@ -120,6 +109,7 @@ function DiscoveryResults({ result }: { result: DiscoverResult }) {
         <h3>Executive Summary</h3>
         <p>{result.executiveSummary}</p>
       </article>
+      <CommunityScorecard scorecard={result.communityIntelligenceScorecard} />
       <div className="discovery-meta-grid">
         <article className="finding"><h3>Sources searched</h3><p>{result.sourceCoverage.searchedSources.join(', ')}</p></article>
         <article className="finding"><h3>Coverage note</h3><p>{result.sourceCoverage.limitation}</p></article>

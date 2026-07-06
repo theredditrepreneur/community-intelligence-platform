@@ -45,9 +45,61 @@ export type BriefInput = {
   desiredOutputLength: string;
 };
 
+export type CommunityIntelligenceLevel =
+  | 'Invisible'
+  | 'Emerging'
+  | 'Trusted'
+  | 'Authority'
+  | 'Community Leader';
+
+export type CommunityIntelligenceScorecard = {
+  overallScore: number;
+  level: CommunityIntelligenceLevel;
+  confidence: 'High' | 'Medium' | 'Low';
+  categories: {
+    communityTrust: {
+      score: number;
+      explanation: string;
+      evidence: string[];
+    };
+    recommendationFrequency: {
+      score: number;
+      explanation: string;
+      evidence: string[];
+    };
+    sentimentConsistency: {
+      score: number;
+      explanation: string;
+      evidence: string[];
+    };
+    communityAuthority: {
+      score: number;
+      explanation: string;
+      evidence: string[];
+    };
+    strategicInsight: {
+      score: number;
+      explanation: string;
+      evidence: string[];
+    };
+  };
+  topStrengths: string[];
+  topRisks: string[];
+  biggestOpportunity: string;
+  executiveRecommendation: string;
+  communityToAiAlignment: {
+    summary: string;
+    alignedThemes: string[];
+    gaps: string[];
+    likelyAiInfluencingNarratives: string[];
+    recommendedActions: string[];
+  };
+};
+
 export type AnalyseBrief = {
   executiveSummary: string;
   communityIntelligenceScore: number;
+  communityIntelligenceScorecard: CommunityIntelligenceScorecard;
   keyFindings: string[];
   painPoints: string[];
   buyingIntent: string[];
@@ -63,6 +115,7 @@ export type AnalyseBrief = {
 export type DiscoverBrief = {
   executiveSummary: string;
   communityIntelligenceScore: number;
+  communityIntelligenceScorecard: CommunityIntelligenceScorecard;
   marketSignals: string[];
   likelyConversationThemes: string[];
   biggestBusinessOpportunities: string[];
@@ -110,9 +163,36 @@ function frameworkInstruction(mode: 'analyse' | 'discover') {
     mode === 'discover'
       ? 'Important: Discover currently uses supported public Reddit search results only. Do not claim YouTube, LinkedIn, TikTok, X, reviews, forums or the whole web were searched. Ground the brief in supplied retrievedSources when available, and be explicit when source coverage is limited.'
       : 'Ground the brief in the pasted conversation text. Use evidence only from the supplied text and be clear when confidence is limited.',
+    'Include a Community Intelligence Scorecard. This is not a sentiment score. It measures community trust, recommendation behaviour, consistency of perception, authority and strategic insight.',
+    'Score five categories out of 20: communityTrust, recommendationFrequency, sentimentConsistency, communityAuthority and strategicInsight. The overall score must be the sum of those five category scores, out of 100.',
+    'Assign exactly one level from these thresholds: 0-19 Invisible, 20-39 Emerging, 40-59 Trusted, 60-79 Authority, 80-100 Community Leader.',
+    'Score confidence as High, Medium or Low based on evidence volume, recency, source diversity and consistency.',
+    'Do not invent evidence. Use exact quotes or concise excerpts when available. If evidence is weak or insufficient, say so clearly and score conservatively.',
+    'The Community to AI Alignment section should explain how community themes may influence AI-generated answers and where AI discovery may be misaligned, outdated or incomplete.',
     'Return only valid JSON. Do not wrap the JSON in markdown.',
   ].join('\n');
 }
+
+const scorecardSchemaInstruction = `communityIntelligenceScorecard object with exactly:
+overallScore number from 0 to 100,
+level one of "Invisible", "Emerging", "Trusted", "Authority", "Community Leader",
+confidence one of "High", "Medium", "Low",
+categories object with:
+  communityTrust { score number from 0 to 20, explanation string, evidence array of exact quotes or concise excerpts },
+  recommendationFrequency { score number from 0 to 20, explanation string, evidence array of exact quotes or concise excerpts },
+  sentimentConsistency { score number from 0 to 20, explanation string, evidence array of exact quotes or concise excerpts },
+  communityAuthority { score number from 0 to 20, explanation string, evidence array of exact quotes or concise excerpts },
+  strategicInsight { score number from 0 to 20, explanation string, evidence array of exact quotes or concise excerpts },
+topStrengths array of exactly 3 strings,
+topRisks array of exactly 3 strings,
+biggestOpportunity string,
+executiveRecommendation string,
+communityToAiAlignment object with:
+  summary string,
+  alignedThemes array of strings,
+  gaps array of strings,
+  likelyAiInfluencingNarratives array of strings,
+  recommendedActions array of strings.`;
 
 function extractJson<T>(content: string): T {
   try {
@@ -157,6 +237,7 @@ export async function generateAnalyseBrief(input: AnalyseInput) {
 Return JSON with exactly these keys:
 executiveSummary string,
 communityIntelligenceScore number from 0 to 100,
+${scorecardSchemaInstruction}
 keyFindings array of strings,
 painPoints array of strings,
 buyingIntent array of strings,
@@ -167,6 +248,8 @@ recommendedActions array of strings,
 businessImpact string,
 evidence array of short quoted or paraphrased evidence points from the supplied conversation,
 confidenceScore number from 0 to 100.
+
+Set communityIntelligenceScore to the same value as communityIntelligenceScorecard.overallScore.
 
 Input:
 ${JSON.stringify(input, null, 2)}`
@@ -181,6 +264,7 @@ export async function generateDiscoverBrief(input: DiscoverInput) {
 Return JSON with exactly these keys:
 executiveSummary string,
 communityIntelligenceScore number from 0 to 100,
+${scorecardSchemaInstruction}
 marketSignals array of strings,
 likelyConversationThemes array of strings,
 biggestBusinessOpportunities array of strings,
@@ -192,6 +276,8 @@ contentRoadmap array of strings,
 priorityActions array of strings,
 recommendedSearches array of strings,
 confidenceScore number from 0 to 100.
+
+Set communityIntelligenceScore to the same value as communityIntelligenceScorecard.overallScore.
 
 Input:
 ${JSON.stringify(input, null, 2)}`

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
+import { CommunityScorecard } from '@/components/reports/CommunityScorecard';
 import type { AnalyseBrief, AnalyseInput } from '@/lib/ai/community-intelligence';
 
 type ConversationSource = {
@@ -40,6 +41,7 @@ function AnalyseResults({ brief }: { brief: AnalyseBrief }) {
         <h3>Executive Summary</h3>
         <p>{brief.executiveSummary}</p>
       </article>
+      <CommunityScorecard scorecard={brief.communityIntelligenceScorecard} />
       <div className="score-grid">
         <ScoreCard label="Community Intelligence Score" value={brief.communityIntelligenceScore} />
         <ScoreCard label="Confidence Score" value={brief.confidenceScore} />
