@@ -195,6 +195,7 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
 .brief-company-summary { display: grid; gap: 8px; border: 1px solid var(--soft); border-radius: 10px; background: #fff; padding: 16px; }
 .brief-company-summary strong { color: var(--ink); font-size: 18px; line-height: 1.2; }
 .brief-company-summary span { color: var(--ink); font-size: 15px; line-height: 1.45; }
+.brief-company-section textarea { min-height: 240px; resize: vertical; }
 .brief-goals { display: grid; gap: 12px; }
 .goal-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .goal-chip { min-height: 54px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); padding: 0 16px; text-align: left; font-weight: 850; cursor: pointer; }
