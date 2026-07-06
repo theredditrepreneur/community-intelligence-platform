@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { getCurrentSubscription, hasPlanAccess } from '@/lib/subscription';
+import { getCurrentSubscription, hasAdminAccess, hasPlanAccess } from '@/lib/subscription';
 import { getCurrentUser } from '@/lib/supabase/server';
 
 export const dynamic = 'force-dynamic';
@@ -84,7 +84,8 @@ export default async function DashboardPage() {
   }
 
   const subscription = await getCurrentSubscription();
-  const planLabel = getPlanLabel(subscription.subscriptionPlan);
+  const isAdmin = hasAdminAccess(subscription);
+  const planLabel = isAdmin ? 'Admin' : getPlanLabel(subscription.subscriptionPlan);
   const canAnalyse = hasPlanAccess(subscription, 'analyse');
   const canDiscover = hasPlanAccess(subscription, 'discover');
   const nextStep = canDiscover
@@ -108,9 +109,12 @@ export default async function DashboardPage() {
           <div>
             <span className="dashboard-kicker">Subscription Status</span>
             <h2>Current plan: {planLabel}</h2>
-            <p>Access level: {canDiscover ? 'Analyse, Discover and Briefs workspaces' : canAnalyse ? 'Analyse and Briefs workspaces' : 'Briefs workspace'}</p>
+            <p>Access level: {isAdmin ? 'All paid features and admin testing' : canDiscover ? 'Analyse, Discover and Briefs workspaces' : canAnalyse ? 'Analyse and Briefs workspaces' : 'Briefs workspace'}</p>
+            {isAdmin ? <p className="helper">Admin access enabled.</p> : null}
           </div>
-          {planLabel === 'Free' ? (
+          {isAdmin ? (
+            <a className="btn btn-primary" href="/app/billing">Open billing</a>
+          ) : planLabel === 'Free' ? (
             <a className="btn btn-primary" href="/pricing">View plans</a>
           ) : (
             <a className="btn btn-primary" href="/api/stripe/portal">Manage billing</a>

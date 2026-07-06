@@ -70,6 +70,15 @@ function formatBrief(brief: ActionBrief) {
 }
 
 function UpgradeCta({ subscriptionLabel }: BriefsWorkspaceProps) {
+  if (subscriptionLabel === 'Admin') {
+    return (
+      <article className="finding brief-upgrade-card">
+        <h3>Admin Test Mode</h3>
+        <p>Admin access enabled.</p>
+      </article>
+    );
+  }
+
   if (subscriptionLabel === 'Discover') {
     return (
       <article className="finding brief-upgrade-card">

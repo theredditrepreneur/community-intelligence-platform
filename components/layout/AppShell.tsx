@@ -4,17 +4,18 @@ import { MobileAppBar, MobileBottomNav } from './MobileNavigation';
 
 type AppShellProps = {
   children: ReactNode;
-  subscriptionLabel: 'Free' | 'Analyse' | 'Discover';
+  subscriptionLabel: 'Free' | 'Analyse' | 'Discover' | 'Admin';
+  isAdmin?: boolean;
   user: {
     email?: string;
     name?: string;
   };
 };
 
-export function AppShell({ children, subscriptionLabel, user }: AppShellProps) {
+export function AppShell({ children, subscriptionLabel, isAdmin, user }: AppShellProps) {
   return (
     <div className="app-grid">
-      <Sidebar subscriptionLabel={subscriptionLabel} user={user} />
+      <Sidebar subscriptionLabel={subscriptionLabel} isAdmin={isAdmin} user={user} />
       <MobileAppBar subscriptionLabel={subscriptionLabel} />
       <main className="main">{children}</main>
       <MobileBottomNav />

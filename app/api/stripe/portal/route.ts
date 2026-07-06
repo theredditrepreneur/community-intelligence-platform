@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAppUrl, getStripe } from '@/lib/stripe';
-import { getCurrentSubscription } from '@/lib/subscription';
+import { getCurrentSubscription, hasAdminAccess } from '@/lib/subscription';
 import { getCurrentUser } from '@/lib/supabase/server';
 
 export async function GET(request: Request) {
@@ -14,6 +14,10 @@ export async function GET(request: Request) {
   const subscription = await getCurrentSubscription();
 
   if (!subscription.stripeCustomerId) {
+    if (hasAdminAccess(subscription)) {
+      return NextResponse.redirect(new URL('/app/billing?admin=1', requestUrl.origin));
+    }
+
     return NextResponse.redirect(new URL('/pricing', requestUrl.origin));
   }
 

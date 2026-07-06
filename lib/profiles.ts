@@ -1,4 +1,5 @@
 import type { SubscriptionMetadata } from '@/lib/subscription';
+import { isAdminUser, type UserRole } from '@/lib/admin';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
@@ -20,8 +21,17 @@ type ProfileSubscriptionRow = {
   subscription_current_period_end: number | null;
 };
 
-function fromProfileRow(row?: ProfileSubscriptionRow | null): SubscriptionMetadata {
-  if (!row) return {};
+type ProfileRoleRow = {
+  role: UserRole | null;
+};
+
+function fromProfileRow(row?: ProfileSubscriptionRow | null, role?: UserRole | null, isAdmin?: boolean): SubscriptionMetadata {
+  if (!row) {
+    return {
+      role: role || undefined,
+      isAdmin,
+    };
+  }
 
   return {
     stripeCustomerId: row.stripe_customer_id || undefined,
@@ -30,6 +40,8 @@ function fromProfileRow(row?: ProfileSubscriptionRow | null): SubscriptionMetada
     subscriptionPlan: row.subscription_plan || undefined,
     subscriptionStatus: row.subscription_status || undefined,
     subscriptionCurrentPeriodEnd: row.subscription_current_period_end || undefined,
+    role: role || undefined,
+    isAdmin,
   };
 }
 
@@ -47,7 +59,15 @@ export async function getCurrentProfileSubscription() {
     .eq('id', user.id)
     .maybeSingle<ProfileSubscriptionRow>();
 
-  return fromProfileRow(data);
+  const { data: roleData } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .maybeSingle<ProfileRoleRow>();
+
+  const role = roleData?.role || null;
+
+  return fromProfileRow(data, role, isAdminUser(user, role));
 }
 
 export async function updateProfileSubscription(userId: string, subscription: SubscriptionMetadata) {

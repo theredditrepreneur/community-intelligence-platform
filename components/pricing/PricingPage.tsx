@@ -5,14 +5,14 @@ import { activeSubscriptionStatuses } from '@/lib/config/subscriptions';
 import { platform } from '@/lib/config/platform';
 import { getCurrentUser } from '@/lib/supabase/server';
 import { signOut } from '@/lib/auth-actions';
-import { getCurrentSubscription, getSubscriptionAppPath } from '@/lib/subscription';
+import { getCurrentSubscription, getSubscriptionAppPath, hasAdminAccess } from '@/lib/subscription';
 import { PricingCard } from './PricingCard';
 
 export async function PricingPage() {
   const user = await getCurrentUser();
   const subscription = user ? await getCurrentSubscription() : {};
   const hasActiveSubscription = activeSubscriptionStatuses.includes(subscription.subscriptionStatus || 'none');
-  const appPath = user ? (hasActiveSubscription ? getSubscriptionAppPath(subscription) : '/app/briefs') : '/sign-in';
+  const appPath = user ? (hasActiveSubscription || hasAdminAccess(subscription) ? getSubscriptionAppPath(subscription) : '/app/briefs') : '/sign-in';
 
   return (
     <main className="public-main">

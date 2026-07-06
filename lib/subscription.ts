@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { activeSubscriptionStatuses, type PaidPlan, type SubscriptionStatus } from '@/lib/config/subscriptions';
 import { getCurrentProfileSubscription } from '@/lib/profiles';
+import type { UserRole } from '@/lib/admin';
 
 export const pendingCheckoutCookie = 'redditrepreneur_pending_checkout_plan';
 
@@ -8,7 +9,7 @@ export function isPaidPlan(value: unknown): value is PaidPlan {
   return value === 'analyse' || value === 'discover';
 }
 
-export type SubscriptionLabel = 'Free' | 'Analyse' | 'Discover';
+export type SubscriptionLabel = 'Free' | 'Analyse' | 'Discover' | 'Admin';
 
 export type SubscriptionMetadata = {
   stripeCustomerId?: string;
@@ -17,9 +18,19 @@ export type SubscriptionMetadata = {
   subscriptionPlan?: PaidPlan;
   subscriptionStatus?: SubscriptionStatus;
   subscriptionCurrentPeriodEnd?: number;
+  role?: UserRole;
+  isAdmin?: boolean;
 };
 
+export function hasAdminAccess(subscription: SubscriptionMetadata) {
+  return subscription.isAdmin === true;
+}
+
 export function hasPlanAccess(subscription: SubscriptionMetadata, requiredPlan: PaidPlan) {
+  if (hasAdminAccess(subscription)) {
+    return true;
+  }
+
   const status = subscription.subscriptionStatus || 'none';
 
   if (!activeSubscriptionStatuses.includes(status)) {
@@ -40,6 +51,8 @@ export async function getCurrentSubscription() {
 export async function getSubscriptionLabel(): Promise<SubscriptionLabel> {
   const subscription = await getCurrentSubscription();
 
+  if (hasAdminAccess(subscription)) return 'Admin';
+
   if (!activeSubscriptionStatuses.includes(subscription.subscriptionStatus || 'none')) {
     return 'Free';
   }
@@ -51,6 +64,10 @@ export async function getSubscriptionLabel(): Promise<SubscriptionLabel> {
 }
 
 export function getSubscriptionAppPath(subscription: SubscriptionMetadata) {
+  if (hasAdminAccess(subscription)) {
+    return '/app/dashboard';
+  }
+
   if (!activeSubscriptionStatuses.includes(subscription.subscriptionStatus || 'none')) {
     return '/app/dashboard';
   }

@@ -8,14 +8,15 @@ import { platform } from '@/lib/config/platform';
 import { signOut } from '@/lib/auth-actions';
 
 type SidebarProps = {
-  subscriptionLabel: 'Free' | 'Analyse' | 'Discover';
+  subscriptionLabel: 'Free' | 'Analyse' | 'Discover' | 'Admin';
+  isAdmin?: boolean;
   user: {
     email?: string;
     name?: string;
   };
 };
 
-function AccountMenu({ subscriptionLabel, user }: SidebarProps) {
+function AccountMenu({ subscriptionLabel, isAdmin, user }: SidebarProps) {
   const displayName = user.name || user.email || 'Account';
   const email = user.email || 'Signed in';
 
@@ -28,7 +29,11 @@ function AccountMenu({ subscriptionLabel, user }: SidebarProps) {
           <small>{email}</small>
         </span>
       </Link>
-      <span className={['subscription-badge', subscriptionLabel.toLowerCase()].join(' ')}>{subscriptionLabel}</span>
+      <div className="account-badges">
+        <span className={['subscription-badge', subscriptionLabel.toLowerCase()].join(' ')}>{subscriptionLabel}</span>
+        {isAdmin ? <span className="admin-badge">Admin</span> : null}
+      </div>
+      {isAdmin ? <p className="admin-note">Admin access enabled.</p> : null}
       <div className="account-links">
         <Link href="/app/profile">Profile</Link>
         <Link href="/app/billing">Billing</Link>
@@ -41,7 +46,7 @@ function AccountMenu({ subscriptionLabel, user }: SidebarProps) {
   );
 }
 
-export function Sidebar({ subscriptionLabel, user }: SidebarProps) {
+export function Sidebar({ subscriptionLabel, isAdmin, user }: SidebarProps) {
   const pathname = usePathname();
   return (
     <aside className="sidebar">
@@ -66,7 +71,7 @@ export function Sidebar({ subscriptionLabel, user }: SidebarProps) {
       </nav>
       <div />
       <div className="sidebar-account">
-        <AccountMenu subscriptionLabel={subscriptionLabel} user={user} />
+        <AccountMenu subscriptionLabel={subscriptionLabel} isAdmin={isAdmin} user={user} />
       </div>
       <div className="side-copy">
         <strong>{platform.tagline}</strong>

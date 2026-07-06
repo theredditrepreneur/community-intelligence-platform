@@ -1,6 +1,12 @@
 import { Button } from '@/components/ui/Button';
+import { getCurrentSubscription, hasAdminAccess } from '@/lib/subscription';
 
-export default function BillingPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function BillingPage() {
+  const subscription = await getCurrentSubscription();
+  const isAdmin = hasAdminAccess(subscription);
+
   return (
     <>
       <section className="hero account-hero">
@@ -11,9 +17,13 @@ export default function BillingPage() {
 
       <section className="panel account-panel">
         <h2>Subscription management</h2>
-        <p className="helper">Open Stripe Billing to update payment details, view invoices or manage your subscription.</p>
+        <p className="helper">
+          {isAdmin
+            ? 'Admin access enabled. Stripe billing is still reserved for real customer subscriptions.'
+            : 'Open Stripe Billing to update payment details, view invoices or manage your subscription.'}
+        </p>
         <div className="account-actions">
-          <a className="btn btn-primary" href="/api/stripe/portal">Manage Billing</a>
+          {isAdmin ? null : <a className="btn btn-primary" href="/api/stripe/portal">Manage Billing</a>}
           <Button href="/pricing" variant="secondary">View plans</Button>
         </div>
       </section>
