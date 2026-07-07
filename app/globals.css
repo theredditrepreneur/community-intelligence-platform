@@ -220,6 +220,16 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
 .brief-output-actions .btn { min-width: 150px; }
 .brief-upgrade-card { border-top: 4px solid var(--orange); display: grid; gap: 16px; }
 .brief-upgrade-card .btn { width: fit-content; }
+.reports-layout { max-width: 1180px; display: grid; grid-template-columns: 340px 1fr; gap: 22px; align-items: start; }
+.reports-list { display: grid; gap: 12px; }
+.reports-list-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.reports-list-head .dashboard-kicker { margin-bottom: 0; }
+.reports-list-head button { border: 0; background: transparent; color: var(--muted); font-weight: 900; cursor: pointer; }
+.saved-report { width: 100%; min-height: 78px; border: 1px solid var(--soft); border-radius: 10px; background: #fff; padding: 14px; display: grid; gap: 6px; text-align: left; color: var(--ink); cursor: pointer; }
+.saved-report.active { border-color: rgba(255, 75, 11, .32); background: rgba(255, 75, 11, .06); }
+.saved-report strong { font-size: 14px; line-height: 1.25; }
+.saved-report span { color: var(--muted); font-size: 12px; font-weight: 800; }
+.reports-preview { margin-top: 0; }
 .pricing-section { max-width: 1180px; margin: 0 auto; display: grid; gap: 26px; }
 .pricing-header { max-width: 880px; }
 .pricing-header h1, .pricing-header h2 { margin: 0 0 16px; font-size: clamp(38px, 4.7vw, 58px); line-height: 1.12; }
@@ -344,7 +354,7 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
   .mobile-bottom-nav a.active::before { content: ""; position: absolute; top: 5px; width: 18px; height: 3px; border-radius: 99px; background: var(--orange); }
   .public-auth { position: static; margin-bottom: 28px; }
   .main, .public-main { padding: 28px 22px 86px; }
-  .source-row, .field-grid, .monitoring, .signal-grid, .launch-grid, .pricing-grid, .dashboard-grid, .quick-action-grid, .two-column-dashboard, .score-grid, .discover-explainer, .discovery-meta-grid, .briefs-layout, .decision-overview-grid, .decision-feed-grid, .ask-intelligence-card, .scorecard-category-grid, .scorecard-insight-grid, .alignment-grid, .profile-chip-grid, .brand-context-grid, .smart-template-grid { grid-template-columns: 1fr; }
+  .source-row, .field-grid, .monitoring, .signal-grid, .launch-grid, .pricing-grid, .dashboard-grid, .quick-action-grid, .two-column-dashboard, .score-grid, .discover-explainer, .discovery-meta-grid, .briefs-layout, .decision-overview-grid, .decision-feed-grid, .ask-intelligence-card, .scorecard-category-grid, .scorecard-insight-grid, .alignment-grid, .profile-chip-grid, .brand-context-grid, .smart-template-grid, .reports-layout { grid-template-columns: 1fr; }
   .full { grid-column: auto; }
   .briefs-guidance { position: static; }
   .card, .panel, .step-card, .finding, .status-panel, .launch-card, .setup-card, .price-card, .dashboard-card, .scorecard-category { box-shadow: 0 12px 32px rgba(7,31,61,.06); }
