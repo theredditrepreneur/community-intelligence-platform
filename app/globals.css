@@ -190,6 +190,14 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
 .assessment-card strong { color: var(--ink); }
 .assessment-card-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
 .assessment-decision { border-top: 5px solid var(--orange); }
+.assessment-success-card { border-top: 5px solid var(--green); }
+.assessment-success-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.assessment-success-grid div { min-width: 0; display: grid; align-content: start; gap: 8px; padding: 16px; border: 1px solid var(--soft); border-radius: 10px; background: #f8fafc; overflow-wrap: anywhere; }
+.assessment-success-grid strong { color: var(--muted); font-size: 12px; font-weight: 950; text-transform: uppercase; letter-spacing: .06em; }
+.assessment-success-grid p { font-size: 15px; line-height: 1.45; }
+.assessment-action-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.assessment-action-row .btn { min-height: 50px; min-width: 170px; padding-left: 18px; padding-right: 18px; }
+.assessment-action-row .btn:disabled { cursor: not-allowed; opacity: .58; }
 .assessment-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
 .assessment-grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .assessment-summary-grid, .assessment-detail-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
@@ -218,6 +226,13 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
 .methodology-footer { background: linear-gradient(135deg, #fff, #f7fbff); }
 .methodology-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
 .final-conclusion-card { border-top: 5px solid var(--green); }
+.turn-into-card { border-top: 5px solid var(--orange); }
+.turn-into-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); gap: 12px; }
+.turn-into-option { min-height: 104px; display: grid; align-content: center; gap: 8px; border: 1px solid var(--soft); border-radius: 10px; background: #f8fafc; color: var(--ink); padding: 16px; text-align: left; cursor: pointer; }
+.turn-into-option:hover { border-color: rgba(255,75,11,.28); background: rgba(255,75,11,.06); }
+.turn-into-option strong { font-size: 18px; line-height: 1.2; }
+.turn-into-option span { color: var(--muted); font-size: 13px; font-weight: 900; }
+.turn-into-option.disabled { cursor: not-allowed; opacity: .62; }
 .briefs-layout { max-width: 1180px; display: grid; grid-template-columns: 1fr 340px; gap: 22px; align-items: start; }
 .briefs-form-panel { max-width: none; }
 .briefs-guidance { position: sticky; top: 28px; border-top: 4px solid var(--green); }
@@ -341,6 +356,7 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
 .quick-action-card .btn { width: 100%; min-width: 0; margin-top: auto; }
 .card-title-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .two-column-dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.three-column-dashboard { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
 .briefs-card { min-height: 270px; display: grid; align-content: center; }
 .snapshot-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 .snapshot-grid div { min-height: 112px; display: grid; align-content: center; gap: 8px; padding: 18px; border: 1px solid var(--soft); border-radius: 10px; background: #f8fafc; }
@@ -396,11 +412,11 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
   .mobile-bottom-nav a.active::before { content: ""; position: absolute; top: 5px; width: 18px; height: 3px; border-radius: 99px; background: var(--orange); }
   .public-auth { position: static; margin-bottom: 28px; }
   .main, .public-main { padding: 28px 22px 86px; }
-  .source-row, .field-grid, .monitoring, .signal-grid, .launch-grid, .pricing-grid, .dashboard-grid, .quick-action-grid, .two-column-dashboard, .score-grid, .discover-explainer, .discovery-meta-grid, .briefs-layout, .decision-overview-grid, .decision-feed-grid, .ask-intelligence-card, .scorecard-category-grid, .scorecard-insight-grid, .alignment-grid, .profile-chip-grid, .brand-context-grid, .smart-template-grid, .reports-layout, .assessment-hero, .assessment-grid, .assessment-grid.two, .assessment-summary-grid, .assessment-detail-grid, .assessment-detail-grid.compact, .opportunity-ranking-grid, .priority-matrix-grid, .competitor-intel-grid, .ai-search-opportunity-grid, .roadmap-grid, .priority-actions-grid, .methodology-grid { grid-template-columns: 1fr; }
+  .source-row, .field-grid, .monitoring, .signal-grid, .launch-grid, .pricing-grid, .dashboard-grid, .quick-action-grid, .two-column-dashboard, .three-column-dashboard, .score-grid, .discover-explainer, .discovery-meta-grid, .briefs-layout, .decision-overview-grid, .decision-feed-grid, .ask-intelligence-card, .scorecard-category-grid, .scorecard-insight-grid, .alignment-grid, .profile-chip-grid, .brand-context-grid, .smart-template-grid, .reports-layout, .assessment-hero, .assessment-grid, .assessment-grid.two, .assessment-summary-grid, .assessment-detail-grid, .assessment-detail-grid.compact, .assessment-success-grid, .opportunity-ranking-grid, .priority-matrix-grid, .competitor-intel-grid, .ai-search-opportunity-grid, .roadmap-grid, .priority-actions-grid, .methodology-grid { grid-template-columns: 1fr; }
   .full { grid-column: auto; }
   .briefs-guidance { position: static; }
   .card, .panel, .step-card, .finding, .status-panel, .launch-card, .setup-card, .price-card, .dashboard-card, .scorecard-category { box-shadow: 0 12px 32px rgba(7,31,61,.06); }
-  .dashboard-grid, .quick-action-grid, .two-column-dashboard, .findings, .scroll-stack, .briefs-layout, .decision-overview-grid, .decision-feed-grid, .assessment-section, .assessment-grid { gap: 16px; }
+  .dashboard-grid, .quick-action-grid, .two-column-dashboard, .three-column-dashboard, .findings, .scroll-stack, .briefs-layout, .decision-overview-grid, .decision-feed-grid, .assessment-section, .assessment-grid { gap: 16px; }
   .quick-action-card, .briefs-card { min-height: auto; }
   .dashboard-section { margin-top: 22px; }
   .account-links a, .account-links button, .remove-source, .goal-chip, .chip, .source-chip, .option, .auth-link, .auth-cta, .account-button { min-height: 44px; }

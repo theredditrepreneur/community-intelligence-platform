@@ -106,8 +106,8 @@ export default async function DashboardPage() {
       <section className="dashboard-hero">
         <div>
           <div className="eyebrow">Dashboard</div>
-          <h1>Good morning.</h1>
-          <p>{brand ? `${brand.companyName} is ready for Community Intelligence.` : 'Here is your Community Intelligence workspace.'}</p>
+          <h1>Good morning, {brand?.companyName || 'Founder'}.</h1>
+          <p>{brand ? `${brand.companyName} is ready for Community Intelligence.` : 'Create your Brand Profile so every Assessment can be personalised.'}</p>
         </div>
       </section>
 
@@ -146,7 +146,7 @@ export default async function DashboardPage() {
           <div>
             <span className="dashboard-kicker">Decision Feed</span>
             <h2>Today&apos;s Community Intelligence Priorities</h2>
-            <p>Recommended actions based on your latest briefs, reports and discovered opportunities.</p>
+            <p>Recommended actions based on your latest Assessments, Briefs and discovered opportunities.</p>
           </div>
         </div>
 
@@ -250,8 +250,8 @@ export default async function DashboardPage() {
           </article>
           <article className="dashboard-card quick-action-card">
             <h3>View Reports</h3>
-            <p>Review saved intelligence outputs as your library grows.</p>
-            <Button href="/app/reports" variant="secondary">Open Reports</Button>
+            <p>Review saved Action Centre Briefs as your library grows.</p>
+            <Button href="/app/reports" variant="secondary">Open Library</Button>
           </article>
           <article className="dashboard-card quick-action-card">
             <div className="card-title-row">
@@ -264,19 +264,29 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      <section className="dashboard-section two-column-dashboard">
+      <section className="dashboard-section three-column-dashboard">
         <article className="dashboard-card briefs-card">
-          <span className="dashboard-kicker">Recent Intelligence Briefs</span>
-          <h2>No saved briefs yet.</h2>
-          <p>Your generated Community Intelligence reports will appear here.</p>
+          <span className="dashboard-kicker">Latest Assessments</span>
+          <h2>No Assessments yet.</h2>
+          <p>Run your first Analyse or Discover to generate a Community Intelligence Assessment.</p>
+          <div className="button-row">
+            <Button href="/app/analyse" variant="secondary">Open Analyse</Button>
+            <Button href="/app/discover" variant="orange">Open Discover</Button>
+          </div>
+        </article>
+
+        <article className="dashboard-card briefs-card">
+          <span className="dashboard-kicker">Recent Briefs</span>
+          <h2>No saved Briefs yet.</h2>
+          <p>Turn an Assessment into an Executive Brief, Marketing Strategy or Product Brief.</p>
         </article>
 
         <article className="dashboard-card snapshot-card">
-          <span className="dashboard-kicker">Community Intelligence Snapshot</span>
+          <span className="dashboard-kicker">Latest Activity</span>
           <div className="snapshot-grid">
-            <div><strong>0</strong><span>Briefs generated</span></div>
+            <div><strong>0</strong><span>Assessments completed</span></div>
+            <div><strong>0</strong><span>Briefs saved</span></div>
             <div><strong>0</strong><span>Opportunities found</span></div>
-            <div><strong>0</strong><span>Competitors tracked</span></div>
             <div><strong>0</strong><span>AI Search opportunities</span></div>
           </div>
         </article>

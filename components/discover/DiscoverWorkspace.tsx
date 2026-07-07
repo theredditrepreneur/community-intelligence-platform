@@ -91,12 +91,14 @@ function SourceSelection() {
   );
 }
 
-function DiscoveryResults({ result }: { result: DiscoverResult }) {
+function DiscoveryResults({ result, onRunAnother }: { result: DiscoverResult; onRunAnother: () => void }) {
   return (
     <CommunityAssessment
       assessment={result.assessment}
       fallbackScore={result.communityIntelligenceScore}
       fallbackConfidence={result.confidenceScore}
+      runAnotherLabel="Run Another Discover"
+      onRunAnother={onRunAnother}
       sourceCoverage={result.sourceCoverage}
       retrievedCount={result.retrievedSources.length}
     />
@@ -202,9 +204,11 @@ export function DiscoverWorkspace({ brand }: { brand: BrandProfile }) {
         </section>
       ) : null}
 
+      {isGenerating ? <section className="loading active"><div>Searching supported public sources...</div><div>Filtering relevant conversations...</div><div>Ranking opportunities...</div><div>Building Community Intelligence Assessment...</div></section> : null}
+
       {result ? (
         <>
-          <DiscoveryResults result={result} />
+          <DiscoveryResults result={result} onRunAnother={() => { setResult(null); setStep(1); window.scrollTo({ top: 0, behavior: 'smooth' }); }} />
           <div className="repeat-actions">
             <Button variant="orange" onClick={() => { setResult(null); setStep(1); }}>Start New Discovery</Button>
           </div>

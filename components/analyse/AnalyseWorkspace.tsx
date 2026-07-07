@@ -20,12 +20,14 @@ const initialSource: ConversationSource = {
   text: '',
 };
 
-function AnalyseResults({ brief }: { brief: AnalyseBrief }) {
+function AnalyseResults({ brief, onRunAnother }: { brief: AnalyseBrief; onRunAnother: () => void }) {
   return (
     <CommunityAssessment
       assessment={brief.assessment}
       fallbackScore={brief.communityIntelligenceScore}
       fallbackConfidence={brief.confidenceScore}
+      runAnotherLabel="Run Another Analyse"
+      onRunAnother={onRunAnother}
     />
   );
 }
@@ -134,9 +136,9 @@ export function AnalyseWorkspace({ brand }: { brand: BrandProfile }) {
           </div>
         </div>
       </section>
-      {loading ? <section className="loading active"><div>Reading conversation context...</div><div>Finding commercial signals...</div><div>Building Community Intelligence Assessment...</div></section> : null}
+      {loading ? <section className="loading active"><div>Reading conversation data...</div><div>Identifying pain points...</div><div>Detecting buying intent...</div><div>Building Community Intelligence Assessment...</div></section> : null}
       {!brief && !loading ? <section className="empty-state panel"><h2>No assessment generated yet.</h2><p>Paste a conversation and generate your first Community Intelligence Assessment.</p></section> : null}
-      {brief ? <AnalyseResults brief={brief} /> : null}
+      {brief ? <AnalyseResults brief={brief} onRunAnother={() => { setBrief(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }} /> : null}
     </>
   );
 }

@@ -1,3 +1,5 @@
+'use client';
+
 import type { CommunityIntelligenceAssessment } from '@/lib/ai/community-intelligence';
 import type { ReactNode } from 'react';
 
@@ -5,6 +7,8 @@ type CommunityAssessmentProps = {
   assessment?: CommunityIntelligenceAssessment;
   fallbackScore?: number;
   fallbackConfidence?: number;
+  runAnotherLabel?: string;
+  onRunAnother?: () => void;
   sourceCoverage?: {
     searchedSources: string[];
     limitation: string;
@@ -59,24 +63,61 @@ function TextList({ items }: { items?: string[] }) {
   );
 }
 
+function buildAssessmentContext(assessment: CommunityIntelligenceAssessment) {
+  return [
+    'Community Intelligence Assessment',
+    '',
+    'Executive decision',
+    assessment.executiveDecision.recommendedDecision,
+    assessment.executiveDecision.whyThisMatters,
+    '',
+    'Key finding',
+    assessment.executiveSummaryCard.keyFinding,
+    '',
+    'Biggest opportunity',
+    assessment.executiveSummaryCard.biggestOpportunity,
+    '',
+    'Biggest risk',
+    assessment.executiveSummaryCard.biggestRisk,
+    '',
+    'Priority actions',
+    ...assessment.priorityActions.map((action) => `${action.whatToDo}: ${action.why}`),
+    '',
+    'Final conclusion',
+    assessment.finalExecutiveConclusion.overallAssessment,
+  ].filter(Boolean).join('\n');
+}
+
 export function CommunityAssessment({
   assessment,
   fallbackScore,
   fallbackConfidence,
+  runAnotherLabel = 'Run Another Assessment',
+  onRunAnother,
   sourceCoverage,
   retrievedCount,
 }: CommunityAssessmentProps) {
   if (!assessment) return null;
 
-  const health = assessment.communityHealthScore;
-  const confidence = assessment.confidenceScoreExplained;
-  const decision = assessment.executiveDecision;
-  const summary = assessment.executiveSummaryCard;
-  const finalConclusion = assessment.finalExecutiveConclusion;
+  const currentAssessment = assessment;
+  const health = currentAssessment.communityHealthScore;
+  const confidence = currentAssessment.confidenceScoreExplained;
+  const decision = currentAssessment.executiveDecision;
+  const summary = currentAssessment.executiveSummaryCard;
+  const finalConclusion = currentAssessment.finalExecutiveConclusion;
   const confidenceScore = clampScore(confidence?.score || fallbackConfidence);
   const overallScore = clampScore(health?.overallScore || fallbackScore);
   const sourcesSearched = confidence?.sourcesSearched || sourceCoverage?.searchedSources.length || 0;
   const conversationsFound = confidence?.relevantConversationsFound ?? retrievedCount ?? 0;
+
+  function turnInto(briefType: string) {
+    window.sessionStorage.setItem('redditrepreneur_assessment_context', JSON.stringify({
+      briefType,
+      objective: briefType === 'Campaign Brief' ? 'Plan a marketing campaign' : 'Make a business decision',
+      sourceContext: buildAssessmentContext(currentAssessment),
+    }));
+    window.location.href = `/app/briefs?type=${encodeURIComponent(briefType)}`;
+  }
 
   return (
     <section className="assessment-section">
@@ -92,6 +133,28 @@ export function CommunityAssessment({
           ))}
         </div>
       </header>
+
+      <article className="assessment-card assessment-success-card">
+        <div>
+          <span className="dashboard-kicker">Assessment complete</span>
+          <h3>Community Intelligence Assessment complete</h3>
+        </div>
+        <div className="assessment-success-grid">
+          <div><strong>Community Health Score</strong><p>{overallScore}/100</p></div>
+          <div><strong>Top Opportunity</strong><p>{summary.biggestOpportunity}</p></div>
+          <div><strong>Biggest Risk</strong><p>{summary.biggestRisk}</p></div>
+          <div><strong>Recommended Next Step</strong><p>{summary.immediateAction}</p></div>
+          <div><strong>Confidence Score</strong><p>{confidenceScore}/100</p></div>
+        </div>
+        <div className="assessment-action-row">
+          <a className="btn btn-secondary" href="#assessment-detail">View Assessment</a>
+          <button className="btn btn-primary btn-orange" type="button" onClick={() => turnInto('Executive Brief')}>Create Brief</button>
+          <button className="btn btn-secondary" type="button" disabled>Turn Into Content Coming Soon</button>
+          {onRunAnother ? <button className="btn btn-secondary" type="button" onClick={onRunAnother}>{runAnotherLabel}</button> : null}
+        </div>
+      </article>
+
+      <div id="assessment-detail" />
 
       <article className="assessment-card assessment-decision">
         <div className="assessment-card-head">
@@ -285,6 +348,28 @@ export function CommunityAssessment({
           <div><strong>Biggest risk</strong><p>{finalConclusion.biggestRisk}</p></div>
           <div><strong>Immediate next step</strong><p>{finalConclusion.immediateNextStep}</p></div>
           <div><strong>Overall confidence</strong><p>{clampScore(finalConclusion.overallConfidence)}%</p></div>
+        </div>
+      </article>
+
+      <article className="assessment-card turn-into-card">
+        <div>
+          <span className="dashboard-kicker">Action Centre</span>
+          <h3>Turn this Assessment into...</h3>
+          <p>Move from Community Intelligence Assessment to a business-ready deliverable.</p>
+        </div>
+        <div className="turn-into-grid">
+          {['Executive Brief', 'Marketing Strategy', 'Product Brief', 'Campaign Plan'].map((item) => (
+            <button key={item} className="turn-into-option" type="button" onClick={() => turnInto(item === 'Marketing Strategy' ? 'Marketing Brief' : item === 'Campaign Plan' ? 'Campaign Brief' : item)}>
+              <strong>{item}</strong>
+              <span>Open in Action Centre</span>
+            </button>
+          ))}
+          {['LinkedIn Post', 'Blog Outline', 'Newsletter Outline'].map((item) => (
+            <button key={item} className="turn-into-option disabled" type="button" disabled>
+              <strong>{item}</strong>
+              <span>Coming Soon</span>
+            </button>
+          ))}
         </div>
       </article>
     </section>

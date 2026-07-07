@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import type { BrandProfile } from '@/lib/brands';
 import type { ActionBrief, BriefInput } from '@/lib/ai/community-intelligence';
@@ -407,6 +407,29 @@ export function BriefsWorkspace({ subscriptionLabel, brand }: BriefsWorkspacePro
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
 
+  useEffect(() => {
+    const storedContext = window.sessionStorage.getItem('redditrepreneur_assessment_context');
+    const queryType = new URLSearchParams(window.location.search).get('type');
+
+    if (!storedContext && !queryType) return;
+
+    try {
+      const parsed = storedContext ? JSON.parse(storedContext) as Partial<BriefInput> : {};
+      setForm((value) => ({
+        ...value,
+        briefType: parsed.briefType || queryType || value.briefType,
+        objective: parsed.objective || value.objective || 'Make a business decision',
+        sourceContext: parsed.sourceContext || value.sourceContext,
+      }));
+      if (storedContext) {
+        setNotice('Assessment context added to Action Centre.');
+        window.sessionStorage.removeItem('redditrepreneur_assessment_context');
+      }
+    } catch {
+      window.sessionStorage.removeItem('redditrepreneur_assessment_context');
+    }
+  }, []);
+
   async function generateBrief() {
     setLoading(true);
     setError('');
@@ -613,7 +636,7 @@ export function BriefsWorkspace({ subscriptionLabel, brand }: BriefsWorkspacePro
             {error ? <p className="checkout-error">{error}</p> : null}
             {notice ? <p className="auth-success">{notice}</p> : null}
             <div className="button-row">
-              <Button variant="orange" onClick={generateBrief} disabled={loading}>{loading ? 'Generating brief...' : 'Generate Brief'}</Button>
+            <Button variant="orange" onClick={generateBrief} disabled={loading}>{loading ? 'Creating brief...' : 'Generate Brief'}</Button>
               <Button variant="secondary" onClick={resetBrief}>Reset Brief</Button>
             </div>
           </div>
@@ -621,17 +644,17 @@ export function BriefsWorkspace({ subscriptionLabel, brand }: BriefsWorkspacePro
 
         <aside className="dashboard-card briefs-guidance">
           <span className="dashboard-kicker">Coming next</span>
-          <h2>From reports to briefs</h2>
-          <p>Later, Analyse and Discover reports will be sent directly into Action Centre so teams can turn intelligence into launch plans, content plans and leadership updates.</p>
+          <h2>From Assessments to Briefs</h2>
+          <p>Analyse and Discover create Community Intelligence Assessments. Action Centre turns that intelligence into launch plans, content plans and leadership updates.</p>
         </aside>
       </section>
 
-      {loading ? <section className="loading active"><div>Reading source context...</div><div>Structuring action ready sections...</div><div>Generating brief...</div></section> : null}
+      {loading ? <section className="loading active"><div>Structuring brief...</div><div>Applying brand context...</div><div>Turning intelligence into action ready output...</div></section> : null}
 
       {!brief && !loading ? (
         <section className="empty-state panel">
           <h2>No brief generated yet.</h2>
-          <p>Start blank or paste Community Intelligence context, then generate a brief.</p>
+          <p>Turn an Assessment into an Executive Brief, Marketing Strategy or Product Brief.</p>
         </section>
       ) : null}
 

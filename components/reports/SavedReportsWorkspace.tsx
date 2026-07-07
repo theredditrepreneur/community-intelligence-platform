@@ -33,8 +33,8 @@ export function SavedReportsWorkspace() {
   if (!savedBriefs.length) {
     return (
       <section className="empty-state panel">
-        <h2>No saved reports yet.</h2>
-        <p>Create an Analyse report, Discover brief or Action Centre document to start building your intelligence library.</p>
+        <h2>No saved briefs yet.</h2>
+        <p>Turn a Community Intelligence Assessment into an Executive Brief, Marketing Strategy or Product Brief, then save it here.</p>
         <div className="button-row">
           <Button href="/app/analyse" variant="secondary">Analyse conversations</Button>
           <Button href="/app/discover" variant="orange">Discover opportunities</Button>
@@ -48,7 +48,7 @@ export function SavedReportsWorkspace() {
     <section className="reports-layout">
       <aside className="dashboard-card reports-list">
         <div className="reports-list-head">
-          <span className="dashboard-kicker">Saved Reports</span>
+          <span className="dashboard-kicker">Saved Briefs</span>
           <button type="button" onClick={clearSavedBriefs}>Clear</button>
         </div>
         {savedBriefs.map((brief) => (
