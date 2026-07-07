@@ -194,7 +194,7 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
 .assessment-grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .assessment-summary-grid, .assessment-detail-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 .assessment-detail-grid.compact { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.assessment-summary-grid div, .assessment-detail-grid div, .priority-matrix-grid div, .roadmap-grid div, .opportunity-ranking-grid div, .competitor-intel-grid div, .ai-search-opportunity-grid div, .priority-actions-grid div, .methodology-grid div { min-width: 0; display: grid; gap: 8px; padding: 18px; border: 1px solid var(--soft); border-radius: 10px; background: #f8fafc; }
+.assessment-summary-grid div, .assessment-detail-grid div, .priority-matrix-grid div, .roadmap-grid div, .opportunity-ranking-grid div, .competitor-intel-grid div, .ai-search-opportunity-grid div, .priority-actions-grid div, .methodology-grid div { min-width: 0; display: grid; align-content: start; gap: 8px; padding: 18px; border: 1px solid var(--soft); border-radius: 10px; background: #f8fafc; overflow-wrap: anywhere; word-break: normal; }
 .assessment-summary-grid strong, .assessment-detail-grid strong, .priority-matrix-grid h3, .roadmap-grid h3 { color: var(--muted); font-size: 12px; font-weight: 950; text-transform: uppercase; letter-spacing: .06em; }
 .assessment-score { color: var(--orange); font-size: 34px; line-height: 1; }
 .assessment-badge { display: inline-flex; width: fit-content; min-height: 32px; align-items: center; border-radius: 999px; padding: 0 11px; border: 1px solid var(--soft); background: #f3f7fb; color: var(--ink); font-size: 12px; font-weight: 950; text-transform: uppercase; letter-spacing: .05em; }
@@ -212,9 +212,9 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
 .eir-card { align-content: start; }
 .eir-card div, .buying-intent-card div { display: grid; gap: 8px; }
 .eir-card div strong, .buying-intent-card div strong { color: var(--muted); font-size: 12px; font-weight: 950; text-transform: uppercase; letter-spacing: .06em; }
-.opportunity-ranking-grid, .competitor-intel-grid, .ai-search-opportunity-grid, .priority-actions-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-.priority-matrix-grid, .roadmap-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
-.roadmap-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.opportunity-ranking-grid, .competitor-intel-grid, .ai-search-opportunity-grid, .priority-actions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 14px; }
+.priority-matrix-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 14px; }
+.roadmap-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); gap: 14px; }
 .methodology-footer { background: linear-gradient(135deg, #fff, #f7fbff); }
 .methodology-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
 .final-conclusion-card { border-top: 5px solid var(--green); }
