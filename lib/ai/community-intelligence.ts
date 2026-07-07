@@ -96,8 +96,105 @@ export type CommunityIntelligenceScorecard = {
   };
 };
 
+export type CommunityIntelligenceAssessment = {
+  executiveDecision: {
+    priority: 'High' | 'Medium' | 'Low';
+    recommendedDecision: string;
+    whyThisMatters: string;
+    expectedImpact: string;
+    confidence: number;
+  };
+  executiveSummaryCard: {
+    keyFinding: string;
+    biggestOpportunity: string;
+    biggestRisk: string;
+    immediateAction: string;
+    oneWeekRecommendation: string;
+    oneMonthRecommendation: string;
+  };
+  communityHealthScore: {
+    overallScore: number;
+    conversationVolume: number;
+    brandAwareness: number;
+    commercialIntent: number;
+    communityTrust: number;
+    momentum: number;
+  };
+  confidenceScoreExplained: {
+    score: number;
+    sourcesSearched: number;
+    relevantConversationsFound: number;
+    brandMentionsFound: boolean;
+    coverageLimitations: string;
+    evidenceBasis: string;
+  };
+  sourceQualityMessage: string;
+  evidenceInsightRecommendations: Array<{
+    title: string;
+    evidence: string;
+    insight: string;
+    recommendation: string;
+  }>;
+  opportunityRanking: Array<{
+    opportunityTitle: string;
+    businessImpact: string;
+    urgency: 'High' | 'Medium' | 'Low';
+    difficulty: 'High' | 'Medium' | 'Low';
+    confidence: number;
+    suggestedOwner: string;
+  }>;
+  priorityMatrix: {
+    quickWins: string[];
+    strategicProjects: string[];
+    monitor: string[];
+    deprioritise: string[];
+  };
+  buyingIntent: {
+    level: 'High' | 'Medium' | 'Low' | 'Not enough evidence';
+    evidence: string;
+    commercialMeaning: string;
+    recommendedAction: string;
+  };
+  competitorIntelligence: Array<{
+    competitor: string;
+    strength: string;
+    weakness: string;
+    communityPerception: string;
+    opportunity: string;
+    confidence: number;
+  }>;
+  aiSearchOpportunities: Array<{
+    questionsPeopleAreAsking: string;
+    topicsWorthOwning: string;
+    recommendedContent: string;
+    whyThisHelpsAiVisibility: string;
+    priorityScore: number;
+  }>;
+  contentRoadmap: {
+    thisWeek: string[];
+    thisMonth: string[];
+    longTerm: string[];
+  };
+  priorityActions: Array<{
+    whatToDo: string;
+    why: string;
+    expectedImpact: string;
+    estimatedEffort: 'High' | 'Medium' | 'Low';
+    owner: string;
+    confidence: number;
+  }>;
+  finalExecutiveConclusion: {
+    overallAssessment: string;
+    biggestOpportunity: string;
+    biggestRisk: string;
+    immediateNextStep: string;
+    overallConfidence: number;
+  };
+};
+
 export type AnalyseBrief = {
   executiveSummary: string;
+  assessment: CommunityIntelligenceAssessment;
   communityIntelligenceScore: number;
   communityIntelligenceScorecard: CommunityIntelligenceScorecard;
   keyFindings: string[];
@@ -114,6 +211,7 @@ export type AnalyseBrief = {
 
 export type DiscoverBrief = {
   executiveSummary: string;
+  assessment: CommunityIntelligenceAssessment;
   communityIntelligenceScore: number;
   communityIntelligenceScorecard: CommunityIntelligenceScorecard;
   marketSignals: string[];
@@ -160,15 +258,20 @@ function frameworkInstruction(mode: 'analyse' | 'discover') {
     'Your work must sound specific, commercially aware and useful to founders, marketers, product leaders and strategy teams.',
     'Do not write generic marketing advice.',
     'Every recommendation must answer: what did we find, why does it matter commercially, and what should the business do next.',
+    'The output is a Community Intelligence Assessment. Never call Analyse or Discover output a brief. Briefs are only created in Action Centre.',
+    'Use The Redditrepreneur Framework: Understand, Discover, Prioritise, Recommend, Act.',
+    'Avoid hyphens and dashes in generated assessment text. Use commas, colons or full sentences instead.',
     mode === 'discover'
-      ? 'Important: Discover currently uses supported public Reddit search results only. Do not claim YouTube, LinkedIn, TikTok, X, reviews, forums or the whole web were searched. Ground the brief in supplied retrievedSources when available, and be explicit when source coverage is limited.'
-      : 'Ground the brief in the pasted conversation text. Use evidence only from the supplied text and be clear when confidence is limited.',
+      ? 'Important: Discover currently uses supported public Reddit search results only. Do not claim YouTube, LinkedIn, TikTok, X, reviews, forums or the whole web were searched. Ground the assessment in supplied retrievedSources when available, and be explicit when source coverage is limited.'
+      : 'Ground the assessment in the pasted conversation text. Use evidence only from the supplied text and be clear when confidence is limited.',
     'Include a Community Intelligence Scorecard. This is not a sentiment score. It measures community trust, recommendation behaviour, consistency of perception, authority and strategic insight.',
     'Score five categories out of 20: communityTrust, recommendationFrequency, sentimentConsistency, communityAuthority and strategicInsight. The overall score must be the sum of those five category scores, out of 100.',
     'Assign exactly one level from these thresholds: 0-19 Invisible, 20-39 Emerging, 40-59 Trusted, 60-79 Authority, 80-100 Community Leader.',
     'Score confidence as High, Medium or Low based on evidence volume, recency, source diversity and consistency.',
     'Do not invent evidence. Use exact quotes or concise excerpts when available. If evidence is weak or insufficient, say so clearly and score conservatively.',
     'The Community to AI Alignment section should explain how community themes may influence AI-generated answers and where AI discovery may be misaligned, outdated or incomplete.',
+    'Use evidence, insight and recommendation structure. Do not fabricate evidence. If evidence is weak, say so clearly.',
+    'Only show relevant Reddit results or relevant communities. If results are poor, say: No highly relevant community discussions were identified during this search. This suggests low current visibility.',
     'Return only valid JSON. Do not wrap the JSON in markdown.',
   ].join('\n');
 }
@@ -193,6 +296,22 @@ communityToAiAlignment object with:
   gaps array of strings,
   likelyAiInfluencingNarratives array of strings,
   recommendedActions array of strings.`;
+
+const assessmentSchemaInstruction = `assessment object with exactly:
+executiveDecision { priority "High" | "Medium" | "Low", recommendedDecision string, whyThisMatters string, expectedImpact string, confidence number from 0 to 100 },
+executiveSummaryCard { keyFinding string, biggestOpportunity string, biggestRisk string, immediateAction string, oneWeekRecommendation string, oneMonthRecommendation string },
+communityHealthScore { overallScore number from 0 to 100, conversationVolume number from 0 to 100, brandAwareness number from 0 to 100, commercialIntent number from 0 to 100, communityTrust number from 0 to 100, momentum number from 0 to 100 },
+confidenceScoreExplained { score number from 0 to 100, sourcesSearched number, relevantConversationsFound number, brandMentionsFound boolean, coverageLimitations string, evidenceBasis string },
+sourceQualityMessage string,
+evidenceInsightRecommendations array of 3 to 5 objects { title string, evidence string, insight string, recommendation string },
+opportunityRanking array of exactly 3 objects { opportunityTitle string, businessImpact string, urgency "High" | "Medium" | "Low", difficulty "High" | "Medium" | "Low", confidence number from 0 to 100, suggestedOwner string },
+priorityMatrix { quickWins array of strings, strategicProjects array of strings, monitor array of strings, deprioritise array of strings },
+buyingIntent { level "High" | "Medium" | "Low" | "Not enough evidence", evidence string, commercialMeaning string, recommendedAction string },
+competitorIntelligence array of objects { competitor string, strength string, weakness string, communityPerception string, opportunity string, confidence number from 0 to 100 },
+aiSearchOpportunities array of 3 to 5 objects { questionsPeopleAreAsking string, topicsWorthOwning string, recommendedContent string, whyThisHelpsAiVisibility string, priorityScore number from 0 to 100 },
+contentRoadmap { thisWeek array of strings, thisMonth array of strings, longTerm array of strings },
+priorityActions array of 3 to 6 objects { whatToDo string, why string, expectedImpact string, estimatedEffort "High" | "Medium" | "Low", owner string, confidence number from 0 to 100 },
+finalExecutiveConclusion { overallAssessment string, biggestOpportunity string, biggestRisk string, immediateNextStep string, overallConfidence number from 0 to 100 }.`;
 
 function extractJson<T>(content: string): T {
   try {
@@ -223,7 +342,7 @@ async function generateJson<T>(system: string, user: string) {
   const content = completion.choices[0]?.message?.content;
 
   if (!content) {
-    throw new Error('The AI did not return a brief.');
+    throw new Error('The AI did not return an assessment.');
   }
 
   return extractJson<T>(content);
@@ -232,10 +351,11 @@ async function generateJson<T>(system: string, user: string) {
 export async function generateAnalyseBrief(input: AnalyseInput) {
   return generateJson<AnalyseBrief>(
     frameworkInstruction('analyse'),
-    `Create an Analyse-mode Community Intelligence Brief.
+    `Create an Analyse-mode Community Intelligence Assessment.
 
 Return JSON with exactly these keys:
 executiveSummary string,
+${assessmentSchemaInstruction}
 communityIntelligenceScore number from 0 to 100,
 ${scorecardSchemaInstruction}
 keyFindings array of strings,
@@ -259,10 +379,11 @@ ${JSON.stringify(input, null, 2)}`
 export async function generateDiscoverBrief(input: DiscoverInput) {
   return generateJson<DiscoverBrief>(
     frameworkInstruction('discover'),
-    `Create a Discover-mode Community Intelligence research brief.
+    `Create a Discover-mode Community Intelligence Assessment.
 
 Return JSON with exactly these keys:
 executiveSummary string,
+${assessmentSchemaInstruction}
 communityIntelligenceScore number from 0 to 100,
 ${scorecardSchemaInstruction}
 marketSignals array of strings,

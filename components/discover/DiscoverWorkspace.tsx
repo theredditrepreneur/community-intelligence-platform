@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
-import { CommunityScorecard } from '@/components/reports/CommunityScorecard';
+import { CommunityAssessment } from '@/components/reports/CommunityAssessment';
 import type { BrandProfile } from '@/lib/brands';
 import type { DiscoverBrief } from '@/lib/ai/community-intelligence';
 
@@ -41,17 +41,6 @@ const comingSoonSources = ['YouTube', 'TikTok', 'LinkedIn', 'X', 'Trustpilot', '
 const searchDepths = ['Quick Scan', 'Standard Search', 'Deep Community Search'];
 const timeframes = ['Past Week', 'Past Month', 'Past 3 Months', 'Past Year', 'Custom'];
 
-function ListFinding({ title, items }: { title: string; items: string[] }) {
-  return (
-    <article className="finding">
-      <h3>{title}</h3>
-      <ul>
-        {items.map((item) => <li key={item}>{item}</li>)}
-      </ul>
-    </article>
-  );
-}
-
 function HowDiscoverWorks() {
   return (
     <section className="discover-explainer">
@@ -61,7 +50,7 @@ function HowDiscoverWorks() {
           <li>You enter your brand, competitors, keywords and selected sources.</li>
           <li>Discover searches supported public sources for relevant conversations.</li>
           <li>We filter and rank the findings.</li>
-          <li>The Redditrepreneur Framework turns them into a Community Intelligence Brief.</li>
+          <li>The Redditrepreneur Framework turns them into a Community Intelligence Assessment.</li>
         </ol>
       </div>
       <p>
@@ -104,52 +93,13 @@ function SourceSelection() {
 
 function DiscoveryResults({ result }: { result: DiscoverResult }) {
   return (
-    <section className="findings ai-results">
-      <div className="eyebrow">Reddit Discover Brief</div>
-      <article className="finding featured-finding">
-        <h3>Executive Summary</h3>
-        <p>{result.executiveSummary}</p>
-      </article>
-      <CommunityScorecard scorecard={result.communityIntelligenceScorecard} />
-      <div className="discovery-meta-grid">
-        <article className="finding"><h3>Sources searched</h3><p>{result.sourceCoverage.searchedSources.join(', ')}</p></article>
-        <article className="finding"><h3>Coverage note</h3><p>{result.sourceCoverage.limitation}</p></article>
-        <article className="finding"><h3>Reddit results found</h3><strong>{result.retrievedSources.length}</strong></article>
-        <article className="finding"><h3>Confidence Score</h3><strong>{result.confidenceScore}/100</strong></article>
-      </div>
-      <ListFinding title="Market Signals" items={result.marketSignals} />
-      <ListFinding title="Likely Conversation Themes" items={result.likelyConversationThemes} />
-      <ListFinding title="Biggest Business Opportunities" items={result.biggestBusinessOpportunities} />
-      <ListFinding title="Biggest Risks" items={result.biggestRisks} />
-      <ListFinding title="Buying Intent Signals" items={result.buyingIntentSignals} />
-      <ListFinding title="Competitor Intelligence" items={result.competitorIntelligence} />
-      <ListFinding title="AI Search Opportunities" items={result.aiSearchOpportunities} />
-      <ListFinding title="Content Roadmap" items={result.contentRoadmap} />
-      <ListFinding title="Priority Actions" items={result.priorityActions} />
-      <ListFinding title="Recommended Follow Up Searches" items={result.recommendedSearches} />
-      <article className="finding source-references">
-        <h3>Reddit Source References</h3>
-        {result.retrievedSources.length ? (
-          <ul>
-            {result.retrievedSources.map((source) => (
-              <li key={source.url}>
-                <a href={source.url} target="_blank" rel="noreferrer">{source.title}</a>
-                <span>{source.subreddit}, {source.comments} comments, score {source.score}</span>
-                {source.excerpt ? <p>{source.excerpt}</p> : null}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No Reddit results were returned for this search. Try broader keywords, more competitors or a longer timeframe.</p>
-        )}
-      </article>
-      <article className="finding">
-        <h3>Coming Later</h3>
-        <ul>
-          {result.sourceCoverage.comingLater.map((source) => <li key={source}>{source}</li>)}
-        </ul>
-      </article>
-    </section>
+    <CommunityAssessment
+      assessment={result.assessment}
+      fallbackScore={result.communityIntelligenceScore}
+      fallbackConfidence={result.confidenceScore}
+      sourceCoverage={result.sourceCoverage}
+      retrievedCount={result.retrievedSources.length}
+    />
   );
 }
 
@@ -185,7 +135,7 @@ export function DiscoverWorkspace({ brand }: { brand: BrandProfile }) {
     timeframe: 'Past Month',
   });
 
-  async function generateDiscoverBrief() {
+  async function generateDiscoverAssessment() {
     setError('');
     setIsGenerating(true);
     setResult(null);
@@ -202,12 +152,12 @@ export function DiscoverWorkspace({ brand }: { brand: BrandProfile }) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Unable to generate the Discover brief.');
+        throw new Error(data.error || 'Unable to generate the Discover assessment.');
       }
 
       setResult(data as DiscoverResult);
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : 'Unable to generate the Discover brief.');
+      setError(requestError instanceof Error ? requestError.message : 'Unable to generate the Discover assessment.');
     } finally {
       setIsGenerating(false);
     }
@@ -219,7 +169,7 @@ export function DiscoverWorkspace({ brand }: { brand: BrandProfile }) {
         <div className="eyebrow">Community Intelligence Platform</div>
         <div className="question">What conversations should I know about?</div>
         <h1>Discover Community Intelligence</h1>
-        <p>We&apos;ll use your Brand Profile to search supported Reddit public results, then turn the findings into a Community Intelligence Brief.</p>
+        <p>We&apos;ll use your Brand Profile to search supported Reddit public results, then turn the findings into a Community Intelligence Assessment.</p>
       </section>
 
       <BrandContextCard brand={brand} />
@@ -237,8 +187,8 @@ export function DiscoverWorkspace({ brand }: { brand: BrandProfile }) {
             {step < 3 ? (
               <Button onClick={() => setStep((value) => value + 1)}>Continue</Button>
             ) : (
-              <Button variant="orange" onClick={generateDiscoverBrief} disabled={isGenerating}>
-                {isGenerating ? 'Searching Reddit...' : 'Discover Community Intelligence'}
+              <Button variant="orange" onClick={generateDiscoverAssessment} disabled={isGenerating}>
+                {isGenerating ? 'Creating assessment...' : 'Discover Community Intelligence'}
               </Button>
             )}
           </div>

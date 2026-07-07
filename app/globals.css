@@ -176,6 +176,48 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
 .source-references span { display: block; margin: 6px 0; color: var(--muted); font-size: 13px; font-weight: 900; text-transform: uppercase; letter-spacing: .04em; }
 .source-references li + li { margin-top: 18px; }
 .source-references li p { margin-top: 8px; }
+.assessment-section { max-width: 1180px; margin-top: 34px; display: grid; gap: 22px; }
+.assessment-hero { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; padding: clamp(30px, 4.2vw, 48px); border-radius: 12px; background: linear-gradient(135deg, var(--ink), #123b68 68%, #174f66); color: #fff; box-shadow: var(--shadow); }
+.assessment-hero .eyebrow { color: #ffb69c; margin-bottom: 12px; }
+.assessment-hero h2 { margin: 0; color: #fff; font-size: clamp(38px, 5vw, 62px); line-height: 1; }
+.assessment-hero p { margin: 12px 0 0; color: rgba(255,255,255,.84); font-size: 18px; line-height: 1.45; }
+.assessment-framework { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; max-width: 390px; }
+.assessment-framework span { min-height: 34px; display: inline-flex; align-items: center; border: 1px solid rgba(255,255,255,.16); border-radius: 999px; background: rgba(255,255,255,.1); color: #fff; padding: 0 12px; font-size: 12px; font-weight: 950; }
+.assessment-card { min-width: 0; display: grid; gap: 18px; padding: clamp(24px, 3vw, 34px); border: 1px solid var(--soft); border-radius: 12px; background: #fff; box-shadow: 0 18px 58px rgba(7,31,61,.06); }
+.assessment-card h3 { margin: 0; color: var(--ink); font-size: 24px; line-height: 1.18; }
+.assessment-card p, .assessment-card li { margin: 0; color: var(--ink); font-size: 16px; line-height: 1.58; }
+.assessment-card ul { margin: 0; padding-left: 18px; }
+.assessment-card strong { color: var(--ink); }
+.assessment-card-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+.assessment-decision { border-top: 5px solid var(--orange); }
+.assessment-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+.assessment-grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.assessment-summary-grid, .assessment-detail-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.assessment-detail-grid.compact { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.assessment-summary-grid div, .assessment-detail-grid div, .priority-matrix-grid div, .roadmap-grid div, .opportunity-ranking-grid div, .competitor-intel-grid div, .ai-search-opportunity-grid div, .priority-actions-grid div, .methodology-grid div { min-width: 0; display: grid; gap: 8px; padding: 18px; border: 1px solid var(--soft); border-radius: 10px; background: #f8fafc; }
+.assessment-summary-grid strong, .assessment-detail-grid strong, .priority-matrix-grid h3, .roadmap-grid h3 { color: var(--muted); font-size: 12px; font-weight: 950; text-transform: uppercase; letter-spacing: .06em; }
+.assessment-score { color: var(--orange); font-size: 34px; line-height: 1; }
+.assessment-badge { display: inline-flex; width: fit-content; min-height: 32px; align-items: center; border-radius: 999px; padding: 0 11px; border: 1px solid var(--soft); background: #f3f7fb; color: var(--ink); font-size: 12px; font-weight: 950; text-transform: uppercase; letter-spacing: .05em; }
+.assessment-badge.high { color: var(--orange); background: rgba(255,75,11,.1); border-color: rgba(255,75,11,.18); }
+.assessment-badge.medium { color: var(--blue); background: rgba(0,111,182,.08); border-color: rgba(0,111,182,.15); }
+.assessment-badge.low { color: var(--green); background: rgba(32,164,100,.09); border-color: rgba(32,164,100,.18); }
+.assessment-chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.health-score-grid { display: grid; gap: 14px; }
+.assessment-scorebar { display: grid; gap: 8px; }
+.assessment-scorebar div { display: flex; justify-content: space-between; gap: 12px; color: var(--ink); font-size: 14px; font-weight: 900; }
+.assessment-scorebar i { overflow: hidden; height: 9px; border-radius: 99px; background: rgba(7,31,61,.08); }
+.assessment-scorebar i span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--orange), var(--green)); }
+.confidence-explainer { border-top: 5px solid var(--blue); }
+.source-quality-card { border-left: 5px solid var(--green); }
+.eir-card { align-content: start; }
+.eir-card div, .buying-intent-card div { display: grid; gap: 8px; }
+.eir-card div strong, .buying-intent-card div strong { color: var(--muted); font-size: 12px; font-weight: 950; text-transform: uppercase; letter-spacing: .06em; }
+.opportunity-ranking-grid, .competitor-intel-grid, .ai-search-opportunity-grid, .priority-actions-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.priority-matrix-grid, .roadmap-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.roadmap-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.methodology-footer { background: linear-gradient(135deg, #fff, #f7fbff); }
+.methodology-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.final-conclusion-card { border-top: 5px solid var(--green); }
 .briefs-layout { max-width: 1180px; display: grid; grid-template-columns: 1fr 340px; gap: 22px; align-items: start; }
 .briefs-form-panel { max-width: none; }
 .briefs-guidance { position: sticky; top: 28px; border-top: 4px solid var(--green); }
@@ -354,11 +396,11 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
   .mobile-bottom-nav a.active::before { content: ""; position: absolute; top: 5px; width: 18px; height: 3px; border-radius: 99px; background: var(--orange); }
   .public-auth { position: static; margin-bottom: 28px; }
   .main, .public-main { padding: 28px 22px 86px; }
-  .source-row, .field-grid, .monitoring, .signal-grid, .launch-grid, .pricing-grid, .dashboard-grid, .quick-action-grid, .two-column-dashboard, .score-grid, .discover-explainer, .discovery-meta-grid, .briefs-layout, .decision-overview-grid, .decision-feed-grid, .ask-intelligence-card, .scorecard-category-grid, .scorecard-insight-grid, .alignment-grid, .profile-chip-grid, .brand-context-grid, .smart-template-grid, .reports-layout { grid-template-columns: 1fr; }
+  .source-row, .field-grid, .monitoring, .signal-grid, .launch-grid, .pricing-grid, .dashboard-grid, .quick-action-grid, .two-column-dashboard, .score-grid, .discover-explainer, .discovery-meta-grid, .briefs-layout, .decision-overview-grid, .decision-feed-grid, .ask-intelligence-card, .scorecard-category-grid, .scorecard-insight-grid, .alignment-grid, .profile-chip-grid, .brand-context-grid, .smart-template-grid, .reports-layout, .assessment-hero, .assessment-grid, .assessment-grid.two, .assessment-summary-grid, .assessment-detail-grid, .assessment-detail-grid.compact, .opportunity-ranking-grid, .priority-matrix-grid, .competitor-intel-grid, .ai-search-opportunity-grid, .roadmap-grid, .priority-actions-grid, .methodology-grid { grid-template-columns: 1fr; }
   .full { grid-column: auto; }
   .briefs-guidance { position: static; }
   .card, .panel, .step-card, .finding, .status-panel, .launch-card, .setup-card, .price-card, .dashboard-card, .scorecard-category { box-shadow: 0 12px 32px rgba(7,31,61,.06); }
-  .dashboard-grid, .quick-action-grid, .two-column-dashboard, .findings, .scroll-stack, .briefs-layout, .decision-overview-grid, .decision-feed-grid { gap: 16px; }
+  .dashboard-grid, .quick-action-grid, .two-column-dashboard, .findings, .scroll-stack, .briefs-layout, .decision-overview-grid, .decision-feed-grid, .assessment-section, .assessment-grid { gap: 16px; }
   .quick-action-card, .briefs-card { min-height: auto; }
   .dashboard-section { margin-top: 22px; }
   .account-links a, .account-links button, .remove-source, .goal-chip, .chip, .source-chip, .option, .auth-link, .auth-cta, .account-button { min-height: 44px; }
@@ -366,6 +408,7 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
   .remove-source:disabled { opacity: .5; cursor: not-allowed; }
   .source-head { align-items: stretch; gap: 12px; }
   .source-head strong { display: inline-flex; align-items: center; }
+  .assessment-framework { justify-content: flex-start; max-width: none; }
   .brief-upgrade-card .btn { width: 100%; }
   .public-main { min-height: 100dvh; }
 }

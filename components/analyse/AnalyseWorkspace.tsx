@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
-import { CommunityScorecard } from '@/components/reports/CommunityScorecard';
+import { CommunityAssessment } from '@/components/reports/CommunityAssessment';
 import type { BrandProfile } from '@/lib/brands';
 import type { AnalyseBrief, AnalyseInput } from '@/lib/ai/community-intelligence';
 
@@ -20,43 +20,13 @@ const initialSource: ConversationSource = {
   text: '',
 };
 
-function FieldList({ items }: { items: string[] }) {
-  if (!items.length) return <p>No strong signal found in this section yet.</p>;
-  return <ul>{items.map((item) => <li key={item}>{item}</li>)}</ul>;
-}
-
-function ScoreCard({ label, value }: { label: string; value: number }) {
-  return (
-    <article className="finding score-finding">
-      <h3>{label}</h3>
-      <strong>{value}/100</strong>
-    </article>
-  );
-}
-
 function AnalyseResults({ brief }: { brief: AnalyseBrief }) {
   return (
-    <section className="findings ai-results">
-      <div className="eyebrow">Intelligence Findings</div>
-      <article className="finding featured-finding">
-        <h3>Executive Summary</h3>
-        <p>{brief.executiveSummary}</p>
-      </article>
-      <CommunityScorecard scorecard={brief.communityIntelligenceScorecard} />
-      <div className="score-grid">
-        <ScoreCard label="Community Intelligence Score" value={brief.communityIntelligenceScore} />
-        <ScoreCard label="Confidence Score" value={brief.confidenceScore} />
-      </div>
-      <article className="finding"><h3>Key Findings</h3><FieldList items={brief.keyFindings} /></article>
-      <article className="finding"><h3>Pain Points</h3><FieldList items={brief.painPoints} /></article>
-      <article className="finding"><h3>Buying Intent</h3><FieldList items={brief.buyingIntent} /></article>
-      <article className="finding"><h3>Competitor Mentions</h3><FieldList items={brief.competitorMentions} /></article>
-      <article className="finding"><h3>AI Search Opportunities</h3><FieldList items={brief.aiSearchOpportunities} /></article>
-      <article className="finding"><h3>Content Opportunities</h3><FieldList items={brief.contentOpportunities} /></article>
-      <article className="finding"><h3>Recommended Actions</h3><FieldList items={brief.recommendedActions} /></article>
-      <article className="finding"><h3>Business Impact</h3><p>{brief.businessImpact}</p></article>
-      <article className="finding"><h3>Evidence</h3><FieldList items={brief.evidence} /></article>
-    </section>
+    <CommunityAssessment
+      assessment={brief.assessment}
+      fallbackScore={brief.communityIntelligenceScore}
+      fallbackConfidence={brief.confidenceScore}
+    />
   );
 }
 
@@ -120,12 +90,12 @@ export function AnalyseWorkspace({ brand }: { brand: BrandProfile }) {
       const data = (await response.json()) as AnalyseBrief | { error?: string };
 
       if (!response.ok) {
-        throw new Error('error' in data ? data.error || 'Unable to generate brief.' : 'Unable to generate brief.');
+        throw new Error('error' in data ? data.error || 'Unable to generate assessment.' : 'Unable to generate assessment.');
       }
 
       setBrief(data as AnalyseBrief);
     } catch (briefError) {
-      setError(briefError instanceof Error ? briefError.message : 'Unable to generate brief.');
+      setError(briefError instanceof Error ? briefError.message : 'Unable to generate assessment.');
     } finally {
       setLoading(false);
     }
@@ -160,12 +130,12 @@ export function AnalyseWorkspace({ brand }: { brand: BrandProfile }) {
           {error ? <p className="checkout-error">{error}</p> : null}
           <div className="button-row">
             <Button variant="secondary" onClick={() => setSources((items) => [...items, { ...initialSource, id: Date.now() }])}>Add Conversation or URL</Button>
-            <Button variant="orange" onClick={generateBrief} disabled={loading}>{loading ? 'Generating brief...' : 'Generate Community Intelligence Brief'}</Button>
+            <Button variant="orange" onClick={generateBrief} disabled={loading}>{loading ? 'Generating assessment...' : 'Generate Community Intelligence Assessment'}</Button>
           </div>
         </div>
       </section>
-      {loading ? <section className="loading active"><div>Reading conversation context...</div><div>Finding commercial signals...</div><div>Building Community Intelligence Brief...</div></section> : null}
-      {!brief && !loading ? <section className="empty-state panel"><h2>No brief generated yet.</h2><p>Paste a conversation and generate your first Community Intelligence Brief.</p></section> : null}
+      {loading ? <section className="loading active"><div>Reading conversation context...</div><div>Finding commercial signals...</div><div>Building Community Intelligence Assessment...</div></section> : null}
+      {!brief && !loading ? <section className="empty-state panel"><h2>No assessment generated yet.</h2><p>Paste a conversation and generate your first Community Intelligence Assessment.</p></section> : null}
       {brief ? <AnalyseResults brief={brief} /> : null}
     </>
   );

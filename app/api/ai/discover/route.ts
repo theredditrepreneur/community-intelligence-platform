@@ -184,7 +184,7 @@ export async function POST(request: Request) {
 
   try {
     const retrievedSources = await searchReddit(payload);
-    const brief = await generateDiscoverBrief({
+    const assessment = await generateDiscoverBrief({
       brandName: payload.brandName || '',
       website: payload.website || '',
       companyDescription: payload.companyDescription || '',
@@ -198,7 +198,7 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({
-      ...brief,
+      ...assessment,
       sourceCoverage: {
         searchedSources: ['Reddit public search'],
         comingLater: ['YouTube', 'TikTok', 'LinkedIn', 'X', 'Trustpilot', 'G2', 'Forums', 'broader public web search'],
@@ -207,7 +207,7 @@ export async function POST(request: Request) {
       retrievedSources,
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unable to generate the Discover brief.';
+    const message = error instanceof Error ? error.message : 'Unable to generate the Discover assessment.';
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

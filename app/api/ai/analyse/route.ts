@@ -19,7 +19,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const brief = await generateAnalyseBrief({
+    const assessment = await generateAnalyseBrief({
       brandName: payload.brandName || '',
       website: payload.website || '',
       platform: payload.platform || '',
@@ -29,9 +29,9 @@ export async function POST(request: Request) {
       strategicGoal: payload.strategicGoal || '',
     });
 
-    return NextResponse.json(brief);
+    return NextResponse.json(assessment);
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unable to generate the brief.';
+    const message = error instanceof Error ? error.message : 'Unable to generate the assessment.';
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
