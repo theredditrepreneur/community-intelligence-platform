@@ -162,6 +162,34 @@ function formatBrief(brief: ActionBrief) {
   ].join('\n');
 }
 
+function cleanGeneratedText(value: string) {
+  return value
+    .replace(/[‐‑‒–—―]/g, '. ')
+    .replace(/\s+-\s+/g, '. ')
+    .replace(/(\w)-(\w)/g, '$1 $2')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/\.\s+\./g, '.')
+    .trim();
+}
+
+function cleanGeneratedList(items: string[]) {
+  return items.map(cleanGeneratedText);
+}
+
+function cleanBrief(brief: ActionBrief): ActionBrief {
+  return {
+    ...brief,
+    briefTitle: cleanGeneratedText(brief.briefTitle),
+    executiveSummary: cleanGeneratedText(brief.executiveSummary),
+    keyFindings: cleanGeneratedList(brief.keyFindings),
+    strategicContext: cleanGeneratedText(brief.strategicContext),
+    recommendedActions: cleanGeneratedList(brief.recommendedActions),
+    suggestedContentAssets: cleanGeneratedList(brief.suggestedContentAssets),
+    risksOrWatchouts: cleanGeneratedList(brief.risksOrWatchouts),
+    nextSteps: cleanGeneratedList(brief.nextSteps),
+  };
+}
+
 function safePdfText(value: string) {
   return value
     .replace(/[^\x20-\x7E\n]/g, ' ')
@@ -192,8 +220,11 @@ function wrapText(value: string, limit = 86) {
 function briefPdfLines(brief: ActionBrief) {
   const rows: Array<{ text: string; size: number; gap?: number }> = [
     { text: 'The Redditrepreneur Community Intelligence', size: 11, gap: 18 },
-    { text: brief.briefTitle, size: 22, gap: 22 },
   ];
+
+  wrapText(brief.briefTitle, 58).forEach((line, index) => {
+    rows.push({ text: line, size: 18, gap: index === 0 ? 4 : 18 });
+  });
 
   function section(title: string, content: string | string[]) {
     rows.push({ text: title, size: 15, gap: 12 });
@@ -402,7 +433,7 @@ export function BriefsWorkspace({ subscriptionLabel, brand }: BriefsWorkspacePro
         throw new Error('error' in data ? data.error || 'Unable to generate brief.' : 'Unable to generate brief.');
       }
 
-      setBrief(data as ActionBrief);
+      setBrief(cleanBrief(data as ActionBrief));
     } catch (briefError) {
       setError(briefError instanceof Error ? briefError.message : 'Unable to generate brief.');
     } finally {
@@ -475,11 +506,20 @@ export function BriefsWorkspace({ subscriptionLabel, brand }: BriefsWorkspacePro
 
   function resetBrief() {
     setUseSavedBrand(true);
-    setBriefCompany(contextFromBrand(brand));
+    setBriefCompany(emptyBriefCompany);
     setForm(buildInitialForm(brand));
     setBrief(null);
     setNotice('');
     setError('');
+  }
+
+  function useSavedBrandContext() {
+    setUseSavedBrand(true);
+  }
+
+  function useAnotherCompanyContext() {
+    setUseSavedBrand(false);
+    setBriefCompany(emptyBriefCompany);
   }
 
   return (
@@ -514,8 +554,8 @@ export function BriefsWorkspace({ subscriptionLabel, brand }: BriefsWorkspacePro
             <section className="brief-company-section">
               <span className="dashboard-kicker">Brief company</span>
               <div className="brief-company-toggle">
-                <button type="button" className={useSavedBrand ? 'active' : ''} onClick={() => setUseSavedBrand(true)}>Use saved Brand Profile</button>
-                <button type="button" className={!useSavedBrand ? 'active' : ''} onClick={() => setUseSavedBrand(false)}>Use another company</button>
+                <button type="button" className={useSavedBrand ? 'active' : ''} onClick={useSavedBrandContext}>Use saved Brand Profile</button>
+                <button type="button" className={!useSavedBrand ? 'active' : ''} onClick={useAnotherCompanyContext}>Use another company</button>
               </div>
               {useSavedBrand ? (
                 <div className="brief-company-summary">
