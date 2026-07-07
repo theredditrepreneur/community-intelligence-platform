@@ -195,7 +195,9 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
 .brief-company-summary { display: grid; gap: 8px; border: 1px solid var(--soft); border-radius: 10px; background: #fff; padding: 16px; }
 .brief-company-summary strong { color: var(--ink); font-size: 18px; line-height: 1.2; }
 .brief-company-summary span { color: var(--ink); font-size: 15px; line-height: 1.45; }
-.brief-company-section textarea { min-height: 240px; resize: vertical; }
+.brief-company-section textarea { min-height: 120px; resize: vertical; }
+.brief-company-section label.full textarea { min-height: 180px; }
+.brief-company-section label.full:nth-of-type(5) textarea { min-height: 240px; }
 .brief-goals { display: grid; gap: 12px; }
 .goal-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .goal-chip { min-height: 54px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); padding: 0 16px; text-align: left; font-weight: 850; cursor: pointer; }
@@ -213,6 +215,7 @@ textarea { padding-top: 18px; min-height: 170px; resize: vertical; }
 .brand-context-grid span { display: block; color: var(--ink); font-size: 14px; line-height: 1.45; overflow-wrap: anywhere; }
 .brief-output-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 22px; }
 .brief-output-head h2 { margin: 0; font-size: clamp(30px, 4vw, 44px); line-height: 1.08; }
+.brief-output-notice { margin-top: 16px; width: fit-content; }
 .brief-output-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: flex-end; }
 .brief-output-actions .btn { min-width: 150px; }
 .brief-upgrade-card { border-top: 4px solid var(--orange); display: grid; gap: 16px; }
