@@ -3,6 +3,7 @@ import type Stripe from 'stripe';
 import { getStripe } from '@/lib/stripe';
 import { planFromPriceId, updateSupabaseFromStripeSubscription, updateSupabaseSubscription } from '@/lib/stripe-subscriptions';
 import type { SubscriptionStatus } from '@/lib/config/subscriptions';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -35,6 +36,10 @@ export async function POST(request: Request) {
     case 'checkout.session.completed': {
       const session = event.data.object as Stripe.Checkout.Session;
       const userId = session.metadata?.supabaseUserId || session.client_reference_id;
+
+      if (session.client_reference_id?.startsWith('fsca_')) {
+        await createSupabaseAdminClient().from('free_score_pending_conversions').update({ status: 'confirmed', stripe_checkout_session_id: session.id, stripe_payment_intent_id: typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id || null, confirmed_at: new Date().toISOString() }).eq('client_reference_id', session.client_reference_id).eq('status', 'pending');
+      }
 
       if (userId && session.subscription) {
         const subscriptionId = typeof session.subscription === 'string' ? session.subscription : session.subscription.id;

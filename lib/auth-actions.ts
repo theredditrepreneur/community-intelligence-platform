@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { getCurrentSubscription, getSubscriptionAppPath, isPaidPlan, pendingCheckoutCookie } from '@/lib/subscription';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { freeScoreCookie } from '@/lib/free-score/session';
 
 function authRedirect(path: string, message: string) {
   redirect(path + '?error=' + encodeURIComponent(message));
@@ -38,6 +39,8 @@ export async function signIn(formData: FormData) {
     redirect('/checkout/resume');
   }
 
+  if (cookies().get(freeScoreCookie)?.value) redirect('/free-score/claim');
+
   const subscription = await getCurrentSubscription();
   redirect(getSubscriptionAppPath(subscription));
 }
@@ -69,6 +72,8 @@ export async function signUp(formData: FormData) {
   if (isPaidPlan(pendingPlan)) {
     redirect('/checkout/resume');
   }
+
+  if (cookies().get(freeScoreCookie)?.value) redirect('/free-score/claim');
 
   const subscription = await getCurrentSubscription();
   redirect(getSubscriptionAppPath(subscription));

@@ -46,7 +46,7 @@ function fromProfileRow(row?: ProfileSubscriptionRow | null, role?: UserRole | n
 }
 
 export async function getCurrentProfileSubscription() {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) return {};
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !(process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)) return {};
 
   const supabase = createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();

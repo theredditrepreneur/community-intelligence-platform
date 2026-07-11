@@ -1,0 +1,2 @@
+import { NextResponse } from 'next/server'; import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+export async function POST(request: Request) { if (!process.env.SUPABASE_WORKER_SECRET || request.headers.get('authorization') !== `Bearer ${process.env.SUPABASE_WORKER_SECRET}`) return NextResponse.json({error:'Unauthorized'},{status:401}); const { data,error } = await createSupabaseAdminClient().rpc('cleanup_free_score_data'); if(error) return NextResponse.json({error:'Cleanup failed.'},{status:500}); return NextResponse.json(data); }
