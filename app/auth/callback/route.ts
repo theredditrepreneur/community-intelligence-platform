@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { isPaidPlan, pendingCheckoutCookie } from '@/lib/subscription';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { freeScoreCookie } from '@/lib/free-score/session';
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
@@ -22,6 +23,8 @@ export async function GET(request: Request) {
   if (isPaidPlan(pendingPlan)) {
     return NextResponse.redirect(new URL('/checkout/resume', origin));
   }
+
+  if (cookies().get(freeScoreCookie)?.value) return NextResponse.redirect(new URL('/free-score/claim', origin));
 
   return NextResponse.redirect(new URL('/login?confirmed=1', origin));
 }

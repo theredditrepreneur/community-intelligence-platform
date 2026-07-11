@@ -1,0 +1,6 @@
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+export type ScoreJobMessage = { jobId: string; scorecardId: string; stage: 'searching' | 'analysing' };
+export interface FreeScoreJobQueue { enqueue(message: ScoreJobMessage): Promise<void>; }
+export class SupabaseFreeScoreJobQueue implements FreeScoreJobQueue { async enqueue(message: ScoreJobMessage) { const admin = createSupabaseAdminClient(); const { error } = await admin.schema('pgmq_public').rpc('send', { queue_name: 'community-score-jobs', message, sleep_seconds: 0 }); if (error) throw error; } }
+export class LocalFreeScoreJobQueue implements FreeScoreJobQueue { async enqueue(message: ScoreJobMessage) { console.info('Local free-score worker message', { jobId: message.jobId, scorecardId: message.scorecardId, stage: message.stage }); } }
+export async function recoverInterruptedJobs() { const admin = createSupabaseAdminClient(); const stale = new Date(Date.now() - 15 * 60000).toISOString(); return admin.from('community_score_jobs').update({ status: 'queued', stage: 'recovery', next_attempt_at: new Date().toISOString() }).in('status', ['searching','analysing']).lt('last_heartbeat_at', stale).lt('attempt_count', 3).select('id'); }

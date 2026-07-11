@@ -1,0 +1,4 @@
+'use client';
+import { useState } from 'react';
+import { analyticsConsent, setAnalyticsConsent } from '@/lib/free-score/analytics';
+export function AnalyticsConsent() { const [allowed,setAllowed]=useState(() => typeof window !== 'undefined' && analyticsConsent()); if (process.env.NEXT_PUBLIC_POSTHOG_ENABLED !== 'true') return null; return <aside className="analytics-consent" aria-label="Analytics preferences"><p>Help us improve this experience with privacy-conscious analytics. We never send your email, company name, source evidence or report content.</p><div><button type="button" onClick={()=>{setAnalyticsConsent(true);setAllowed(true)}} disabled={allowed}>Allow analytics</button><button type="button" onClick={()=>{setAnalyticsConsent(false);setAllowed(false)}}>{allowed ? 'Withdraw consent' : 'No analytics'}</button></div></aside>; }

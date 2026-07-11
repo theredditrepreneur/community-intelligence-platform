@@ -225,6 +225,7 @@ export default async function DashboardPage() {
           <h2>Move from signal to decision.</h2>
         </div>
         <div className="quick-action-grid">
+          <article className="dashboard-card quick-action-card"><h3>Community Intelligence Scorecards</h3><p>Generate and review your private score history.</p><Button href="/app/scorecards" variant="orange">Open Scorecards</Button></article>
           <article className="dashboard-card quick-action-card">
             <h3>Analyse conversations</h3>
             <p>Understand conversations you already have using your saved Brand Profile.</p>
