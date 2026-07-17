@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 type CheckoutButtonProps = {
-  plan: 'analyse' | 'discover';
+  plan: 'analyse' | 'discover' | 'alerts';
   children: string;
 };
 

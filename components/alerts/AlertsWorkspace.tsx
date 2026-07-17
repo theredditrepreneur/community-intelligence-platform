@@ -1,42 +1,12 @@
 'use client';
-
 import { useState } from 'react';
+import { CheckoutButton } from '@/components/pricing/CheckoutButton';
 import { Button } from '@/components/ui/Button';
 
-export function AlertsWorkspace() {
-  const [waitlist, setWaitlist] = useState(false);
-  const [preview, setPreview] = useState(false);
-  return (
-    <>
-      <section className="hero">
-        <div className="eyebrow">Community Intelligence Platform</div>
-        <div className="question">What changed since yesterday?</div>
-        <h1>Community Intelligence Alerts</h1>
-        <p>Know what communities are saying before your competitors do.</p>
-      </section>
-      <section className="status-panel">
-        <div className="monitoring">
-          <div><div className="status-pill"><span className="dot" />{waitlist ? 'Waitlist Joined' : 'Coming Soon'}</div><h2>Join the Alerts waitlist.</h2><p>Continuous Community Intelligence monitoring is the next premium tier. Join the waitlist to be notified when always on alerts are ready.</p></div>
-          <div className="next-brief"><span>Next Brief</span><strong>Tomorrow<br />08:00 GMT</strong></div>
-        </div>
-        <div className="signal-grid">
-          <div className="signal"><h3>Watching</h3><p>Reddit, YouTube, LinkedIn, Trustpilot, G2 and Forums.</p></div>
-          <div className="signal"><h3>Tracking</h3><p>Brand, competitors and keywords.</p></div>
-          <div className="signal"><h3>Next Brief</h3><p>Tomorrow at 08:00 GMT.</p></div>
-          <div className="signal"><h3>Alert Health</h3><p>Last scan completed 7 minutes ago.</p></div>
-        </div>
-      </section>
-      <section className="launch-card">
-        <div><div className="eyebrow">First time setup</div><h2>Join the Alerts Waitlist</h2><p>Alerts will add continuous monitoring, daily briefs and proactive Community Intelligence when it launches.</p></div>
-        <div className="launch-grid"><div className="launch-step"><strong>1. Confirm watchlist</strong><span>Brand, competitors, keywords and priority communities.</span></div><div className="launch-step"><strong>2. Choose brief schedule</strong><span>Daily, weekly, monthly or real time alerts.</span></div><div className="launch-step"><strong>3. Activate monitoring</strong><span>Your analyst begins watching and preparing intelligence.</span></div></div>
-        <div className="button-row"><Button variant="orange" onClick={() => setWaitlist(true)}>Join Alerts Waitlist</Button>{waitlist ? <span className="launch-state active">You are on the Alerts waitlist. We will notify you when continuous monitoring opens.</span> : null}</div>
-      </section>
-      <section className="scroll-stack">
-        <section className="setup-card"><h2>Setup Alerts</h2><div className="field-grid"><label>Brand Name<input /></label><label>Website<input /></label><label className="full">What does your company do?<textarea /></label><label className="full">Who are your ideal customers?<textarea /></label></div></section>
-        <section className="setup-card"><h2>Watchlist</h2><label>Competitors<p className="helper">Companies you want us to monitor.</p><input /></label><label>Keywords<p className="helper">Products, services, industries or topics you want us to watch.</p><input /></label></section>
-        <section className="setup-card"><h2>Preview Community Intelligence Alert</h2><Button variant="orange" onClick={() => setPreview(true)}>Preview Community Intelligence Alert</Button></section>
-        {preview ? <section className="setup-card brief-preview"><div className="eyebrow">Community Intelligence Alert 27 June 2026</div><h2>Executive Briefing</h2>{['Executive Summary','Top Insights','Business Impact','Priority Actions','Recommended Next Steps','Confidence Score','Estimated Reading Time'].map((item) => <article className="finding" key={item}><h3>{item}</h3><p>What changed, why it matters commercially, and what the business should do next.</p></article>)}</section> : null}
-      </section>
-    </>
-  );
+export function AlertsUpgrade(){return <section className="alerts-upgrade"><div><div className="eyebrow">Community Intelligence Alerts</div><h1>Stay ahead of meaningful community change</h1><p>Monitor important changes in public conversations about your brand, market and competitors, then understand what changed, why it matters and what to do next.</p><div className="price">£249 <span>/month</span></div><p className="helper">Billed monthly. Cancel at any time.</p><CheckoutButton plan="alerts">Activate Alerts</CheckoutButton><Button href="/app/dashboard" variant="secondary">Return to Dashboard</Button></div><ul>{['Up to 10 Alert Monitors','Reddit monitoring','Daily, weekly or monthly scans','Dashboard and email delivery','Community Health movement','Buying intent monitoring','Competitor movement monitoring','Recommended actions'].map(x=><li key={x}>{x}</li>)}</ul></section>}
+
+export function AlertsWorkspace({checkoutSuccess=false}:{checkoutSuccess?:boolean}){
+ const[showSetup,setShowSetup]=useState(false),[notice,setNotice]=useState(''),[saving,setSaving]=useState(false);
+ async function createMonitor(event:React.FormEvent<HTMLFormElement>){event.preventDefault();setSaving(true);setNotice('');const data=new FormData(event.currentTarget);const response=await fetch('/api/alerts/monitors',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(data))});const body=await response.json();setNotice(response.ok?'Alert Monitor created. Its first approved-source run will establish the baseline.':body.error||'Unable to create monitor.');setSaving(false)}
+ return <>{checkoutSuccess?<section className="launch-state active"><strong>Community Intelligence Alerts is active</strong><span>Create your first Alert Monitor to establish a baseline and begin tracking meaningful changes.</span></section>:null}<section className="hero"><div className="eyebrow">Community Intelligence Alerts</div><div className="question">What changed, why does it matter, and what should you do next?</div><h1>Monitor what matters.</h1><p>Reddit is the first supported source. Additional community sources will be added without changing your Alert Monitors.</p></section><section className="status-panel"><div className="monitoring"><div><div className="status-pill"><span className="dot"/>Alerts active</div><h2>Your Alert Monitors</h2><p>Create a monitor to establish a baseline. Alerts are generated only when meaningful change is detected.</p></div><div className="next-brief"><span>Plan limit</span><strong>Up to 10<br/>monitors</strong></div></div><div className="signal-grid"><div className="signal"><h3>Source</h3><p>Reddit monitoring</p></div><div className="signal"><h3>Schedules</h3><p>Daily, weekly or monthly</p></div><div className="signal"><h3>Delivery</h3><p>Dashboard and email</p></div><div className="signal"><h3>Other sources</h3><p>Coming soon</p></div></div></section><section className="launch-card"><div><div className="eyebrow">Alert Monitors</div><h2>Establish your Community Intelligence baseline</h2><p>Choose the competitors, signals and schedule that matter to your business.</p></div><Button variant="orange" onClick={()=>setShowSetup(true)}>Create Alert Monitor</Button></section>{showSetup?<form className="setup-card" onSubmit={createMonitor}><h2>Create Alert Monitor</h2><div className="field-grid"><label>Monitor name<input name="name" required minLength={2} maxLength={100} placeholder="Brand and competitor movement"/></label><label>Frequency<select name="frequency"><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option></select></label><label className="full">Competitors<input name="competitors" placeholder="Competitor names, separated by commas"/></label><label className="full">Keywords<input name="keywords" placeholder="Pricing, onboarding, alternatives"/></label><label className="full">Signals<input name="signalTypes" placeholder="Buying intent, sentiment, complaints, feature requests"/></label></div><Button variant="orange" type="submit" disabled={saving}>{saving?'Creating monitor...':'Create Monitor'}</Button>{notice?<p role="status" className="helper">{notice}</p>:null}</form>:null}</>
 }

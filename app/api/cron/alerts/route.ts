@@ -1,0 +1,4 @@
+import { NextResponse } from 'next/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+export const runtime='nodejs'; export const dynamic='force-dynamic';
+export async function GET(request:Request){const secret=process.env.CRON_SECRET;if(!secret||request.headers.get('authorization')!==`Bearer ${secret}`)return NextResponse.json({error:'Unauthorized'},{status:401});if(process.env.ALERTS_LIVE_DATA_ENABLED!=='true')return NextResponse.json({processed:0,status:'live_provider_disabled'});const admin=createSupabaseAdminClient();const {data,error}=await admin.from('alert_monitors').select('id,user_id,frequency,timezone,next_run_at').eq('status','active').lte('next_run_at',new Date().toISOString()).limit(25);if(error)return NextResponse.json({error:'Unable to load due monitors.'},{status:500});return NextResponse.json({processed:0,due:data?.length||0,status:'approved_provider_required'});}

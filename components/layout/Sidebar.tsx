@@ -8,7 +8,7 @@ import { platform } from '@/lib/config/platform';
 import { signOut } from '@/lib/auth-actions';
 
 type SidebarProps = {
-  subscriptionLabel: 'Free' | 'Analyse' | 'Discover' | 'Admin';
+  subscriptionLabel: 'Free' | 'Analyse' | 'Discover' | 'Alerts' | 'Admin';
   isAdmin?: boolean;
   user: {
     email?: string;

@@ -8,6 +8,7 @@ export function planFromPriceId(priceId?: string | null): PaidPlan | undefined {
 
   if (priceId === process.env.NEXT_PUBLIC_STRIPE_ANALYSE_PRICE_ID) return 'analyse';
   if (priceId === process.env.NEXT_PUBLIC_STRIPE_DISCOVER_PRICE_ID) return 'discover';
+  if (priceId === process.env.NEXT_PUBLIC_STRIPE_ALERTS_PRICE_ID) return 'alerts';
 
   return undefined;
 }

@@ -259,7 +259,7 @@ export default async function DashboardPage() {
               <Badge>Coming Soon</Badge>
             </div>
             <p>Continuous Community Intelligence monitoring.</p>
-            <Button href="/app/alerts" variant="secondary">Join waitlist</Button>
+            <Button href="/app/alerts" variant="orange">Activate Alerts</Button>
           </article>
         </div>
       </section>

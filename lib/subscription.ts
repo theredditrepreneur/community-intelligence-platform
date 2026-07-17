@@ -6,10 +6,10 @@ import type { UserRole } from '@/lib/admin';
 export const pendingCheckoutCookie = 'redditrepreneur_pending_checkout_plan';
 
 export function isPaidPlan(value: unknown): value is PaidPlan {
-  return value === 'analyse' || value === 'discover';
+  return value === 'analyse' || value === 'discover' || value === 'alerts';
 }
 
-export type SubscriptionLabel = 'Free' | 'Analyse' | 'Discover' | 'Admin';
+export type SubscriptionLabel = 'Free' | 'Analyse' | 'Discover' | 'Alerts' | 'Admin';
 
 export type SubscriptionMetadata = {
   stripeCustomerId?: string;
@@ -38,10 +38,10 @@ export function hasPlanAccess(subscription: SubscriptionMetadata, requiredPlan: 
   }
 
   if (requiredPlan === 'analyse') {
-    return subscription.subscriptionPlan === 'analyse' || subscription.subscriptionPlan === 'discover';
+    return subscription.subscriptionPlan === 'analyse' || subscription.subscriptionPlan === 'discover' || subscription.subscriptionPlan === 'alerts';
   }
-
-  return subscription.subscriptionPlan === 'discover';
+  if (requiredPlan === 'discover') return subscription.subscriptionPlan === 'discover' || subscription.subscriptionPlan === 'alerts';
+  return subscription.subscriptionPlan === 'alerts';
 }
 
 export async function getCurrentSubscription() {
@@ -57,6 +57,7 @@ export async function getSubscriptionLabel(): Promise<SubscriptionLabel> {
     return 'Free';
   }
 
+  if (subscription.subscriptionPlan === 'alerts') return 'Alerts';
   if (subscription.subscriptionPlan === 'discover') return 'Discover';
   if (subscription.subscriptionPlan === 'analyse') return 'Analyse';
 

@@ -3,7 +3,7 @@ create table if not exists public.profiles (
   stripe_customer_id text,
   stripe_subscription_id text,
   stripe_price_id text,
-  subscription_plan text check (subscription_plan in ('analyse', 'discover')),
+  subscription_plan text check (subscription_plan in ('analyse', 'discover', 'alerts')),
   subscription_status text not null default 'none',
   subscription_current_period_end bigint,
   role text not null default 'customer' check (role in ('customer', 'admin')),

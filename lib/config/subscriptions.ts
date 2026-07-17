@@ -1,4 +1,4 @@
-export type PaidPlan = 'analyse' | 'discover';
+export type PaidPlan = 'analyse' | 'discover' | 'alerts';
 export type SubscriptionStatus =
   | 'active'
   | 'trialing'
@@ -20,6 +20,11 @@ export const paidPlans: Record<PaidPlan, { label: string; priceEnv: string; appP
     label: 'Discover',
     priceEnv: 'NEXT_PUBLIC_STRIPE_DISCOVER_PRICE_ID',
     appPath: '/app/discover',
+  },
+  alerts: {
+    label: 'Alerts',
+    priceEnv: 'NEXT_PUBLIC_STRIPE_ALERTS_PRICE_ID',
+    appPath: '/app/alerts',
   },
 };
 

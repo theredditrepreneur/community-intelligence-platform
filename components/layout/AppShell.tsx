@@ -4,7 +4,7 @@ import { MobileAppBar, MobileBottomNav } from './MobileNavigation';
 
 type AppShellProps = {
   children: ReactNode;
-  subscriptionLabel: 'Free' | 'Analyse' | 'Discover' | 'Admin';
+  subscriptionLabel: 'Free' | 'Analyse' | 'Discover' | 'Alerts' | 'Admin';
   isAdmin?: boolean;
   user: {
     email?: string;

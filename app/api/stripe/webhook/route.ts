@@ -62,6 +62,16 @@ export async function POST(request: Request) {
       await updateSupabaseFromStripeSubscription(subscription);
       break;
     }
+    case 'invoice.paid':
+    case 'invoice.payment_failed': {
+      const invoice = event.data.object as Stripe.Invoice;
+      const subscriptionRef = (invoice as Stripe.Invoice & { subscription?: string | Stripe.Subscription | null }).subscription;
+      if (subscriptionRef) {
+        const subscriptionId = typeof subscriptionRef === 'string' ? subscriptionRef : subscriptionRef.id;
+        await updateSupabaseFromStripeSubscription(await stripe.subscriptions.retrieve(subscriptionId));
+      }
+      break;
+    }
     default:
       break;
   }

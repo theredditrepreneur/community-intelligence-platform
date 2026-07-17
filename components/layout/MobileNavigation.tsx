@@ -11,7 +11,7 @@ const primaryNavigation = navigation.filter((item) =>
 );
 
 type MobileNavigationProps = {
-  subscriptionLabel: 'Free' | 'Analyse' | 'Discover' | 'Admin';
+  subscriptionLabel: 'Free' | 'Analyse' | 'Discover' | 'Alerts' | 'Admin';
 };
 
 export function MobileAppBar({ subscriptionLabel }: MobileNavigationProps) {

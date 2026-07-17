@@ -4,10 +4,11 @@ import { paidPlans, type PaidPlan } from '@/lib/config/subscriptions';
 import { getAppUrl, getStripe } from '@/lib/stripe';
 import { getPriceIdForPlan } from '@/lib/stripe-subscriptions';
 import { pendingCheckoutCookie } from '@/lib/subscription';
+import { getCurrentSubscription } from '@/lib/subscription';
 import { getCurrentUser } from '@/lib/supabase/server';
 
 function isPaidPlan(value: unknown): value is PaidPlan {
-  return value === 'analyse' || value === 'discover';
+  return value === 'analyse' || value === 'discover' || value === 'alerts';
 }
 
 export async function POST(request: Request) {
@@ -33,12 +34,14 @@ export async function POST(request: Request) {
   }
 
   cookies().delete(pendingCheckoutCookie);
+  const subscription = await getCurrentSubscription();
 
   const appUrl = getAppUrl(request.url);
   const stripe = getStripe();
   const checkoutSession = await stripe.checkout.sessions.create({
     mode: 'subscription',
-    customer_email: user.email || undefined,
+    customer: subscription.stripeCustomerId || undefined,
+    customer_email: subscription.stripeCustomerId ? undefined : user.email || undefined,
     client_reference_id: user.id,
     line_items: [
       {
@@ -49,6 +52,9 @@ export async function POST(request: Request) {
     metadata: {
       supabaseUserId: user.id,
       plan,
+      product_name: paidPlans[plan].label,
+      user_id: user.id,
+      price_id: getPriceIdForPlan(plan),
     },
     subscription_data: {
       metadata: {
@@ -56,8 +62,8 @@ export async function POST(request: Request) {
         plan,
       },
     },
-    success_url: appUrl + '/checkout/success?plan=' + plan,
-    cancel_url: requestUrl.origin + '/checkout/cancel?plan=' + plan,
+    success_url: plan === 'alerts' ? appUrl + '/app/alerts?checkout=success' : appUrl + '/checkout/success?plan=' + plan,
+    cancel_url: appUrl + '/pricing?checkout=cancelled&plan=' + plan,
   });
 
   return NextResponse.json({ url: checkoutSession.url || paidPlans[plan].appPath });

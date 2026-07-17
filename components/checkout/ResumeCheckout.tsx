@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 type ResumeCheckoutProps = {
-  plan: 'analyse' | 'discover';
+  plan: 'analyse' | 'discover' | 'alerts';
 };
 
 export function ResumeCheckout({ plan }: ResumeCheckoutProps) {

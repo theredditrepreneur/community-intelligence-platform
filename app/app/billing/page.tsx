@@ -12,7 +12,7 @@ export default async function BillingPage() {
       <section className="hero account-hero">
         <div className="eyebrow">Billing</div>
         <h1>Billing</h1>
-        <p>Manage your Analyse or Discover subscription through Stripe's secure customer portal.</p>
+        <p>Manage your subscription through Stripe&apos;s secure customer portal.</p>
       </section>
 
       <section className="panel account-panel">

@@ -1,0 +1,6 @@
+import assert from 'node:assert/strict'; import test from 'node:test'; import { readFileSync } from 'node:fs';
+const read=(path)=>readFileSync(new URL(path,import.meta.url),'utf8');
+test('Alerts is a canonical paid plan with its configured price',()=>{assert.match(read('../lib/config/subscriptions.ts'),/'alerts'/);assert.match(read('../lib/stripe-subscriptions.ts'),/NEXT_PUBLIC_STRIPE_ALERTS_PRICE_ID/);});
+test('Alerts checkout remains a server-created subscription checkout',()=>{const source=read('../app/api/stripe/checkout/route.ts');assert.match(source,/mode: 'subscription'/);assert.match(source,/value === 'alerts'/);assert.match(source,/client_reference_id: user.id/);});
+test('Alerts pricing is live at £249 and not a waitlist',()=>{const source=read('../lib/config/pricing.ts');assert.match(source,/\\u00a3249/);assert.match(source,/cta: 'Start Alerts'/);assert.doesNotMatch(source,/Join Alerts Waitlist/);});
+test('Alerts schema has RLS and ten monitor enforcement',()=>{const source=read('../supabase/migrations/202607170001_community_intelligence_alerts.sql');assert.match(source,/enable row level security/);assert.match(source,/>= 10/);assert.match(source,/auth\.uid\(\)=user_id/);});

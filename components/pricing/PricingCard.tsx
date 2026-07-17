@@ -17,7 +17,7 @@ type PricingPlan = {
 };
 
 export function PricingCard({ plan }: { plan: PricingPlan }) {
-  const paidPlan = plan.status === 'active' && (plan.id === 'analyse' || plan.id === 'discover') ? plan.id : undefined;
+  const paidPlan = plan.status === 'active' && (plan.id === 'analyse' || plan.id === 'discover' || plan.id === 'alerts') ? plan.id : undefined;
 
   return (
     <article className={['price-card', plan.recommended ? 'recommended' : '', plan.status === 'coming-soon' ? 'soon' : ''].join(' ')}>
